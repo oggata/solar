@@ -1,0 +1,37 @@
+{
+    "project_type": "javascript",
+
+    "debugMode" : 1,
+    "showFPS" : true,
+    "frameRate" : 30,
+    "noCache" : false,
+    "id" : "gameCanvas",
+    "renderMode" : 0,
+    "engineDir":"frameworks/cocos2d-html5",
+
+    "modules" : ["cocos2d", "extensions", "external","socketio"],
+
+    "jsList" : [
+        "src/resource.js",
+        "src/TopLayer.js",
+        "src/PlanetLayer.js",
+        "src/ListLayer.js",
+        "src/GameLayer.js",
+        "src/CardLayer.js",
+        "src/LifeLayer.js",
+        "src/Storage.js",
+        "src/Sound.js",
+        "src/CardList.js",
+        "src/Config.js",
+        "src/ws.js",
+        "src/Header.js",
+        "src/TimeGauge.js",
+        "src/Marker.js",
+        "src/BattleWindow.js",
+        "src/BattleMessage.js",
+        "src/BattleResult.js",
+        "src/Human.js",
+        "src/Coin.js",
+        "src/Gauge.js"
+    ]
+}
