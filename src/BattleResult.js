@@ -3,10 +3,10 @@ var BattleResult = cc.Node.extend({
         this._super();
         this.game = game;
         this.resultSprite = cc.Sprite.create("res/result2.png");
-        this.resultSprite.setPosition(0,40);
+        this.resultSprite.setPosition(0, 40);
         this.addChild(this.resultSprite);
-        this.messageLabel2 = cc.LabelTTF.create("", "Arial", 20);
-        this.messageLabel2.setPosition(80, 520);
+        this.messageLabel2 = cc.LabelTTF.create("", "Arial", 22);
+        this.messageLabel2.setPosition(70, 500);
         this.messageLabel2.setAnchorPoint(0, 1);
         this.messageLabel2.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.resultSprite.addChild(this.messageLabel2);
@@ -20,32 +20,33 @@ var BattleResult = cc.Node.extend({
         this.message = "";
         this.messageTime2 = 0;
         this.visibleStrLenght2 = 0;
-
-this.occupiedGauge = new Gauge(510, 40, 'GREEN');
-this.occupiedGauge.setAnchorPoint(0, 0);
-this.occupiedGauge.setPosition(50, 580);
-this.resultSprite.addChild(this.occupiedGauge);
-this.gaugeScore = 60;
-this.gaugeDrawScore = 0;
-this.gaugeMaxScore = 100;
-
+        this.occupiedGauge = new Gauge(510, 40, 'GREEN');
+        this.occupiedGauge.setAnchorPoint(0, 0);
+        this.occupiedGauge.setPosition(50, 580);
+        this.resultSprite.addChild(this.occupiedGauge);
+        this.gaugeScore = 60;
+        this.gaugeDrawScore = 0;
+        this.gaugeMaxScore = 100;
     },
-    sendMessage: function (message) {
-        this.message = message;
+    sendMessage: function () {
+        //this.message = message;
         this.messageTime2 = 0;
         this.visibleStrLenght2 = 0;
+        this.message = "惑星の43%の探索が完了。\n目標値レコードを更新しました。\n";
+        //this.storage.treasureAmount += _addCoin;
+        //this.storage.saveCurrentData();
     },
     init: function () {},
     update: function () {
 
-if(this.gaugeScore >= this.gaugeDrawScore){
-    this.gaugeDrawScore += 0.5;
+
+if(this.game.destCaptureRate <= this.game.captureRate){
+    this.message = "ミッションを達成しました！\n惑星全体の" + Math.floor(this.game.captureRate * 100) + "%の探索が完了。\n報酬として素材を手に入れました。\n";
+}else{
+    this.message = "ミッションに失敗しました！\n惑星全体の" + Math.floor(this.game.captureRate * 100) + "%の探索が完了。\n掘削した素材は手に入りませんでした。\n";
 }
-this.occupiedGauge.update(this.gaugeDrawScore/this.gaugeMaxScore);
 
-
-
-
+        this.occupiedGauge.update(this.game.captureRate);
         if (this.message) {
             if (this.message.length > 0) {
                 //メッセージ表示の管理

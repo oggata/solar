@@ -47,8 +47,8 @@ var GameLayer = cc.Layer.extend({
         this.storage.eventData = new Object();
         this.storage.enemyEventData = new Object();
         //カード使用回復
-        this.cardUsePower = 100;
-        this.cardUseMaxPower = 100;
+        //this.cardUsePower = 100;
+        //this.cardUseMaxPower = 100;
         //カラーの分別
         this.colorName = colorName;
         if (this.colorName == "GREEN") {
@@ -61,9 +61,14 @@ var GameLayer = cc.Layer.extend({
             this.redUserId = this.storage.userId;
         }
         //ステータス
+        this.destCaptureRate = 0.1;
+        this.captureCnt = 0;
+        this.maxCaptureCnt = 0;
+        this.captureRate = 0;
+
         this.gameStatus = "wait";
         this.result = null;
-        this.ripples = [];
+        //this.ripples = [];
         this.gameStartTimeCnt = 0;
         this.battleEffects = [];
         this.materials = [];
@@ -87,186 +92,94 @@ var GameLayer = cc.Layer.extend({
         this.addChild(this.battleWindow, 999);
         this.battleWindow.setPosition(0, 0);
         this.battleWindowScale = 0.1;
+        this.maxBattleWindowScale = 2.2;
         this.battleWindow.setScale(this.battleWindowScale);
         this.setHeaderLabel();
         this.setStartLabel();
-        /*
-        this.battleMessage = new BattleMessage(this);
-        this.addChild(this.battleMessage, 9999);
-        */
         this.resultSprite = new BattleResult(this);
         this.addChild(this.resultSprite, 9999);
         this.resultSprite.setPosition(320, 500);
         this.resultSprite.setVisible(false);
-        /*
-        this.battleCardDeck = new BattleCardDeck(this);
-        this.addChild(this.battleCardDeck, 9999);
-        this.battleCardDeck.setPosition(0, 30);
-        */
         this.scheduleUpdate();
-        this.testCnt = 0;
-        this.usedTickNum = 0;
-        this.usedEnemyTickNum = 0;
-        this.tutorial001 = cc.Sprite.create("res/tutorial001.png");
-        this.tutorial001.setPosition(320, 550);
-        //this.addChild(this.tutorial001, 99999);
-        this.isComCnt = 0;
+        //this.testCnt = 0;
+        //this.usedTickNum = 0;
+        //this.usedEnemyTickNum = 0;
+        //this.tutorial001 = cc.Sprite.create("res/tutorial001.png");
+        //this.tutorial001.setPosition(320, 550);
+        //this.isComCnt = 0;
         this.firstTouchX = 0;
         this.firstTouchY = 0;
-        //this.lastTouchGameLayerX = this.battleWindow.getPosition().x;
-        //this.lastTouchGameLayerY = this.battleWindow.getPosition().y;
         //常に中央を表示するようにする
         var _centerMarker = this.battleWindow.getMarker2(this.battleWindow.player.col, this.battleWindow.player.row);
         this.baseNodePosX = this.targetBaseNodePosX = 320 - _centerMarker.getPosition().x * this.battleWindowScale;
         this.baseNodePosY = this.targetBaseNodePosY = 400 - _centerMarker.getPosition().y * this.battleWindowScale;
-        
         this.scrollSpeed = 2;
         return true;
     },
     setScroll: function () {
-        //if(this.gameStatus != "gaming") return;
-        if (this.targetBaseNodePosX > this.baseNodePosX) {
-            this.baseNodePosX += this.scrollSpeed;
-        } else if (this.targetBaseNodePosX < this.baseNodePosX) {
-            this.baseNodePosX -= this.scrollSpeed;
+        if (Math.abs(this.targetBaseNodePosX - this.baseNodePosX) >= 5) {
+            //差分が5以上の時
+            if (this.targetBaseNodePosX > this.baseNodePosX) {
+                this.baseNodePosX += 5;
+            } else if (this.targetBaseNodePosX < this.baseNodePosX) {
+                this.baseNodePosX -= 5;
+            }
+        } else {
+            //差分が5以下の時
+            if (this.targetBaseNodePosX > this.baseNodePosX) {
+                this.baseNodePosX += 1;
+            } else if (this.targetBaseNodePosX < this.baseNodePosX) {
+                this.baseNodePosX -= 1;
+            }
         }
-        if (this.targetBaseNodePosY > this.baseNodePosY) {
-            this.baseNodePosY += this.scrollSpeed;
-        } else if (this.targetBaseNodePosY < this.baseNodePosY) {
-            this.baseNodePosY -= this.scrollSpeed;
+        if (Math.abs(this.targetBaseNodePosY - this.baseNodePosY) >= 5) {
+            //差分が5以上の時
+            if (this.targetBaseNodePosY > this.baseNodePosY) {
+                this.baseNodePosY += 5;
+            } else if (this.targetBaseNodePosY < this.baseNodePosY) {
+                this.baseNodePosY -= 5;
+            }
+        } else {
+            //差分が5以下の時
+            if (this.targetBaseNodePosY > this.baseNodePosY) {
+                this.baseNodePosY += 1;
+            } else if (this.targetBaseNodePosY < this.baseNodePosY) {
+                this.baseNodePosY -= 1;
+            }
         }
         this.battleWindow.setPosition(this.baseNodePosX, this.baseNodePosY);
     },
     update: function (dt) {
+        //画面表示
+        this.maxCaptureCnt = this.battleWindow.positionalMarkers.length * this.destCaptureRate;
+        this.captureRate = Math.floor(this.captureCnt / this.maxCaptureCnt * 100) / 100 ;
+        if(this.captureRate >= 1){
+            this.captureRate = 1;
+        }
+        this.occupiedGauge.update(this.captureRate);
+        this.occupiedRate.setString(this.captureCnt);
+
         //常に中央を表示するようにする
         var _centerMarker = this.battleWindow.getMarker2(this.battleWindow.player.col, this.battleWindow.player.row);
         //this.battleWindowScale
         //1:320x420  1.6:-100x400 2.2:-500
         this.targetBaseNodePosX = 320 - _centerMarker.getPosition().x * this.battleWindowScale;
         this.targetBaseNodePosY = 400 - _centerMarker.getPosition().y * this.battleWindowScale;
-        //this.baseNodePosX = this.targetBaseNodePosX = 320 - _centerMarker.getPosition().x * this.battleWindowScale;
-        //this.baseNodePosY = this.targetBaseNodePosY = 400 - _centerMarker.getPosition().y * this.battleWindowScale;
-
-
-if(this.gameStatus == "gaming"){
-    this.setScroll();
-}
-
-
-
-
-/*
-
-        //コネクションエラー時はバトル画面にリダイレクトする
-        if (this.storage.isConnectionError == true) {
-            this.storage.isConnectionError = false;
-            this.goToListLayer(1);
-            return;
+        if (this.gameStatus == "gaming") {
+            this.setScroll();
         }
-*/
-
-/*
-        //イベントを処理する(味方)
-        for (var eventDataKey in this.storage.eventData) {
-            if (this.storage.eventData.hasOwnProperty(eventDataKey)) {
-                var eventDataValue = this.storage.eventData[eventDataKey];
-                if (eventDataValue) {
-                    var eventDataObj = JSON.parse(eventDataValue);
-                    if (eventDataObj) {
-                        if (this.battleWindow.turnCnt >= 1 && this.usedTickNum != eventDataObj["tickNum"] && this.battleWindow.turnCnt ==
-                            eventDataObj["tickNum"]) {
-                            this.usedTickNum = eventDataObj["tickNum"];
-                            //this.addRipple(this.colorName, eventDataObj["col"], eventDataObj["row"]);
-                            this.battleWindow.addPoint2(this.colorName, eventDataObj["col"], eventDataObj["row"]);
-                            var _cardId = eventDataObj["id"];
-                            if (CONFIG.CARD[_cardId]) {
-                                var _cardData = CONFIG.CARD[_cardId];
-                                if (_cardData) {
-                                    var _genre = _cardData["genre"];
-                                    var _maxPopulation = _cardData["maxPopulation"];
-                                }
-                            }
-                            var _marker = this.battleWindow.getMarker2(eventDataObj["col"], eventDataObj["row"]);
-                            //cc.log(">>" + _marker.col + "/" + _marker.row);
-                            this.battleWindow.addHuman(_marker.col, _marker.row, "GREEN", _marker.markerId, 1);
-                            //建設中表示を消す
-                            //this.battleCardDeck.touchMovedSprite.setVisible(false);
-                            if (this.colorName == "GREEN") {
-                                this.battleWindow.addGreenMessage(CONFIG.CARD[eventDataObj["id"]]["useTxt"]);
-                            } else {
-                                this.battleWindow.addRedMessage(CONFIG.CARD[eventDataObj["id"]]["useTxt"]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        //イベントを処理する(敵)
-        for (var eventDataKey in this.storage.enemyEventData) {
-            if (this.storage.enemyEventData.hasOwnProperty(eventDataKey)) {
-                var eventDataValue = this.storage.enemyEventData[eventDataKey];
-                if (eventDataValue) {
-                    var eventDataObj = JSON.parse(eventDataValue);
-                    if (eventDataObj) {
-                        if (this.battleWindow.turnCnt >= 1 && this.usedEnemyTickNum != eventDataObj["tickNum"] && this.battleWindow.turnCnt ==
-                            eventDataObj["tickNum"]) {
-                            this.usedEnemyTickNum = eventDataObj["tickNum"];
-                            //this.addRipple(this.enemyColorName, eventDataObj["col"], eventDataObj["row"]);
-                            this.battleWindow.addPoint2(this.enemyColorName, eventDataObj["col"], eventDataObj["row"]);
-                            var _cardId = eventDataObj["id"];
-                            if (CONFIG.CARD[_cardId]) {
-                                var _cardData = CONFIG.CARD[_cardId];
-                                if (_cardData["genre"]) {
-                                    //cc.log(_cardData["genre"]);
-                                }
-                            }
-                            //城を建てる
-                            //this.battleWindow.addCastleIcon(eventDataObj["col"], eventDataObj["row"], 1);
-                            if (this.colorName == "GREEN") {
-                                this.battleWindow.addRedMessage(CONFIG.CARD[eventDataObj["id"]]["useTxt"]);
-                            } else {
-                                this.battleWindow.addGreenMessage(CONFIG.CARD[eventDataObj["id"]]["useTxt"]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-*/
-
-/*
-        for (var i = 0; i < this.battleEffects.length; i++) {
-            if (this.battleEffects[i].update() == false) {
-                this.removeChild(this.battleEffects[i]);
-                this.battleEffects.splice(i, 1);
-            }
-        }
-*/
         for (var i = 0; i < this.materials.length; i++) {
             if (this.materials[i].update() == false) {
-                //this.removeChild(this.battleEffects[i]);
-                //this.battleEffects.splice(i, 1);
             }
         }
         this.updateLabel();
-        //this.battleCardDeck.update();
-        //this.battleMessage.update();
         this.resultSprite.update();
-        //this.countScore();
         //モニターをupdateする
         this.battleWindow.update();
-        //マーカーをupdate表示する
-        for (var i = 0; i < this.ripples.length; i++) {
-            if (this.ripples[i].update() == false) {
-                this.removeChild(this.ripples[i]);
-                this.ripples.splice(i, 1);
-            }
-        }
         this.gameStartTimeCnt++;
         this.setPrepareStatus();
         this.setStartStatus();
-        this.updateCardPower();
+        //this.updateCardPower();
         this.setResultStatus();
     },
     addMaterial: function (mcode) {
@@ -291,34 +204,24 @@ if(this.gameStatus == "gaming"){
         this.header.setPosition(320, 1136 - 100);
         this.header.setAnchorPoint(0.5, 0);
         this.addChild(this.header, 999999);
-        this.occupiedRate = new cc.LabelTTF(this.greenScore, "Arial", 38);
+        this.occupiedRate = new cc.LabelTTF(this.greenScore, "Arial", 32);
         this.occupiedRate.setFontFillColor(new cc.Color(255, 255, 255, 255));
-        this.occupiedRate.setAnchorPoint(0, 0);
-        this.occupiedRate.setPosition(20, 30);
+        this.occupiedRate.setAnchorPoint(0.5, 0);
+        this.occupiedRate.setPosition(47, 38);
         this.header.addChild(this.occupiedRate, 999999);
         this.fuelRateLabel = new cc.LabelTTF("123", "Arial", 24);
         this.fuelRateLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         this.fuelRateLabel.setAnchorPoint(0, 0);
         this.fuelRateLabel.setPosition(130, 20);
         this.header.addChild(this.fuelRateLabel, 999999);
+
+        this.occupiedGauge = new Gauge(530, 20, 'GREEN');
+        this.occupiedGauge.setAnchorPoint(0, 0);
+        this.occupiedGauge.setPosition(100, 70);
+        this.header.addChild(this.occupiedGauge);
     },
     updateLabel: function () {
         this.fuelRateLabel.setString(this.battleWindow.maxGameTime - this.battleWindow.gameTime + "");
-    },
-    isUseCard: function () {
-        if (this.cardUsePower >= this.cardUseMaxPower) {
-            return true;
-        }
-        return false;
-    },
-    updateCardPower: function () {
-        if (this.gameStatus == "gaming") {
-            //カードのパワーを更新する
-            this.cardUsePower++;
-            if (this.cardUsePower >= this.cardUseMaxPower) {
-                this.cardUsePower = this.cardUseMaxPower;
-            }
-        }
     },
     setPrepareStatus: function () {
         if (this.gameStatus == "prepare") {
@@ -326,9 +229,7 @@ if(this.gameStatus == "gaming"){
         }
     },
     setStartStatus: function () {
-
-        if(this.gameStatus != "wait") return;
-
+        if (this.gameStatus != "wait") return;
         this.labelStartCnt001.setVisible(false);
         this.labelStartCnt002.setVisible(false);
         this.labelStartCnt003.setVisible(false);
@@ -336,16 +237,14 @@ if(this.gameStatus == "gaming"){
         //if (this.battleMessage.isReadTutorial == false) return;
         this.battleWindow.setLand();
         this.battleWindowScale += 0.07;
-        if (this.battleWindowScale >= 2.2) {
-            this.battleWindowScale = 2.2;
+        if (this.battleWindowScale >= this.maxBattleWindowScale) {
+            this.battleWindowScale = this.maxBattleWindowScale;
         }
         //常に中央を表示するようにする
         var _centerMarker = this.battleWindow.getMarker2(this.battleWindow.player.col, this.battleWindow.player.row);
         this.battleWindow.setScale(this.battleWindowScale);
-
         this.baseNodePosX = this.targetBaseNodePosX = 320 - _centerMarker.getPosition().x * this.battleWindowScale;
         this.baseNodePosY = this.targetBaseNodePosY = 400 - _centerMarker.getPosition().y * this.battleWindowScale;
-
         this.setScroll();
         if (1 * 10 < this.gameStartTimeCnt && this.gameStartTimeCnt < 10 * 2) {
             this.labelStartCnt001.setVisible(true);
@@ -376,28 +275,30 @@ if(this.gameStatus == "gaming"){
             if (0 <= this.endCnt && this.endCnt < 30 * 1) {
                 this.labelStartCnt005.setVisible(true);
             }
-
             //試合結果を表示する
             if (this.endCnt == 30 * 1) {
                 this.labelStartCnt005.setVisible(false);
                 this.resultSprite.setVisible(true);
                 if (this.greenScore > this.redScore) {
                     var _addCoin = 10;
+                    /*
                     this.msg = "勝利しました!!!!!\nSGK残高が" + this.storage.treasureAmount + "->" + Math.ceil(this.storage.treasureAmount +
                         _addCoin) + "に\n増加しました!";
                     this.msg = "惑星の43%の探索が完了。\n目標値レコードを更新しました。\n";
                     this.storage.treasureAmount += _addCoin;
                     this.storage.saveCurrentData();
+                    */
                 } else {
                     var _addCoin = 10;
+                    /*
                     this.msg = "敗北しました！\nSGK残高が" + this.storage.treasureAmount + "->" + Math.ceil(this.storage.treasureAmount -
                         _addCoin) + "に\n減少しました!";
                     this.msg = "惑星の43%の探索が完了。\n目標値レコードを更新しました。\n";
                     this.storage.treasureAmount -= _addCoin;
                     this.storage.saveCurrentData();
+                    */
                 }
-            
-                this.resultSprite.sendMessage(this.msg);
+                this.resultSprite.sendMessage();
             }
         }
     },

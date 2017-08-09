@@ -196,7 +196,7 @@ var Human = cc.Node.extend({
     setRouteType033: function () {
         this.maxDistance = 5;
         //if (this.targetMarker != null) return;
-        this.walkSpeed = 1.2;
+        this.walkSpeed = 1.8;
         //敵のenemyの存在するマーカーを全部取得する
         if (this.colorName == "GREEN") {
             this.enemyColorName = "RED";

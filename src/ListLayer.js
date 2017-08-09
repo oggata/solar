@@ -20,6 +20,66 @@ var ListLayer = cc.Layer.extend({
         this.back.setAnchorPoint(0, 0);
         this.back.setPosition(0,0);
         this.addChild(this.back);
+
+        //list-column
+for (var i = 0; i < 7; i++) {
+        this.listColumn = cc.Sprite.create("res/listcolumn.png");
+        this.listColumn.setAnchorPoint(0, 0);
+        this.listColumn.setPosition(20,800 - 110 * i);
+        this.back.addChild(this.listColumn);
+
+
+
+        var button = new cc.MenuItemImage("res/button_goto.png", "res/button_goto.png", function () {
+ this.goToFieldLayer("RED",false);
+        }, this);
+        button.setPosition(550, 60);
+
+        var menu001 = new cc.Menu(button);
+        menu001.setPosition(0, 0);
+        this.listColumn.addChild(menu001);
+
+
+}
+
+
+        this.buttonList = cc.Sprite.create("res/button_list.png");
+        //this.buttonList.setAnchorPoint(0, 0);
+        this.buttonList.setPosition(320,980);
+        this.back.addChild(this.buttonList);
+
+
+
+
+        var button1 = new cc.MenuItemImage("res/button_select.png", "res/button_select.png", function () {
+            this.goToFieldLayer("RED",false);
+        }, this);
+        button1.setAnchorPoint(0,0);
+        button1.setPosition(142 * 0, 0);
+
+
+        var button2 = new cc.MenuItemImage("res/button_select.png", "res/button_select.png", function () {
+            this.goToFieldLayer("RED",false);
+        }, this);
+        button2.setAnchorPoint(0,0);
+        button2.setPosition(142 * 1, 0);
+
+
+        var button3 = new cc.MenuItemImage("res/button_select.png", "res/button_select.png", function () {
+            this.goToFieldLayer("RED",false);
+        }, this);
+        button3.setAnchorPoint(0,0);
+        button3.setPosition(142 * 2, 0);
+
+        var menu001 = new cc.Menu(button1,button2,button3);
+        menu001.setPosition(0, 0);
+        this.buttonList.addChild(menu001);
+
+
+
+
+
+
 /*
         var battleButton = new cc.MenuItemImage("res/button_attack.png", "res/button_attack_on.png", function () {
             this.targetUsers = [];
@@ -53,6 +113,8 @@ var ListLayer = cc.Layer.extend({
         }, this);
         battleButton.setPosition(320, 260);
 */
+
+/*
         var computerBattleButton = new cc.MenuItemImage("res/button_attack_com.png", "res/button_attack_com.png", function () {
             this.targetUsers = [];
             for (var i = 0; i < this.storage.users.length; i++) {
@@ -64,16 +126,6 @@ var ListLayer = cc.Layer.extend({
             }
             this.targetUsers.sort(this.shuffle);
             this.targetUsers.sort(this.shuffle);
-            /*
-            if (this.cardSetCnt == 0) {
-                this.errorCnt = 1;
-                this.error.setVisible(true);
-                this.errorLabel.setString("少なくとも1枚はカードをセットしてください.");
-            } else  {
-                //this.storage.webSocketHelper.sendMsg(_data);
-                this.goToFieldLayer("GREEN",true);
-            }
-            */
             this.goToFieldLayer("GREEN",true);
         }, this);
         computerBattleButton.setPosition(320, 140);
@@ -81,7 +133,7 @@ var ListLayer = cc.Layer.extend({
         var menu001 = new cc.Menu(computerBattleButton);
         menu001.setPosition(0, 0);
         this.addChild(menu001);
-
+*/
         this.menus = [];
         this.replaceCard();
         this.targetCardPositionNum = null;

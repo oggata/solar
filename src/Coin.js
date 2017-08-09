@@ -2,13 +2,9 @@ var Material = cc.Node.extend({
     ctor: function (game, mCode,orderCnt) {
         this._super();
         this.game = game;
-
         this.amount = 1;
         this.materialCode = mCode;
-        this.orderCnt = orderCnt;
-
-        this.orderCnt = 0;
-        
+        this.orderCnt = orderCnt;        
         this.image = "res/sozai001.png";
         if(mCode == 1){
             this.image = "res/sozai001.png";
@@ -33,24 +29,23 @@ var Material = cc.Node.extend({
         this.amountLabel = new cc.LabelTTF(this.amount, "Arial", 25);
         this.amountLabel.setPosition(15,17);
         this.sprite.addChild(this.amountLabel);
-
-        //this.cnt = 0;
-
         this.spriteScale = 1;
-
-        this.scaleAdd = 0.2;
+        this.scaleAdd = 0.1;
     },
     init: function () {},
 
     update: function () {
         this.spriteScale += this.scaleAdd;
-        if(this.spriteScale >= 1.5){
-            this.scaleAdd = -0.2;
+        if(this.spriteScale >= 1.7){
+            this.scaleAdd = -0.1;
         }
         if(this.spriteScale <= 1){
             this.scaleAdd = 0;
+            return false;
         }
         this.sprite.setScale(this.spriteScale);
+
+        return true;
     },
 
     setAmount:function(){

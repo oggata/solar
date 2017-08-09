@@ -110,9 +110,11 @@ var PlanetLayer = cc.Layer.extend({
         //this.timeLabel.enableStroke(new cc.Color(0, 0, 0, 255), 2, false);
         this.inputNode.addChild(this.timeLabel);
         this.timeLabel.setPosition(320, 220);
+        
+
         this.playerNameLabel = new cc.LabelTTF(this.storage.playerName, "Arial", 18);
         this.playerNameLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
-        this.addChild(this.playerNameLabel);
+        //this.addChild(this.playerNameLabel);
         this.playerNameLabel.setPosition(320, 670);
         this.targetTime = 0;
         this.maxChargeTime = 60 * 3;

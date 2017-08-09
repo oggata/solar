@@ -20,8 +20,7 @@ var BattleWindow = cc.Node.extend({
         this.gameTimeCnt = 0;
         this.gameTime = 0;
         this.maxGameTime = 60;
-        this.occupiedRate = 0;
-        this.successOccupiedRate = 30;
+        this.materials= [];
         //配置可能なリストを作る
         this.positionalMarkers = [];
         for (var j = 0; j < this.markers.length; j++) {
@@ -100,6 +99,14 @@ var BattleWindow = cc.Node.extend({
                 this.debris_array.splice(i, 1);
             }
         }
+
+        for (var i = 0; i < this.materials.length; i++) {
+            if (this.materials[i].update() == false) {
+                this.field.removeChild(this.materials[i]);
+                this.materials.splice(i, 1);
+            }
+        }
+
         //定期的にマップを再描画する
         this.orderCnt++;
         if (this.orderCnt >= 10) {
@@ -138,7 +145,7 @@ var BattleWindow = cc.Node.extend({
             if (this.player.col == this.markers[m].col && this.player.row == this.markers[m].row) {
                 this.markers[m].spriteGreen.setVisible(true);
             }
-
+/*
             if (this.player.col + 1 == this.markers[m].col && this.player.row == this.markers[m].row) {
                 this.markers[m].spriteGreen.setVisible(true);
             }
@@ -154,6 +161,7 @@ var BattleWindow = cc.Node.extend({
             if (this.player.col == this.markers[m].col && this.player.row - 1 == this.markers[m].row) {
                 this.markers[m].spriteGreen.setVisible(true);
             }
+*/
         }
         //humanとcoinのcollision判定
         for (var h = 0; h < this.humans.length; h++) {
@@ -167,6 +175,7 @@ var BattleWindow = cc.Node.extend({
                         //ランダムで素材をaddする
                         var _rand = this.getRandNumberFromRange(1, 5);
                         this.game.addMaterial(_rand);
+                        this.addMaterial(_rand);
                     }
                 }
             }
@@ -189,14 +198,13 @@ var BattleWindow = cc.Node.extend({
             }
         }
         //占領率の測定
-        this.occupiedCnt = 0;
+        var _occupiedCnt = 0;
         for (var m = 0; m < this.markers.length; m++) {
             if (this.markers[m].spriteGreen.isVisible() == true) {
-                this.occupiedCnt++;
+                _occupiedCnt++;
             }
         }
-        this.occupiedRate = Math.floor(this.occupiedCnt / this.markers.length * 100);
-        this.game.occupiedRate.setString(this.occupiedRate + "%");
+        this.game.captureCnt = _occupiedCnt;
 
         //コインをupdateする
         for (var j = 0; j < this.coins.length; j++) {
@@ -214,6 +222,13 @@ var BattleWindow = cc.Node.extend({
             this.mode = "result";
         }
     },
+    addMaterial: function (mcode) {
+        var _material = new Material(this, 1, 0);
+        _material.setPosition(this.player.getPosition().x,this.player.getPosition().y + 50);
+        this.field.addChild(_material, 9999999999999);
+        this.materials.push(_material);
+    },
+
     addHuman: function (col, row, colorName, markerId, algorithmId) {
         //if (this.humans.length >= 20) return;
         var _rand = this.getRandNumberFromRange(1, 6);

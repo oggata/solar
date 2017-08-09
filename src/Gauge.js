@@ -9,18 +9,10 @@ var Gauge = cc.Node.extend({
         this.addChild(this.rectBase, 1);
 
         var colorCode = new cc.Color(255, 255, 255, 255);
-        if (color == "RED") {
-            colorCode = new cc.Color(255, 0, 0, 255);
-            this.rectBack = cc.LayerColor.create(new cc.Color(0, 255, 0, 255), this.width - 2, this.height - 2);
+            colorCode = new cc.Color(255, 255, 255, 255);
+            this.rectBack = cc.LayerColor.create(new cc.Color(128, 128, 128, 255), this.width - 2, this.height - 2);
             this.rectBack.setPosition(2, 2);
             this.addChild(this.rectBack, 2);
-        }
-        if (color == "GREEN") {
-            colorCode = new cc.Color(0, 255, 0, 255);
-            this.rectBack = cc.LayerColor.create(new cc.Color(255, 0, 0, 255), this.width - 2, this.height - 2);
-            this.rectBack.setPosition(2, 2);
-            this.addChild(this.rectBack, 2);
-        }
         this.rectBar = cc.LayerColor.create(colorCode, this.width - 2, this.height - 2);
         this.rectBar.setPosition(2, 2);
         this.addChild(this.rectBar, 3);
