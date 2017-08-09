@@ -27,7 +27,7 @@ var Human = cc.Node.extend({
         var marker = this.getMarker(col, row);
         this.setPosition(marker.getPosition().x, marker.getPosition().y);
         this.timeCnt = 0;
-        this.setScale(0.6, 0.6);
+//this.setScale(0.6, 0.6);
         this.tmpTargetDist = null;
         this.baseMarker = null;
         this.targetMarkers = [];
@@ -50,7 +50,7 @@ var Human = cc.Node.extend({
         //this.setRouteType000();
         this.aliveCnt = 0;
         this.walkSpeed = 2.5;
-        this.maxDistance = 20;
+        this.maxDistance = 5;
         this.isDraw = true;
     },
 
@@ -172,15 +172,13 @@ var Human = cc.Node.extend({
     },
     //プレイヤー用。ターゲットされたマーカーを追いかける
     setRouteType000: function () {
-        this.maxDistance = 20;
-        this.walkSpeed = 2.5;
+        this.maxDistance = 10;
+        this.walkSpeed = 2.5 * 3;
         this.isDraw = true;
         //自分が配置されたマーカーから、特定距離(5)のマーカーを全部取得する
         //this.targetDistance = this.getRandNumberFromRange(1, 5);
         for (var i = 0; i < this.distances.length; i++) {
-            if (this.distances[i].col == this.game.selectedMarkerCol - 1 && this.distances[i].row == this.game.selectedMarkerRow) {
-                //var _marker = this.getMarker(this.distances[i].col, this.distances[i].row);
-                //cc.log(this.distances[i]);
+            if (this.distances[i].col == this.game.selectedMarker.col && this.distances[i].row == this.game.selectedMarker.row) {
                 this.targetMarkers.push(this.distances[i]);
             }
         }
@@ -196,7 +194,7 @@ var Human = cc.Node.extend({
     setRouteType033: function () {
         this.maxDistance = 5;
         //if (this.targetMarker != null) return;
-        this.walkSpeed = 1.8;
+        this.walkSpeed = 1.8 * 3;
         //敵のenemyの存在するマーカーを全部取得する
         if (this.colorName == "GREEN") {
             this.enemyColorName = "RED";
@@ -258,7 +256,7 @@ var Human = cc.Node.extend({
     },
     //(ドローワーtype)自陣を塗っていく
     setRouteType001: function () {
-        this.walkSpeed = 2.5;
+        this.walkSpeed = 2.5 * 3;
         this.isDraw = true;
         //自分が配置されたマーカーから、特定距離(5)のマーカーを全部取得する
         this.targetDistance = this.getRandNumberFromRange(1, 4);
@@ -278,7 +276,7 @@ var Human = cc.Node.extend({
     },
     //(コイナーtype)コインを取得する
     setRouteType002: function () {
-        this.walkSpeed = 2.5;
+        this.walkSpeed = 2.5 * 3;
         this.isDraw = false;
         //coinの存在するマーカーを全部取得する
         for (var c = 0; c < this.game.coins.length; c++) {
@@ -306,7 +304,7 @@ var Human = cc.Node.extend({
     },
     //(アタッカーtype)敵に攻撃を仕掛ける
     setRouteType003: function () {
-        this.walkSpeed = 2;
+        this.walkSpeed = 2 * 3;
         this.isDraw = false;
         //敵のenemyの存在するマーカーを全部取得する
         if (this.colorName == "GREEN") {
@@ -473,7 +471,7 @@ var Human = cc.Node.extend({
         this.ra = cc.RepeatForever.create(cc.Animate.create(this.wa));
         this.sprite = cc.Sprite.create(this.image, cc.rect(0, 0, this.imgWidth, this.imgHeight));
         this.sprite.runAction(this.ra);
-        this.sprite.setAnchorPoint(0, 0);
+        this.sprite.setAnchorPoint(0.5, 0.5);
         this.sprite.setPosition(6, 15);
         this.addChild(this.sprite);
 /*

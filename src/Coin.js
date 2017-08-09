@@ -4,7 +4,7 @@ var Material = cc.Node.extend({
         this.game = game;
         this.amount = 1;
         this.materialCode = mCode;
-        this.orderCnt = orderCnt;        
+        this.orderCnt = orderCnt;    
         this.image = "res/sozai001.png";
         if(mCode == 1){
             this.image = "res/sozai001.png";
@@ -123,7 +123,7 @@ var Coin = cc.Node.extend({
         this.col = col;
         this.row = row;
         this.sprite = cc.Sprite.create("res/map-base-coin.png");
-        this.sprite.setAnchorPoint(0, 0);
+        this.sprite.setAnchorPoint(0.5, 0);
         this.addChild(this.sprite);
         this.image = "res/pipo-mapeffect009.png";
         this.imgWidth = 240;
@@ -152,9 +152,9 @@ var Coin = cc.Node.extend({
         this.ra = cc.RepeatForever.create(cc.Animate.create(this.wa));
         this.sprite = cc.Sprite.create(this.image, cc.rect(0, 0, this.imgWidth, this.imgHeight));
         this.sprite.runAction(this.ra);
-        this.sprite.setAnchorPoint(0, 0);
+        this.sprite.setAnchorPoint(0.5, 0.5);
         //this.sprite.setPosition(6,6);
-        this.sprite.setPosition(8,8);
+        //this.sprite.setPosition(8,8);
         this.sprite.setScale(0.3,0.3);
         this.addChild(this.sprite);
     },

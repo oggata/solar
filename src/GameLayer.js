@@ -46,9 +46,6 @@ var GameLayer = cc.Layer.extend({
         this.storage.isSteal = false;
         this.storage.eventData = new Object();
         this.storage.enemyEventData = new Object();
-        //カード使用回復
-        //this.cardUsePower = 100;
-        //this.cardUseMaxPower = 100;
         //カラーの分別
         this.colorName = colorName;
         if (this.colorName == "GREEN") {
@@ -65,10 +62,8 @@ var GameLayer = cc.Layer.extend({
         this.captureCnt = 0;
         this.maxCaptureCnt = 0;
         this.captureRate = 0;
-
         this.gameStatus = "wait";
         this.result = null;
-        //this.ripples = [];
         this.gameStartTimeCnt = 0;
         this.battleEffects = [];
         this.materials = [];
@@ -92,7 +87,7 @@ var GameLayer = cc.Layer.extend({
         this.addChild(this.battleWindow, 999);
         this.battleWindow.setPosition(0, 0);
         this.battleWindowScale = 0.1;
-        this.maxBattleWindowScale = 2.2;
+        this.maxBattleWindowScale = 1.0;
         this.battleWindow.setScale(this.battleWindowScale);
         this.setHeaderLabel();
         this.setStartLabel();
@@ -101,28 +96,21 @@ var GameLayer = cc.Layer.extend({
         this.resultSprite.setPosition(320, 500);
         this.resultSprite.setVisible(false);
         this.scheduleUpdate();
-        //this.testCnt = 0;
-        //this.usedTickNum = 0;
-        //this.usedEnemyTickNum = 0;
-        //this.tutorial001 = cc.Sprite.create("res/tutorial001.png");
-        //this.tutorial001.setPosition(320, 550);
-        //this.isComCnt = 0;
         this.firstTouchX = 0;
         this.firstTouchY = 0;
         //常に中央を表示するようにする
         var _centerMarker = this.battleWindow.getMarker2(this.battleWindow.player.col, this.battleWindow.player.row);
         this.baseNodePosX = this.targetBaseNodePosX = 320 - _centerMarker.getPosition().x * this.battleWindowScale;
         this.baseNodePosY = this.targetBaseNodePosY = 400 - _centerMarker.getPosition().y * this.battleWindowScale;
-        this.scrollSpeed = 2;
         return true;
     },
     setScroll: function () {
-        if (Math.abs(this.targetBaseNodePosX - this.baseNodePosX) >= 5) {
+        if (Math.abs(this.targetBaseNodePosX - this.baseNodePosX) >= 2.5 * 3) {
             //差分が5以上の時
             if (this.targetBaseNodePosX > this.baseNodePosX) {
-                this.baseNodePosX += 5;
+                this.baseNodePosX += 2.5 * 3;
             } else if (this.targetBaseNodePosX < this.baseNodePosX) {
-                this.baseNodePosX -= 5;
+                this.baseNodePosX -= 2.5 * 3;
             }
         } else {
             //差分が5以下の時
@@ -135,9 +123,9 @@ var GameLayer = cc.Layer.extend({
         if (Math.abs(this.targetBaseNodePosY - this.baseNodePosY) >= 5) {
             //差分が5以上の時
             if (this.targetBaseNodePosY > this.baseNodePosY) {
-                this.baseNodePosY += 5;
+                this.baseNodePosY += 2.5 * 3;
             } else if (this.targetBaseNodePosY < this.baseNodePosY) {
-                this.baseNodePosY -= 5;
+                this.baseNodePosY -= 2.5 * 3;
             }
         } else {
             //差分が5以下の時
@@ -347,9 +335,9 @@ var GameLayer = cc.Layer.extend({
             .getPosition().y);
         this.battleWindow.selectedMarker.setPosition(marker.getPosition().x, marker.getPosition().y);
         this.battleWindow.selectedMarker.col = marker.col;
-        this.battleWindow.selectedMarker.col = marker.row;
-        this.battleWindow.selectedMarkerCol = marker.col;
-        this.battleWindow.selectedMarkerRow = marker.row;
+        this.battleWindow.selectedMarker.row = marker.row;
+        //this.battleWindow.selectedMarkerCol = marker.col;
+        //this.battleWindow.selectedMarkerRow = marker.row;
     },
     touchMove: function (location) {
         var marker = this.battleWindow.getMarker(location.x - this.battleWindow.getPosition().x, location.y - this.battleWindow

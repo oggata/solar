@@ -15,11 +15,12 @@ var BattleWindow = cc.Node.extend({
         this.debris_array = [];
         this.humans = [];
         this.coins = [];
-        this.maxCoinCnt = 50;
+        this.maxCoinCnt = 30;
         this.orderCnt = 0;
         this.gameTimeCnt = 0;
         this.gameTime = 0;
-        this.maxGameTime = 60;
+        this.maxGameTime = 60*1;
+        this.enemyCnt = 7;
         this.materials= [];
         //配置可能なリストを作る
         this.positionalMarkers = [];
@@ -31,11 +32,20 @@ var BattleWindow = cc.Node.extend({
         }
         //コンピューターの時は配置可能リストの中から、ランダムで配置する
         //if (this.game.isCom == true) {
-            for (var i = 0; i < 10; i++) {
+            for (var i = 0; i < this.enemyCnt; i++) {
                 this.positionalMarkers.sort(this.shuffle);
                 this.addHuman(this.positionalMarkers[0].col, this.positionalMarkers[0].row, "RED", 1, 1);
             }
         //}
+        //marker
+        this.selectedMarker = cc.Sprite.create("res/map-base-red.png");
+        this.field.addChild(this.selectedMarker, 9999999999);
+        this.selectedMarker.setPosition(100, 300);
+        this.selectedMarker.col = 1;
+        this.selectedMarker.row = 1;
+        //this.selectedMarkerCol = 1;
+        //this.selectedMarkerRow = 1;
+
         //player
         this.human = new Human(this, 10, 10, "GREEN", 1, 1, 99);
         this.field.addChild(this.human);
@@ -43,14 +53,7 @@ var BattleWindow = cc.Node.extend({
         this.player = this.human;
         this.player.setVisible(false);
         this.human.moveType = 99;
-        //marker
-        this.selectedMarker = cc.Sprite.create("res/map-base-red.png");
-        this.field.addChild(this.selectedMarker, 9999999999);
-        this.selectedMarker.setPosition(100, 300);
-        this.selectedMarker.col = 1;
-        this.selectedMarker.row = 1;
-        this.selectedMarkerCol = 1;
-        this.selectedMarkerRow = 1;
+
         //ship
         this.ship = cc.Sprite.create("res/ship.png");
         this.field.addChild(this.ship,999999999999);
@@ -69,7 +72,7 @@ var BattleWindow = cc.Node.extend({
     },
     setLand:function(){
         this.shipPosY += this.shipLandDirection;
-        if(this.player.getPosition().y + 100>= this.shipPosY){
+        if(this.player.getPosition().y + 100 >= this.shipPosY){
             this.shipLandDirection = 0;
             this.shipLandingCnt+=1;
         }
@@ -77,8 +80,8 @@ var BattleWindow = cc.Node.extend({
             this.shipLandDirection = 30;
             this.player.setVisible(true);
         }
-        if(this.shipPosY >= 2000){
-            this.shipPosY = 2000;
+        if(this.shipPosY >= 10000){
+            this.shipPosY = 10000;
             this.shipLandingCnt = 0;
         }
         this.ship.setPosition(this.player.getPosition().x,this.shipPosY);
@@ -143,25 +146,10 @@ var BattleWindow = cc.Node.extend({
         //markerとplayerのcollision判定
         for (var m = 0; m < this.markers.length; m++) {
             if (this.player.col == this.markers[m].col && this.player.row == this.markers[m].row) {
+                
+                //cc.log("col:" + this.player.col + "row:" + this.player.row + "/select col:" + this.selectedMarker.col + "select row:" + this.selectedMarker.row);
                 this.markers[m].spriteGreen.setVisible(true);
             }
-/*
-            if (this.player.col + 1 == this.markers[m].col && this.player.row == this.markers[m].row) {
-                this.markers[m].spriteGreen.setVisible(true);
-            }
-
-            if (this.player.col - 1 == this.markers[m].col && this.player.row == this.markers[m].row) {
-                this.markers[m].spriteGreen.setVisible(true);
-            }
-
-            if (this.player.col == this.markers[m].col && this.player.row + 1 == this.markers[m].row) {
-                this.markers[m].spriteGreen.setVisible(true);
-            }
-
-            if (this.player.col == this.markers[m].col && this.player.row - 1 == this.markers[m].row) {
-                this.markers[m].spriteGreen.setVisible(true);
-            }
-*/
         }
         //humanとcoinのcollision判定
         for (var h = 0; h < this.humans.length; h++) {
@@ -247,35 +235,38 @@ var BattleWindow = cc.Node.extend({
         this.coins.push(this.coin);
     },
     initMap: function () {
+        var _chipW = 32 * 3;
+        var _chipH = 20 * 3;
+////スピードはMAPCHIPTYPEによって違う (1:普通 2:山岳 3:森 4:砂 5:海 6:その他)
         var _incrementNum = 0;
         for (var row = 0; row < 40; row++) {
             for (var col = 0; col < 40; col++) {
                 var _rand = CONFIG.MAP[_incrementNum];
                 if (_rand == 1) {
-                    this.chip = cc.Sprite.create("res/map-chip-001.png");
+                    this.chip = cc.Sprite.create("res/map-chip-3-001.png");
                 }
                 if (_rand == 2) {
-                    this.chip = cc.Sprite.create("res/map-chip-002.png");
+                    this.chip = cc.Sprite.create("res/map-chip-3-002.png");
                 }
                 if (_rand == 3) {
-                    this.chip = cc.Sprite.create("res/map-chip-001.png");
+                    this.chip = cc.Sprite.create("res/map-chip-3-003.png");
                 }
                 if (_rand == 4) {
-                    this.chip = cc.Sprite.create("res/map-chip-004.png");
+                    this.chip = cc.Sprite.create("res/map-chip-3-004.png");
                 }
                 if (_rand == 5) {
-                    this.chip = cc.Sprite.create("res/map-chip-005.png");
+                    this.chip = cc.Sprite.create("res/map-chip-3-005.png");
                 }
                 if (_rand == 6) {
-                    this.chip = cc.Sprite.create("res/map-chip-006.png");
+                    this.chip = cc.Sprite.create("res/map-chip-3-006.png");
                 }
                 if (_rand == 7) {
-                    this.chip = cc.Sprite.create("res/map-chip-007.png");
+                    this.chip = cc.Sprite.create("res/map-chip-3-001.png");
                 }
                 this.chip.col = col;
                 this.chip.row = row;
                 this.chips.push(this.chip);
-                this.chip.setAnchorPoint(0, 0);
+                this.chip.setAnchorPoint(0.5, 0.5);
                 //左端
                 //-320, 300
                 //右端
@@ -291,10 +282,16 @@ var BattleWindow = cc.Node.extend({
                 //x = -390
                 //314
                 //20
-                this.chip.setPosition((col + row) * -16 + 32 * col + 624, 10 * (col + row) - 20);
+                this.chip.setPosition(
+                    (col + row) * _chipW/2 * -1 + _chipW * col + 624, 
+                    _chipH/2 * (col + row) - _chipH
+                );
                 this.field.addChild(this.chip, 1 - (col + row));
                 this.marker = new Marker(this, col, row, _rand, null, this.game.colorName);
-                this.marker.setPosition((col + row) * -16 + 32 * col + 624, 10 * (col + row) - 20);
+                this.marker.setPosition(
+                    (col + row) * _chipW/2 * -1 + _chipW * col + 624, 
+                    _chipH/2 * (col + row) - _chipH
+                );
                 /*
                 var _rand2 = CONFIG.HIDDEN_MAP[_incrementNum];
                 if (_rand2 == 1) {

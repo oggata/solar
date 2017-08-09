@@ -32,6 +32,10 @@ var PlanetLayer = cc.Layer.extend({
         this.baseNode.addChild(this.planet);
         this.planetScale = 1;
 
+        this.planetInfo = cc.Sprite.create("res/planet_info.png");
+        this.planetInfo.setPosition(320,800);
+        this.inputNode.addChild(this.planetInfo);
+
         //メッセージの制御
         this.messageLabel = cc.LabelTTF.create("", "Arial", 22);
         this.messageLabel.setPosition(120, 1000);
