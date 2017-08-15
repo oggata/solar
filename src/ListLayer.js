@@ -14,9 +14,11 @@ var ListLayer = cc.Layer.extend({
         this.storage.startPositionData = [];
         this.storage.enemyStartPositionData = [];
 
+
+
         this.status = "gaming";
         this.layerType = "BATTLE";
-        this.back = cc.Sprite.create("res/back_battle3.png");
+        this.back = cc.Sprite.create("res/back_top.png");
         this.back.setAnchorPoint(0, 0);
         this.back.setPosition(0,0);
         this.addChild(this.back);
@@ -162,7 +164,7 @@ for (var i = 0; i < 7; i++) {
                 this.errorLabel.setString("通信エラーが起きました.");    
         }
 
-        this.initializeWalkAnimation();
+        //this.initializeWalkAnimation();
 
         return true;
     },
@@ -268,7 +270,7 @@ for (var i = 0; i < 7; i++) {
         this.sprite.runAction(this.ra);
         this.sprite.setPosition(320,1136/2 - 50);
         this.sprite.setScale(2.5,2.5);
-        this.sprite.setOpacity(255*0.3);
+        this.sprite.setOpacity(255*0.1);
         this.back.addChild(this.sprite);
     },
 

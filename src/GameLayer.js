@@ -83,6 +83,13 @@ var GameLayer = cc.Layer.extend({
                 event.getCurrentTarget().touchFinish(touches[0].getLocation());
             }
         }), this);
+
+
+        this.baseNode = cc.Sprite.create("res/back_top.png");
+        this.baseNode.setAnchorPoint(0,0);
+        this.baseNode.setPosition(0,0);
+        this.addChild(this.baseNode);
+
         this.battleWindow = new BattleWindow(this);
         this.addChild(this.battleWindow, 999);
         this.battleWindow.setPosition(0, 0);
@@ -94,7 +101,7 @@ var GameLayer = cc.Layer.extend({
         this.resultSprite = new BattleResult(this);
         this.addChild(this.resultSprite, 9999);
         this.resultSprite.setPosition(320, 500);
-        this.resultSprite.setVisible(false);
+this.resultSprite.setVisible(false);
         this.scheduleUpdate();
         this.firstTouchX = 0;
         this.firstTouchY = 0;
@@ -138,14 +145,26 @@ var GameLayer = cc.Layer.extend({
         this.battleWindow.setPosition(this.baseNodePosX, this.baseNodePosY);
     },
     update: function (dt) {
+
+
+if(this.gameStatus == "gaming"){
+    this.battleWindow.setShipHidden();
+}
+
         //画面表示
         this.maxCaptureCnt = this.battleWindow.positionalMarkers.length * this.destCaptureRate;
         this.captureRate = Math.floor(this.captureCnt / this.maxCaptureCnt * 100) / 100 ;
         if(this.captureRate >= 1){
             this.captureRate = 1;
         }
-        this.occupiedGauge.update(this.captureRate);
-        this.occupiedRate.setString(this.captureCnt);
+
+        //目標を上回ったらゲーム終了
+        if(this.captureRate >= 1){
+            this.battleWindow.mode = "result";
+        }
+
+        //this.occupiedGauge.update(this.captureRate);
+        this.occupiedRateLabel.setString(Math.floor(this.captureRate * 100) + "%");
 
         //常に中央を表示するようにする
         var _centerMarker = this.battleWindow.getMarker2(this.battleWindow.player.col, this.battleWindow.player.row);
@@ -166,8 +185,8 @@ var GameLayer = cc.Layer.extend({
         this.battleWindow.update();
         this.gameStartTimeCnt++;
         this.setPrepareStatus();
+
         this.setStartStatus();
-        //this.updateCardPower();
         this.setResultStatus();
     },
     addMaterial: function (mcode) {
@@ -184,32 +203,34 @@ var GameLayer = cc.Layer.extend({
             var _material = new Material(this, mcode, this.orderCnt);
             this.materials.push(_material);
             this.header.addChild(_material, 999999);
-            _material.setPosition(610 - 62 * (this.orderCnt - 1), 30);
+            _material.setPosition(610 - 62 * (this.orderCnt - 1), 110);
         }
     },
     setHeaderLabel: function () {
         this.header = cc.Sprite.create("res/header001.png");
-        this.header.setPosition(320, 1136 - 100);
+        this.header.setPosition(320, 1136 - 150);
         this.header.setAnchorPoint(0.5, 0);
         this.addChild(this.header, 999999);
-        this.occupiedRate = new cc.LabelTTF(this.greenScore, "Arial", 32);
-        this.occupiedRate.setFontFillColor(new cc.Color(255, 255, 255, 255));
-        this.occupiedRate.setAnchorPoint(0.5, 0);
-        this.occupiedRate.setPosition(47, 38);
-        this.header.addChild(this.occupiedRate, 999999);
-        this.fuelRateLabel = new cc.LabelTTF("123", "Arial", 24);
-        this.fuelRateLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
-        this.fuelRateLabel.setAnchorPoint(0, 0);
-        this.fuelRateLabel.setPosition(130, 20);
-        this.header.addChild(this.fuelRateLabel, 999999);
 
-        this.occupiedGauge = new Gauge(530, 20, 'GREEN');
-        this.occupiedGauge.setAnchorPoint(0, 0);
-        this.occupiedGauge.setPosition(100, 70);
-        this.header.addChild(this.occupiedGauge);
+        this.occupiedRateLabel = new cc.LabelTTF(this.greenScore, "Arial", 46);
+        this.occupiedRateLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+        this.occupiedRateLabel.setAnchorPoint(1, 0);
+        this.occupiedRateLabel.setPosition(240, 80);
+        this.header.addChild(this.occupiedRateLabel, 999999);
+        
+        this.timeLabel = new cc.LabelTTF("123", "Arial", 24);
+        this.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+        this.timeLabel.setAnchorPoint(0, 0);
+        this.timeLabel.setPosition(320, 110);
+        this.header.addChild(this.timeLabel, 999999);
+
+        //this.occupiedGauge = new Gauge(530, 20, 'GREEN');
+        //this.occupiedGauge.setAnchorPoint(0, 0);
+        //this.occupiedGauge.setPosition(100, 70);
+        //this.header.addChild(this.occupiedGauge);
     },
     updateLabel: function () {
-        this.fuelRateLabel.setString(this.battleWindow.maxGameTime - this.battleWindow.gameTime + "");
+        this.timeLabel.setString(this.battleWindow.maxGameTime - this.battleWindow.gameTime + "");
     },
     setPrepareStatus: function () {
         if (this.gameStatus == "prepare") {
@@ -259,6 +280,31 @@ var GameLayer = cc.Layer.extend({
             this.gameStatus = "end";
             this.result = this.battleWindow.result;
             this.endCnt++;
+
+
+
+            this.battleWindow.setLand();
+/*
+this.maxBattleWindowScale = 2;
+this.battleWindowScale += 0.07;
+if (this.battleWindowScale >= this.maxBattleWindowScale) {
+    this.battleWindowScale = this.maxBattleWindowScale;
+}
+*/
+
+
+this.battleWindowScale -= 0.0025;
+if (this.battleWindowScale <= 0.1) {
+    this.battleWindowScale = 0.02;
+}
+
+//常に中央を表示するようにする
+var _centerMarker = this.battleWindow.getMarker2(this.battleWindow.player.col, this.battleWindow.player.row);
+this.battleWindow.setScale(this.battleWindowScale);
+this.baseNodePosX = this.targetBaseNodePosX = 320 - _centerMarker.getPosition().x * this.battleWindowScale;
+this.baseNodePosY = this.targetBaseNodePosY = 400 - _centerMarker.getPosition().y * this.battleWindowScale;
+this.setScroll();
+
             //そこまで!のラベルを表示する
             if (0 <= this.endCnt && this.endCnt < 30 * 1) {
                 this.labelStartCnt005.setVisible(true);
@@ -290,12 +336,14 @@ var GameLayer = cc.Layer.extend({
             }
         }
     },
+    /*
     addBattleEffect: function (colorName, cardId) {
         this.battleEffect = new BattleEffect(this, colorName, cardId);
         this.addChild(this.battleEffect, 99999999);
         this.battleEffect.setPosition(0, 240);
         this.battleEffects.push(this.battleEffect);
     },
+    */
     setStartLabel: function () {
         this.labelStartCnt001 = cc.Sprite.create("res/label_starttime001.png");
         this.labelStartCnt001.setPosition(320, 500);

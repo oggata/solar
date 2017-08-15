@@ -27,7 +27,7 @@ var Human = cc.Node.extend({
         var marker = this.getMarker(col, row);
         this.setPosition(marker.getPosition().x, marker.getPosition().y);
         this.timeCnt = 0;
-//this.setScale(0.6, 0.6);
+this.setScale(1.6, 1.6);
         this.tmpTargetDist = null;
         this.baseMarker = null;
         this.targetMarkers = [];
@@ -61,6 +61,8 @@ var Human = cc.Node.extend({
             }
             return false;
         }
+
+if(this.hp > 0){
         this.timeCnt++;
         if (this.timeCnt >= 30 * 1) {
             this.timeCnt = 0;
@@ -90,6 +92,7 @@ var Human = cc.Node.extend({
                 this.setRouteType033();
             }
         }
+}
         return true;
     },
     setDistance: function (col, row) {
@@ -172,7 +175,7 @@ var Human = cc.Node.extend({
     },
     //プレイヤー用。ターゲットされたマーカーを追いかける
     setRouteType000: function () {
-        this.maxDistance = 10;
+        this.maxDistance = 20;
         this.walkSpeed = 2.5 * 3;
         this.isDraw = true;
         //自分が配置されたマーカーから、特定距離(5)のマーカーを全部取得する
@@ -368,16 +371,14 @@ var Human = cc.Node.extend({
         }
         for (var j = 0; j < this.game.markers.length; j++) {
             if (this.game.markers[j].col == col && this.game.markers[j].row == row && this.game.markers[j].colorId == "WHITE") {
-                if (this.game.markers[j].baseMapType == 1 || this.game.markers[j].baseMapType == 3 || this.game.markers[j].baseMapType ==
-                    4) {
+                if (this.game.markers[j].baseMapType == 1 ) {
                     return this.game.markers[j];
                 }
             }
         }
         for (var j = 0; j < this.game.markers.length; j++) {
             if (this.game.markers[j].col == col && this.game.markers[j].row == row) {
-                if (this.game.markers[j].baseMapType == 1 || this.game.markers[j].baseMapType == 3 || this.game.markers[j].baseMapType ==
-                    4) {
+                if (this.game.markers[j].baseMapType == 1 ) {
                     return this.game.markers[j];
                 }
             }

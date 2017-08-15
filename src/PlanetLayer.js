@@ -13,18 +13,23 @@ var PlanetLayer = cc.Layer.extend({
         this.storage = storage;
         this.storage.isSteal = false;
         this.status = "gaming";
-
+/*
         this.baseNode = cc.LayerColor.create(new cc.Color(0, 0, 0, 255), 640, 1136);
         this.baseNode.setPosition(0, 0);
+        this.addChild(this.baseNode);
+*/
+        this.baseNode = cc.Sprite.create("res/back_top.png");
+        this.baseNode.setAnchorPoint(0,0);
+        this.baseNode.setPosition(0,0);
         this.addChild(this.baseNode);
 
         this.inputNode = cc.Node.create();
         this.inputNode.setPosition(0, -150);
         this.addChild(this.inputNode);
 
-        this.pngCristal = cc.Sprite.create("res/cristal.png");
-        this.pngCristal.setPosition(280,350);
-        this.inputNode.addChild(this.pngCristal);
+        //this.pngCristal = cc.Sprite.create("res/cristal.png");
+        //this.pngCristal.setPosition(280,350);
+        //this.inputNode.addChild(this.pngCristal);
 
         //惑星を表示する
         this.planet = cc.Sprite.create("res/planet.png");
@@ -33,15 +38,15 @@ var PlanetLayer = cc.Layer.extend({
         this.planetScale = 1;
 
         this.planetInfo = cc.Sprite.create("res/planet_info.png");
-        this.planetInfo.setPosition(320,800);
+        this.planetInfo.setPosition(320,700);
         this.inputNode.addChild(this.planetInfo);
 
         //メッセージの制御
         this.messageLabel = cc.LabelTTF.create("", "Arial", 22);
-        this.messageLabel.setPosition(120, 1000);
+        this.messageLabel.setPosition(70, 350);
         this.messageLabel.setAnchorPoint(0, 1);
         this.messageLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.baseNode.addChild(this.messageLabel);
+        this.planetInfo.addChild(this.messageLabel);
         this.messageLabel.setAnchorPoint(0, 1);
         this.message = "名称: AOXP-12345！\n所有者: なし\n成功目標: 25%以上の探索\n敵対反応: あり\n採掘できる鉱物: 銅、ニッケル、鉄など";
         this.messageTime = 0;
@@ -49,14 +54,16 @@ var PlanetLayer = cc.Layer.extend({
 
         this.launchCnt = 0;
 
-        var backButton = new cc.MenuItemImage("res/button_home.png", "res/button_home_on.png", function () {
+        var backButton = new cc.MenuItemImage("res/button_home.png", "res/button_home.png", function () {
             this.goToListLayer();
         }, this);
-        backButton.setPosition(120, 1160);
+        backButton.setPosition(150, 1240);
 
-        var cardButton = new cc.MenuItemImage("res/button_get_card.png", "res/button_get_card_on.png", function () {
+        var launchButton = new cc.MenuItemImage("res/button_get_card.png", "res/button_get_card_on.png", function () {
 
             this.launchCnt = 1;
+
+            this.sprite.setOpacity(255*4);
             /*
             if (this.storage.totalCoinAmount <= 0) {
                 this.errorLabel.setString("クリスタルが不足しています.");
@@ -71,7 +78,8 @@ var PlanetLayer = cc.Layer.extend({
             }
             */
         }, this);
-        cardButton.setPosition(320, 400);
+        launchButton.setPosition(320, 340);
+
         var coinButton = new cc.MenuItemImage("res/button_get_coin.png", "res/button_get_coin_on.png", function () {
             if (this.pastSecond >= 1) {
                 this.errorLabel.setString("" + this.pastSecond + "秒で1クリスタルに変換できます.");
@@ -82,7 +90,7 @@ var PlanetLayer = cc.Layer.extend({
                 this.storage.addCoin(1);
             }
         }, this);
-        coinButton.setPosition(320, 300);
+        coinButton.setPosition(520, 450);
 
         var battleBit = new cc.MenuItemImage("res/button_bit.png", "res/button_bit.png", function () {
             this.goToCreditLayer();
@@ -100,21 +108,20 @@ var PlanetLayer = cc.Layer.extend({
             cc.sys.localStorage.clear();
         }, this);
         debugButton2.setPosition(100, 50);
-        var menu001 = new cc.Menu(cardButton, coinButton, debugButton, debugButton2,backButton);
+        var menu001 = new cc.Menu(launchButton, coinButton, debugButton, debugButton2,backButton);
         menu001.setPosition(0, 0);
         this.inputNode.addChild(menu001);
-        this.coinAmountLabel = new cc.LabelTTF("x " + this.storage.totalCoinAmount, "Arial", 28);
+        this.coinAmountLabel = new cc.LabelTTF("x " + this.storage.totalCoinAmount, "Arial", 24);
         this.coinAmountLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         //this.coinAmountLabel.enableStroke(new cc.Color(0, 0, 0, 255), 2, false);
         this.inputNode.addChild(this.coinAmountLabel);
-        this.coinAmountLabel.setAnchorPoint(0, 0.5);
-        this.coinAmountLabel.setPosition(320, 350);
+        this.coinAmountLabel.setAnchorPoint(0.5, 0.5);
+        this.coinAmountLabel.setPosition(320, 410);
         this.timeLabel = new cc.LabelTTF("00:00:00", "Arial", 20);
-        this.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+        this.timeLabel.setFontFillColor(new cc.Color(0, 0, 0, 255));
         //this.timeLabel.enableStroke(new cc.Color(0, 0, 0, 255), 2, false);
-        this.inputNode.addChild(this.timeLabel);
-        this.timeLabel.setPosition(320, 220);
-        
+        //this.inputNode.addChild(this.timeLabel);
+        this.timeLabel.setPosition(320, 450);
 
         this.playerNameLabel = new cc.LabelTTF(this.storage.playerName, "Arial", 18);
         this.playerNameLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
@@ -122,9 +129,10 @@ var PlanetLayer = cc.Layer.extend({
         this.playerNameLabel.setPosition(320, 670);
         this.targetTime = 0;
         this.maxChargeTime = 60 * 3;
+
         this.timeGauge = new TimeGauge(this);
-        this.timeGauge.setPosition(320, 255);
-        this.timeGauge.setScale(0.6);
+        this.timeGauge.setPosition(320, 450);
+        this.timeGauge.setScale(0.55);
         this.inputNode.addChild(this.timeGauge);
 
         this.errorCnt = 0;
@@ -183,7 +191,7 @@ var PlanetLayer = cc.Layer.extend({
         }
         this.header.userCntLabel.setString("x " + this.storage.users.length);
         this.header.treasureCntLabel.setString("x " + this.storage.treasureAmount);
-        this.coinAmountLabel.setString("x " + this.storage.totalCoinAmount);
+        this.coinAmountLabel.setString("FUEL : 1 / " + this.storage.totalCoinAmount);
 
         this.pastSecond = this.getPastSecond2();
         if (this.pastSecond <= 0) {
@@ -219,7 +227,7 @@ var PlanetLayer = cc.Layer.extend({
         this.sprite.runAction(this.ra);
         this.sprite.setPosition(320,1136/2 - 50);
         this.sprite.setScale(2.5,2.5);
-        this.sprite.setOpacity(255*0.3);
+        this.sprite.setOpacity(255*0);
         this.baseNode.addChild(this.sprite);
     },
 

@@ -2,7 +2,7 @@
     "project_type": "javascript",
 
     "debugMode" : 1,
-    "showFPS" : true,
+    "showFPS" : false,
     "frameRate" : 30,
     "noCache" : false,
     "id" : "gameCanvas",
@@ -28,10 +28,11 @@
         "src/TimeGauge.js",
         "src/Marker.js",
         "src/BattleWindow.js",
-        "src/BattleMessage.js",
         "src/BattleResult.js",
         "src/Human.js",
         "src/Coin.js",
-        "src/Gauge.js"
+        "src/Gauge.js",
+        "src/Material.js",
+        "src/Deburis.js"
     ]
 }

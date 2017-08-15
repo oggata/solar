@@ -5,13 +5,18 @@ var TopLayer = cc.Layer.extend({
         //////////////////////////////
         // 1. super init first
         this._super();
-
+/*
         this.baseNode = cc.LayerColor.create(new cc.Color(0, 0, 0, 255), 640, 1136);
         this.baseNode.setPosition(0, 0);
         this.addChild(this.baseNode);
+*/
+        this.baseNode = cc.Sprite.create("res/back_top.png");
+        this.baseNode.setAnchorPoint(0,0);
+        this.baseNode.setPosition(0,0);
+        this.addChild(this.baseNode);
 
         this.labelTitle = cc.Sprite.create("res/label_title.png");
-        this.labelTitle.setPosition(320,500);
+        this.labelTitle.setPosition(320,600);
         this.addChild(this.labelTitle);
 
         this.addAlpha = 0.05;
@@ -51,7 +56,7 @@ this.storage.saveCreatureDataToStorage(CONFIG.CARD[1]);
 
         playBGM(this.storage);
 
-        var startButton = new cc.MenuItemImage("res/button_start.png", "res/button_start_on.png", function () {
+        var startButton = new cc.MenuItemImage("res/button_start.png", "res/button_start.png", function () {
             //playSE_Button(this.game.storage);
             //if(this.tutorial.isVisible() == false){
             this.goToStageLayer();
@@ -62,7 +67,7 @@ this.storage.saveCreatureDataToStorage(CONFIG.CARD[1]);
         menu001.setPosition(0, 0);
         this.addChild(menu001,999);
         this.scheduleUpdate();
-        this.initializeWalkAnimation();
+        //this.initializeWalkAnimation();
         return true;
     },
     getRandNumberFromRange: function (min, max) {
