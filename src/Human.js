@@ -2,7 +2,6 @@ var Human = cc.Node.extend({
     ctor: function (game, col, row, colorName, markerId, algorithmId, moveType) {
         this._super();
         this.game = game;
-
         this.hp = 100;
         this.maxHp = 100;
         this.colorName = colorName;
@@ -10,11 +9,19 @@ var Human = cc.Node.extend({
         this.algorithmId = algorithmId;
         if (colorName == "RED") {
             this.image = "res/human-002-red.png";
+            this.imgWidth = 341 / 7;
+            this.imgHeight = 192 / 4;
+            this.widthCnt = 7;
+            //this.setScale(0.9, 0.9);
+            this.span = 0.05;
         } else {
             this.image = "res/human-002.png";
+            this.imgWidth = 341 / 7;
+            this.imgHeight = 192 / 4;
+            this.widthCnt = 7;
+            //this.setScale(0.85, 0.85);
+            this.span = 0.05;
         }
-        this.imgWidth = 341 / 7;
-        this.imgHeight = 192 / 4;
         //init
         this.direction = "front";
         this.walkingDirection = "up";
@@ -27,7 +34,7 @@ var Human = cc.Node.extend({
         var marker = this.getMarker(col, row);
         this.setPosition(marker.getPosition().x, marker.getPosition().y);
         this.timeCnt = 0;
-this.setScale(1.6, 1.6);
+        //this.setScale(0.6, 0.6);
         this.tmpTargetDist = null;
         this.baseMarker = null;
         this.targetMarkers = [];
@@ -53,7 +60,6 @@ this.setScale(1.6, 1.6);
         this.maxDistance = 5;
         this.isDraw = true;
     },
-
     update: function () {
         if (this.hp <= 0) {
             for (var i = 0; i <= 3; i++) {
@@ -61,38 +67,37 @@ this.setScale(1.6, 1.6);
             }
             return false;
         }
-
-if(this.hp > 0){
-        this.timeCnt++;
-        if (this.timeCnt >= 30 * 1) {
-            this.timeCnt = 0;
-        }
-        if (this.reverseArr.length >= 1) {
-            if (this.reverseArr[0]) {
-                this.targetMarker = this.getMarker(this.reverseArr[0].col, this.reverseArr[0].row);
-                if (this.targetMarker) {
-                    this.moveToTarget(this.targetMarker, this.walkSpeed, this.walkSpeed);
+        if (this.hp > 0) {
+            this.timeCnt++;
+            if (this.timeCnt >= 30 * 1) {
+                this.timeCnt = 0;
+            }
+            if (this.reverseArr.length >= 1) {
+                if (this.reverseArr[0]) {
+                    this.targetMarker = this.getMarker(this.reverseArr[0].col, this.reverseArr[0].row);
+                    if (this.targetMarker) {
+                        this.moveToTarget(this.targetMarker, this.walkSpeed, this.walkSpeed);
+                    }
+                }
+            } else {
+                this.baseMarker = null;
+                this.targetMarkers = [];
+                this.targetMarker = null;
+                this.route = [];
+                this.reverseArr = [];
+                this.distances = [];
+                this.setDistance(this.col, this.row);
+                if (this.moveType == 99) {
+                    this.setRouteType000();
+                } else if (this.moveType == 1) {
+                    this.setRouteType033();
+                } else if (this.moveType == 2) {
+                    this.setRouteType033();
+                } else {
+                    this.setRouteType033();
                 }
             }
-        } else {
-            this.baseMarker = null;
-            this.targetMarkers = [];
-            this.targetMarker = null;
-            this.route = [];
-            this.reverseArr = [];
-            this.distances = [];
-            this.setDistance(this.col, this.row);
-            if (this.moveType == 99) {
-                this.setRouteType000();
-            } else if (this.moveType == 1) {
-                this.setRouteType033();
-            } else if (this.moveType == 2) {
-                this.setRouteType033();
-            } else {
-                this.setRouteType033();
-            }
         }
-}
         return true;
     },
     setDistance: function (col, row) {
@@ -176,7 +181,7 @@ if(this.hp > 0){
     //プレイヤー用。ターゲットされたマーカーを追いかける
     setRouteType000: function () {
         this.maxDistance = 20;
-        this.walkSpeed = 2.5 * 3;
+        this.walkSpeed = 2.1 * 2;
         this.isDraw = true;
         //自分が配置されたマーカーから、特定距離(5)のマーカーを全部取得する
         //this.targetDistance = this.getRandNumberFromRange(1, 5);
@@ -197,14 +202,13 @@ if(this.hp > 0){
     setRouteType033: function () {
         this.maxDistance = 5;
         //if (this.targetMarker != null) return;
-        this.walkSpeed = 1.8 * 3;
+        this.walkSpeed = 1.8 * 2;
         //敵のenemyの存在するマーカーを全部取得する
         if (this.colorName == "GREEN") {
             this.enemyColorName = "RED";
         } else {
             this.enemyColorName = "GREEN";
         }
-
         this.hasPlayer = false;
         for (var c = 0; c < this.game.humans.length; c++) {
             for (var i = 0; i < this.distances.length; i++) {
@@ -229,13 +233,9 @@ if(this.hp > 0){
         } else {
             this.targetMarker = null;
         }
-
         if (this.hasPlayer == true && this.targetDistance <= 5) {
             this.setRoute();
         } else {
-
-
-
             //this.walkSpeed = 2.5;
             this.targetMarkers = [];
             //自分が配置されたマーカーから、特定距離(5)のマーカーを全部取得する
@@ -371,14 +371,14 @@ if(this.hp > 0){
         }
         for (var j = 0; j < this.game.markers.length; j++) {
             if (this.game.markers[j].col == col && this.game.markers[j].row == row && this.game.markers[j].colorId == "WHITE") {
-                if (this.game.markers[j].baseMapType == 1 ) {
+                if (this.game.markers[j].baseMapType == 1) {
                     return this.game.markers[j];
                 }
             }
         }
         for (var j = 0; j < this.game.markers.length; j++) {
             if (this.game.markers[j].col == col && this.game.markers[j].row == row) {
-                if (this.game.markers[j].baseMapType == 1 ) {
+                if (this.game.markers[j].baseMapType == 1) {
                     return this.game.markers[j];
                 }
             }
@@ -464,30 +464,29 @@ if(this.hp > 0){
     },
     initializeWalkAnimation: function () {
         var frameSeq = [];
-        for (var i = 0; i < 7; i++) {
+        for (var i = 0; i < this.widthCnt; i++) {
             var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 0, this.imgWidth, this.imgHeight));
             frameSeq.push(frame);
         }
-        this.wa = cc.Animation.create(frameSeq, 0.2);
+        this.wa = cc.Animation.create(frameSeq, this.span);
         this.ra = cc.RepeatForever.create(cc.Animate.create(this.wa));
         this.sprite = cc.Sprite.create(this.image, cc.rect(0, 0, this.imgWidth, this.imgHeight));
         this.sprite.runAction(this.ra);
         this.sprite.setAnchorPoint(0.5, 0.5);
-        this.sprite.setPosition(6, 15);
+        this.sprite.setPosition(this.imgWidth / 4, this.imgHeight / 2);
         this.addChild(this.sprite);
-/*
+        /*
 
-if(this.colorName == "GREEN"){
+        if(this.colorName == "GREEN"){
 
-        this.ship = cc.Sprite.create("res/ship.png");
-        this.ship.setPosition(32,800);
-        this.sprite.addChild(this.ship);
-        this.sprite.setVisible(false);
-}
+                this.ship = cc.Sprite.create("res/ship.png");
+                this.ship.setPosition(32,800);
+                this.sprite.addChild(this.ship);
+                this.sprite.setVisible(false);
+        }
 
 
-*/
-
+        */
     },
     moveToTarget: function (object, speed, targetDist) {
         var diffX = Math.floor(object.getPosition().x - this.getPosition().x);
@@ -590,12 +589,12 @@ if(this.colorName == "GREEN"){
             this.direction = "front";
             this.sprite.stopAllActions();
             var frameSeq = [];
-            for (var i = 0; i < 7; i++) {
+            for (var i = 0; i < this.widthCnt; i++) {
                 var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 0, this.imgWidth, this
                     .imgHeight));
                 frameSeq.push(frame);
             }
-            this.wa = cc.Animation.create(frameSeq, 0.05);
+            this.wa = cc.Animation.create(frameSeq, this.span);
             this.ra = cc.RepeatForever.create(cc.Animate.create(this.wa));
             this.sprite.runAction(this.ra);
         }
@@ -605,12 +604,12 @@ if(this.colorName == "GREEN"){
             this.direction = "left";
             this.sprite.stopAllActions();
             var frameSeq = [];
-            for (var i = 0; i < 7; i++) {
+            for (var i = 0; i < this.widthCnt; i++) {
                 var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 1, this.imgWidth, this
                     .imgHeight));
                 frameSeq.push(frame);
             }
-            this.wa = cc.Animation.create(frameSeq, 0.05);
+            this.wa = cc.Animation.create(frameSeq, this.span);
             this.ra = cc.RepeatForever.create(cc.Animate.create(this.wa));
             this.sprite.runAction(this.ra);
         }
@@ -620,12 +619,12 @@ if(this.colorName == "GREEN"){
             this.direction = "right";
             this.sprite.stopAllActions();
             var frameSeq = [];
-            for (var i = 0; i < 7; i++) {
+            for (var i = 0; i < this.widthCnt; i++) {
                 var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 2, this.imgWidth, this
                     .imgHeight));
                 frameSeq.push(frame);
             }
-            this.wa = cc.Animation.create(frameSeq, 0.05);
+            this.wa = cc.Animation.create(frameSeq, this.span);
             this.ra = cc.RepeatForever.create(cc.Animate.create(this.wa));
             this.sprite.runAction(this.ra);
         }
@@ -635,12 +634,12 @@ if(this.colorName == "GREEN"){
             this.direction = "back";
             this.sprite.stopAllActions();
             var frameSeq = [];
-            for (var i = 0; i < 7; i++) {
+            for (var i = 0; i < this.widthCnt; i++) {
                 var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 3, this.imgWidth, this
                     .imgHeight));
                 frameSeq.push(frame);
             }
-            this.wa = cc.Animation.create(frameSeq, 0.05);
+            this.wa = cc.Animation.create(frameSeq, this.span);
             this.ra = cc.RepeatForever.create(cc.Animate.create(this.wa));
             this.sprite.runAction(this.ra);
         }

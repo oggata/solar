@@ -5,20 +5,18 @@ var TopLayer = cc.Layer.extend({
         //////////////////////////////
         // 1. super init first
         this._super();
-/*
-        this.baseNode = cc.LayerColor.create(new cc.Color(0, 0, 0, 255), 640, 1136);
+        /*
+                this.baseNode = cc.LayerColor.create(new cc.Color(0, 0, 0, 255), 640, 1136);
+                this.baseNode.setPosition(0, 0);
+                this.addChild(this.baseNode);
+        */
+        this.baseNode = cc.Sprite.create("res/back_top.png");
+        this.baseNode.setAnchorPoint(0, 0);
         this.baseNode.setPosition(0, 0);
         this.addChild(this.baseNode);
-*/
-        this.baseNode = cc.Sprite.create("res/back_top.png");
-        this.baseNode.setAnchorPoint(0,0);
-        this.baseNode.setPosition(0,0);
-        this.addChild(this.baseNode);
-
         this.labelTitle = cc.Sprite.create("res/label_title.png");
-        this.labelTitle.setPosition(320,600);
+        this.labelTitle.setPosition(320, 600);
         this.addChild(this.labelTitle);
-
         this.addAlpha = 0.05;
         this.storage = new Storage();
         try {
@@ -49,13 +47,9 @@ var TopLayer = cc.Layer.extend({
             cc.log("例外..");
             cc.sys.localStorage.clear();
         }
-
-
-this.storage.saveCreatureDataToStorage(CONFIG.CARD[1]);
-this.storage.saveCreatureDataToStorage(CONFIG.CARD[1]);
-
+        this.storage.saveCreatureDataToStorage(CONFIG.CARD[1]);
+        this.storage.saveCreatureDataToStorage(CONFIG.CARD[1]);
         playBGM(this.storage);
-
         var startButton = new cc.MenuItemImage("res/button_start.png", "res/button_start.png", function () {
             //playSE_Button(this.game.storage);
             //if(this.tutorial.isVisible() == false){
@@ -65,7 +59,7 @@ this.storage.saveCreatureDataToStorage(CONFIG.CARD[1]);
         startButton.setPosition(320, 150);
         var menu001 = new cc.Menu(startButton);
         menu001.setPosition(0, 0);
-        this.addChild(menu001,999);
+        this.addChild(menu001, 999);
         this.scheduleUpdate();
         //this.initializeWalkAnimation();
         return true;
@@ -74,8 +68,7 @@ this.storage.saveCreatureDataToStorage(CONFIG.CARD[1]);
         var rand = min + Math.floor(Math.random() * (max - min));
         return rand;
     },
-    update: function (dt) {
-    },
+    update: function (dt) {},
     initializeWalkAnimation: function () {
         this.image = "res/starburst.png";
         this.itemWidth = 640;
@@ -84,7 +77,6 @@ this.storage.saveCreatureDataToStorage(CONFIG.CARD[1]);
         this.heightCount = 5;
         this.effectInterval = 0.1;
         this.effectTime = 0;
-
         var frameSeq = [];
         for (var i = 0; i < this.heightCount; i++) {
             for (var j = 0; j < this.widthCount; j++) {
@@ -98,9 +90,9 @@ this.storage.saveCreatureDataToStorage(CONFIG.CARD[1]);
         this.ra = cc.RepeatForever.create(cc.Animate.create(this.wa));
         this.sprite = cc.Sprite.create(this.image, cc.rect(0, 0, this.itemWidth, this.itemHeight));
         this.sprite.runAction(this.ra);
-        this.sprite.setPosition(320,1136/2 - 50);
-        this.sprite.setScale(2.5,2.5);
-        this.sprite.setOpacity(255*0.3);
+        this.sprite.setPosition(320, 1136 / 2 - 50);
+        this.sprite.setScale(2.5, 2.5);
+        this.sprite.setOpacity(255 * 0.3);
         this.addChild(this.sprite);
     },
     //シーンの切り替え----->
@@ -113,7 +105,6 @@ this.storage.saveCreatureDataToStorage(CONFIG.CARD[1]);
         //scene.addChild(FieldLayer2.create(this.storage, "GREEN", true));
         cc.director.runScene(cc.TransitionFadeTR.create(1.5, scene));
     },
-
     showInfo: function (text) {
         console.log(text);
         if (this.infoLabel) {

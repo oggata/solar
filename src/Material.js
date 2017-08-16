@@ -1,11 +1,11 @@
 var Material = cc.Node.extend({
-    ctor: function (game, mCode,orderCnt) {
+    ctor: function (game, mCode,orderCnt,isVisibleLabel) {
         this._super();
         this.game = game;
         this.amount = 1;
         this.materialCode = mCode;
         this.orderCnt = orderCnt;    
-        this.image = "res/sozai001.png";
+        //this.image = "res/sozai001.png";
         if(mCode == 1){
             this.image = "res/sozai001.png";
         }
@@ -26,10 +26,14 @@ var Material = cc.Node.extend({
         }
         this.sprite = cc.Sprite.create(this.image);
         this.addChild(this.sprite);
-        this.amountLabel = new cc.LabelTTF(this.amount, "Arial", 36);
-        this.amountLabel.setFontFillColor(new cc.Color(0, 0, 0, 255));
+        this.amountLabel = new cc.LabelTTF(this.amount, "Arial", 28);
+        this.amountLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+if(isVisibleLabel == true){
+        //this.amountLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+        this.amountLabel.enableStroke(new cc.Color(0, 0, 0, 255), 2, false);
         this.amountLabel.setPosition(62/2,20);
         this.sprite.addChild(this.amountLabel);
+}
         this.spriteScale = 1;
         this.scaleAdd = 0.1;
     },

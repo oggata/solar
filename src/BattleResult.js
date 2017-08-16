@@ -5,22 +5,16 @@ var BattleResult = cc.Node.extend({
         this.resultSprite = cc.Sprite.create("res/result2.png");
         this.resultSprite.setPosition(0, 40);
         this.addChild(this.resultSprite);
-
-
         this.titleLabel = cc.LabelTTF.create("YOU ARE FIRST VISITER!", "Arial", 42);
         this.titleLabel.setPosition(70, 800);
         this.titleLabel.setAnchorPoint(0, 1);
         //this.titleLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.resultSprite.addChild(this.titleLabel);
-
-
         this.messageLabel2 = cc.LabelTTF.create("", "Arial", 22);
         this.messageLabel2.setPosition(70, 500);
         this.messageLabel2.setAnchorPoint(0, 1);
         this.messageLabel2.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         //this.resultSprite.addChild(this.messageLabel2);
-
-
         var clopseButton = new cc.MenuItemImage("res/button_close9.png", "res/button_close9.png", function () {
             this.game.goToListLayer(0);
         }, this);
@@ -51,20 +45,14 @@ var BattleResult = cc.Node.extend({
     },
     init: function () {},
     update: function () {
-
-
-if(this.game.destCaptureRate <= this.game.captureRate){
-    this.message = "ミッションを達成しました！\n惑星全体の" + Math.floor(this.game.captureRate * 100) + "%の探索が完了。\n報酬として素材を手に入れました。\n";
-
-
-    this.titleLabel.setString("YOU ARE FIRST VISITER!");
-
-}else{
-    this.message = "ミッションに失敗しました！\n惑星全体の" + Math.floor(this.game.captureRate * 100) + "%の探索が完了。\n掘削した素材は手に入りませんでした。\n";
-
-    this.titleLabel.setString("FAILED TO INVESTIGATE..");
-}
-
+        if (this.game.destCaptureRate <= this.game.captureRate) {
+            this.message = "ミッションを達成しました！\n惑星全体の" + Math.floor(this.game.captureRate * 100) + "%の探索が完了。\n報酬として素材を手に入れました。\n";
+            this.titleLabel.setString("YOU ARE FIRST VISITER!");
+        } else {
+            this.message = "ミッションに失敗しました！\n惑星全体の" + Math.floor(this.game.captureRate * 100) +
+                "%の探索が完了。\n掘削した素材は手に入りませんでした。\n";
+            this.titleLabel.setString("FAILED TO INVESTIGATE..");
+        }
         //this.occupiedGauge.update(this.game.captureRate);
         if (this.message) {
             if (this.message.length > 0) {

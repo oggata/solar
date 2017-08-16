@@ -15,13 +15,14 @@ var BattleWindow = cc.Node.extend({
         this.debris_array = [];
         this.humans = [];
         this.coins = [];
-        this.maxCoinCnt = 20;
+        this.maxCoinCnt = 15;
         this.orderCnt = 0;
+        this.orderCnt2 = 0;
         this.gameTimeCnt = 0;
         this.gameTime = 0;
         this.maxGameTime = 60;
-        this.enemyCnt = 12;
-        this.materials= [];
+        this.enemyCnt = 4;
+        this.materials = [];
         //配置可能なリストを作る
         this.positionalMarkers = [];
         for (var j = 0; j < this.markers.length; j++) {
@@ -32,10 +33,10 @@ var BattleWindow = cc.Node.extend({
         }
         //コンピューターの時は配置可能リストの中から、ランダムで配置する
         //if (this.game.isCom == true) {
-            for (var i = 0; i < this.enemyCnt; i++) {
-                this.positionalMarkers.sort(this.shuffle);
-                this.addHuman(this.positionalMarkers[0].col, this.positionalMarkers[0].row, "RED", 1, 1);
-            }
+        for (var i = 0; i < this.enemyCnt; i++) {
+            this.positionalMarkers.sort(this.shuffle);
+            this.addHuman(this.positionalMarkers[0].col, this.positionalMarkers[0].row, "RED", 1, 1);
+        }
         //}
         //marker
         this.selectedMarker = cc.Sprite.create("res/map-base-red.png");
@@ -45,7 +46,6 @@ var BattleWindow = cc.Node.extend({
         this.selectedMarker.row = 1;
         //this.selectedMarkerCol = 1;
         //this.selectedMarkerRow = 1;
-
         //player
         this.human = new Human(this, 10, 10, "GREEN", 1, 1, 99);
         this.field.addChild(this.human);
@@ -53,15 +53,19 @@ var BattleWindow = cc.Node.extend({
         this.player = this.human;
         this.player.setVisible(false);
         this.human.moveType = 99;
-
         //ship
         this.ship = cc.Sprite.create("res/ship.png");
-        this.field.addChild(this.ship,999999999999);
+        this.field.addChild(this.ship, 999999999999);
         this.shipPosY = 800;
         this.shipLandingCnt = 0;
         this.shipLandDirection = -10;
-
         this.scheduleUpdate();
+
+            if (this.coins.length <= this.maxCoinCnt) {
+                this.positionalMarkers.sort(this.shuffle);
+                this.addCoin(this.positionalMarkers[0].col, this.positionalMarkers[0].row);
+            }
+
     },
     getCurrentMarker: function (x, y) {
         var posX = (x - this.game.lastTouchGameLayerX);
@@ -70,36 +74,35 @@ var BattleWindow = cc.Node.extend({
         //this.launchedMarker.setPosition(marker.getPosition().x, marker.getPosition().y);
         return marker;
     },
-
-    setLand:function(){
+    setLand: function () {
         this.ship.setVisible(true);
         this.shipPosY += this.shipLandDirection;
-        if(this.player.getPosition().y + 100 >= this.shipPosY){
+        if (this.player.getPosition().y + 100 >= this.shipPosY) {
             this.shipLandDirection = 0;
-            this.shipLandingCnt+=1;
+            this.shipLandingCnt += 1;
         }
-        if(this.shipLandingCnt >= 10){
+        if (this.shipLandingCnt >= 10) {
             this.shipLandDirection = 30;
             this.player.setVisible(true);
         }
-        this.ship.setPosition(this.player.getPosition().x,this.shipPosY);
+        this.ship.setPosition(this.player.getPosition().x, this.shipPosY);
     },
-
-    setShipHidden:function(){
-        this.shipLandingCnt  = 0;
+    setShipHidden: function () {
+        this.shipLandingCnt = 0;
         this.shipLandDirection = -10;
         //this.battleWindow.setLand();
         this.ship.setVisible(false);
         this.shipPosY = this.player.getPosition().y + 800;
     },
-
     update: function (dt) {
+
         //時間を計測
         this.gameTimeCnt++;
-        if(this.gameTimeCnt >= 30){
+        if (this.gameTimeCnt >= 30) {
             this.gameTimeCnt = 0;
             this.gameTime++;
         }
+
 
         //デブリをupdate
         for (var i = 0; i < this.debris_array.length; i++) {
@@ -108,7 +111,6 @@ var BattleWindow = cc.Node.extend({
                 this.debris_array.splice(i, 1);
             }
         }
-
         for (var i = 0; i < this.materials.length; i++) {
             if (this.materials[i].update() == false) {
                 this.field.removeChild(this.materials[i]);
@@ -118,7 +120,7 @@ var BattleWindow = cc.Node.extend({
 
         //定期的にマップを再描画する
         this.orderCnt++;
-        if (this.orderCnt >= 10) {
+        if (this.orderCnt >= 30) {
             this.orderCnt = 0;
             for (var j = 0; j < this.coins.length; j++) {
                 this.field.reorderChild(this.coins[j], Math.floor(99999999 - (this.coins[j].col + this.coins[j].row) + 1));
@@ -134,31 +136,28 @@ var BattleWindow = cc.Node.extend({
                 this.addCoin(this.positionalMarkers[0].col, this.positionalMarkers[0].row);
             }
         }
-        for (var j = 0; j < this.humans.length; j++) {
-            this.field.reorderChild(this.humans[j], Math.floor(99999999 - (this.humans[j].col + this.humans[j].row) + 1));
-        }
-
 
         if (this.mode == "gaming") {
-
-this.shipPosY = this.player.getPosition().y + 800;
-
+            this.shipPosY = this.player.getPosition().y + 800;
             //ローバーをupdateする
             for (var j = 0; j < this.humans.length; j++) {
                 if (this.humans[j].update() == false) {
                     this.field.removeChild(this.humans[j]);
                     this.humans.splice(j, 1);
+                }else{
+                    this.field.reorderChild(this.humans[j], Math.floor(99999999 - (this.humans[j].col + this.humans[j].row) + 1));
                 }
             }
         }
+
         //markerとplayerのcollision判定
         for (var m = 0; m < this.markers.length; m++) {
             if (this.player.col == this.markers[m].col && this.player.row == this.markers[m].row) {
-                
                 //cc.log("col:" + this.player.col + "row:" + this.player.row + "/select col:" + this.selectedMarker.col + "select row:" + this.selectedMarker.row);
-                this.markers[m].spriteGreen.setVisible(true);
+//this.markers[m].spriteGreen.setVisible(true);
             }
         }
+
         //humanとcoinのcollision判定
         for (var h = 0; h < this.humans.length; h++) {
             for (var c = 0; c < this.coins.length; c++) {
@@ -169,13 +168,17 @@ this.shipPosY = this.player.getPosition().y + 800;
                     }
                     if (this.humans[h].colorName == "GREEN") {
                         //ランダムで素材をaddする
-                        var _rand = this.getRandNumberFromRange(1, 5);
-                        this.game.addMaterial(_rand);
-                        this.addMaterial(_rand);
+                        //var _rand = this.getRandNumberFromRange(1, 5);
+                        if(this.coins[c].typeNum){
+                            var _typeNum = this.coins[c].typeNum;
+                            this.game.addMaterial(_typeNum);
+                            this.addMaterial(_typeNum);
+                        }
                     }
                 }
             }
         }
+
         //human同士のcollision判定
         for (var h1 = 0; h1 < this.humans.length; h1++) {
             for (var h2 = 0; h2 < this.humans.length; h2++) {
@@ -193,15 +196,15 @@ this.shipPosY = this.player.getPosition().y + 800;
                 }
             }
         }
+
         //占領率の測定
         var _occupiedCnt = 0;
         for (var m = 0; m < this.markers.length; m++) {
-            if (this.markers[m].spriteGreen.isVisible() == true) {
-                _occupiedCnt++;
-            }
+            //if (this.markers[m].spriteGreen.isVisible() == true) {
+            //    _occupiedCnt++;
+            //}
         }
         this.game.captureCnt = _occupiedCnt;
-
         //コインをupdateする
         for (var j = 0; j < this.coins.length; j++) {
             if (this.coins[j].update() == false) {
@@ -210,21 +213,21 @@ this.shipPosY = this.player.getPosition().y + 800;
             }
         }
         //時間がなくなったら試合終了
-        if(this.gameTime >= this.maxGameTime){
+        if (this.gameTime >= this.maxGameTime) {
             this.mode = "result";
         }
         //自プレイヤーが死んだから試合終了
         if (this.player.hp <= 0) {
             this.mode = "result";
         }
+
     },
     addMaterial: function (mcode) {
-        var _material = new Material(this, 1, 0);
-        _material.setPosition(this.player.getPosition().x,this.player.getPosition().y + 50);
+        var _material = new Material(this, mcode, 0, false);
+        _material.setPosition(this.player.getPosition().x, this.player.getPosition().y + 50);
         this.field.addChild(_material, 9999999999999);
         this.materials.push(_material);
     },
-
     addHuman: function (col, row, colorName, markerId, algorithmId) {
         //if (this.humans.length >= 20) return;
         var _rand = this.getRandNumberFromRange(1, 6);
@@ -246,10 +249,15 @@ this.shipPosY = this.player.getPosition().y + 800;
         var _chipW = 32 * 3;
         var _chipH = 20 * 3;
         var _incrementNum = 0;
-        for (var row = 0; row < 40; row++) {
-            for (var col = 0; col < 40; col++) {
+        for (var row = 0; row < 28; row++) {
+            for (var col = 0; col < 28; col++) {
                 //// (1:普通 2:山岳 3:海)
                 var _rand = CONFIG.MAP[_incrementNum];
+
+//this.chip = cc.Sprite.create("res/map-chip-3-001-a.png");
+
+
+
                 if (_rand == 1) {
                     //var _rand2 = this.getRandNumberFromRange(1,5);
                     this.chip = cc.Sprite.create("res/map-chip-3-001-a.png");
@@ -265,6 +273,14 @@ this.shipPosY = this.player.getPosition().y + 800;
                 this.chip.row = row;
                 this.chips.push(this.chip);
                 this.chip.setAnchorPoint(0.5, 0.5);
+
+
+
+//this.spriteGreen = cc.Sprite.create("res/map-base-green.png");
+//this.chip.addChild(this.spriteGreen);
+//this.spriteGreen.setAnchorPoint(0.5, 0.5);
+//this.spriteGreen.setVisible(false);
+
                 //左端
                 //-320, 300
                 //右端
@@ -281,15 +297,15 @@ this.shipPosY = this.player.getPosition().y + 800;
                 //314
                 //20
                 this.chip.setPosition(
-                    (col + row) * _chipW/2 * -1 + _chipW * col + 624, 
-                    _chipH/2 * (col + row) - _chipH
-                );
-                this.field.addChild(this.chip, 1 - (col + row));
+                    (col + row) * _chipW / 2 * -1 + _chipW * col + 624, _chipH / 2 * (col + row) - _chipH);
+
+//if(_rand == 2){
+    //this.field.addChild(this.chip, 1 - (col + row));
+//}
+this.field.addChild(this.chip, 1 - (col + row));
                 this.marker = new Marker(this, col, row, _rand, null, this.game.colorName);
                 this.marker.setPosition(
-                    (col + row) * _chipW/2 * -1 + _chipW * col + 624, 
-                    _chipH/2 * (col + row) - _chipH
-                );
+                    (col + row) * _chipW / 2 * -1 + _chipW * col + 624, _chipH / 2 * (col + row) - _chipH);
                 /*
                 var _rand2 = CONFIG.HIDDEN_MAP[_incrementNum];
                 if (_rand2 == 1) {

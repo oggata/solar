@@ -83,13 +83,10 @@ var GameLayer = cc.Layer.extend({
                 event.getCurrentTarget().touchFinish(touches[0].getLocation());
             }
         }), this);
-
-
         this.baseNode = cc.Sprite.create("res/back_top.png");
-        this.baseNode.setAnchorPoint(0,0);
-        this.baseNode.setPosition(0,0);
+        this.baseNode.setAnchorPoint(0, 0);
+        this.baseNode.setPosition(0, 0);
         this.addChild(this.baseNode);
-
         this.battleWindow = new BattleWindow(this);
         this.addChild(this.battleWindow, 999);
         this.battleWindow.setPosition(0, 0);
@@ -101,7 +98,7 @@ var GameLayer = cc.Layer.extend({
         this.resultSprite = new BattleResult(this);
         this.addChild(this.resultSprite, 9999);
         this.resultSprite.setPosition(320, 500);
-this.resultSprite.setVisible(false);
+        this.resultSprite.setVisible(false);
         this.scheduleUpdate();
         this.firstTouchX = 0;
         this.firstTouchY = 0;
@@ -145,27 +142,21 @@ this.resultSprite.setVisible(false);
         this.battleWindow.setPosition(this.baseNodePosX, this.baseNodePosY);
     },
     update: function (dt) {
-
-
-if(this.gameStatus == "gaming"){
-    this.battleWindow.setShipHidden();
-}
-
+        if (this.gameStatus == "gaming") {
+            this.battleWindow.setShipHidden();
+        }
         //画面表示
         this.maxCaptureCnt = this.battleWindow.positionalMarkers.length * this.destCaptureRate;
-        this.captureRate = Math.floor(this.captureCnt / this.maxCaptureCnt * 100) / 100 ;
-        if(this.captureRate >= 1){
+        this.captureRate = Math.floor(this.captureCnt / this.maxCaptureCnt * 100) / 100;
+        if (this.captureRate >= 1) {
             this.captureRate = 1;
         }
-
         //目標を上回ったらゲーム終了
-        if(this.captureRate >= 1){
+        if (this.captureRate >= 1) {
             this.battleWindow.mode = "result";
         }
-
         //this.occupiedGauge.update(this.captureRate);
         this.occupiedRateLabel.setString(Math.floor(this.captureRate * 100) + "%");
-
         //常に中央を表示するようにする
         var _centerMarker = this.battleWindow.getMarker2(this.battleWindow.player.col, this.battleWindow.player.row);
         //this.battleWindowScale
@@ -176,8 +167,7 @@ if(this.gameStatus == "gaming"){
             this.setScroll();
         }
         for (var i = 0; i < this.materials.length; i++) {
-            if (this.materials[i].update() == false) {
-            }
+            if (this.materials[i].update() == false) {}
         }
         this.updateLabel();
         this.resultSprite.update();
@@ -185,7 +175,6 @@ if(this.gameStatus == "gaming"){
         this.battleWindow.update();
         this.gameStartTimeCnt++;
         this.setPrepareStatus();
-
         this.setStartStatus();
         this.setResultStatus();
     },
@@ -200,7 +189,7 @@ if(this.gameStatus == "gaming"){
         }
         if (_isFristMat == true) {
             this.orderCnt += 1;
-            var _material = new Material(this, mcode, this.orderCnt);
+            var _material = new Material(this, mcode, this.orderCnt, true);
             this.materials.push(_material);
             this.header.addChild(_material, 999999);
             _material.setPosition(610 - 62 * (this.orderCnt - 1), 110);
@@ -211,19 +200,16 @@ if(this.gameStatus == "gaming"){
         this.header.setPosition(320, 1136 - 150);
         this.header.setAnchorPoint(0.5, 0);
         this.addChild(this.header, 999999);
-
         this.occupiedRateLabel = new cc.LabelTTF(this.greenScore, "Arial", 46);
         this.occupiedRateLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         this.occupiedRateLabel.setAnchorPoint(1, 0);
         this.occupiedRateLabel.setPosition(240, 80);
         this.header.addChild(this.occupiedRateLabel, 999999);
-        
         this.timeLabel = new cc.LabelTTF("123", "Arial", 24);
         this.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         this.timeLabel.setAnchorPoint(0, 0);
         this.timeLabel.setPosition(320, 110);
         this.header.addChild(this.timeLabel, 999999);
-
         //this.occupiedGauge = new Gauge(530, 20, 'GREEN');
         //this.occupiedGauge.setAnchorPoint(0, 0);
         //this.occupiedGauge.setPosition(100, 70);
@@ -280,37 +266,32 @@ if(this.gameStatus == "gaming"){
             this.gameStatus = "end";
             this.result = this.battleWindow.result;
             this.endCnt++;
-
-
-
             this.battleWindow.setLand();
-/*
-this.maxBattleWindowScale = 2;
-this.battleWindowScale += 0.07;
-if (this.battleWindowScale >= this.maxBattleWindowScale) {
-    this.battleWindowScale = this.maxBattleWindowScale;
-}
-*/
-
-
-this.battleWindowScale -= 0.0025;
-if (this.battleWindowScale <= 0.1) {
-    this.battleWindowScale = 0.02;
-}
-
-//常に中央を表示するようにする
-var _centerMarker = this.battleWindow.getMarker2(this.battleWindow.player.col, this.battleWindow.player.row);
-this.battleWindow.setScale(this.battleWindowScale);
-this.baseNodePosX = this.targetBaseNodePosX = 320 - _centerMarker.getPosition().x * this.battleWindowScale;
-this.baseNodePosY = this.targetBaseNodePosY = 400 - _centerMarker.getPosition().y * this.battleWindowScale;
-this.setScroll();
-
+            /*
+            this.maxBattleWindowScale = 2;
+            this.battleWindowScale += 0.07;
+            if (this.battleWindowScale >= this.maxBattleWindowScale) {
+                this.battleWindowScale = this.maxBattleWindowScale;
+            }
+            */
+            this.battleWindowScale -= 0.0025;
+            if (this.battleWindowScale <= 0.1) {
+                this.battleWindowScale = 0.02;
+            }
+            //常に中央を表示するようにする
+            var _centerMarker = this.battleWindow.getMarker2(this.battleWindow.player.col, this.battleWindow.player.row);
+            this.battleWindow.setScale(this.battleWindowScale);
+            this.baseNodePosX = this.targetBaseNodePosX = 320 - _centerMarker.getPosition().x * this.battleWindowScale;
+            this.baseNodePosY = this.targetBaseNodePosY = 400 - _centerMarker.getPosition().y * this.battleWindowScale;
+            this.setScroll();
             //そこまで!のラベルを表示する
             if (0 <= this.endCnt && this.endCnt < 30 * 1) {
                 this.labelStartCnt005.setVisible(true);
             }
             //試合結果を表示する
             if (this.endCnt == 30 * 1) {
+                //cc.log("window open!!");
+                //cc.sys.openURL("http://webdesign.about.com/");
                 this.labelStartCnt005.setVisible(false);
                 this.resultSprite.setVisible(true);
                 if (this.greenScore > this.redScore) {
