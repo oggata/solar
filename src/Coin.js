@@ -5,6 +5,7 @@ var Coin = cc.Node.extend({
         this.col = col;
         this.row = row;
         var _rand2 = this.game.getRandNumberFromRange(1, 5);
+        //_rand2 = 1;
         this.typeNum = _rand2;
         if (_rand2 == 1) {
             this.image = "res/material-map-001.png";

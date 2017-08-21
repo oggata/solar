@@ -8,18 +8,18 @@ var Human = cc.Node.extend({
         this.markerId = markerId;
         this.algorithmId = algorithmId;
         if (colorName == "RED") {
-            this.image = "res/human-002-red.png";
-            this.imgWidth = 341 / 7;
-            this.imgHeight = 192 / 4;
-            this.widthCnt = 7;
-            //this.setScale(0.9, 0.9);
-            this.span = 0.05;
+            this.image = "res/utyujin.png";
+            this.imgWidth = 640 / 4;
+            this.imgHeight = 640 / 4;
+            this.widthCnt = 4;
+            this.setScale(0.9, 0.9);
+            this.span = 0.08;
         } else {
-            this.image = "res/human-002.png";
-            this.imgWidth = 341 / 7;
-            this.imgHeight = 192 / 4;
-            this.widthCnt = 7;
-            //this.setScale(0.85, 0.85);
+            this.image = "res/utyu.png";
+            this.imgWidth = 1280 / 8;
+            this.imgHeight = 1280 / 8;
+            this.widthCnt = 8;
+            this.setScale(0.6, 0.6);
             this.span = 0.05;
         }
         //init
@@ -68,6 +68,11 @@ var Human = cc.Node.extend({
             return false;
         }
         if (this.hp > 0) {
+
+
+if(this.game.mode != "gaming") return;
+
+
             this.timeCnt++;
             if (this.timeCnt >= 30 * 1) {
                 this.timeCnt = 0;
@@ -186,6 +191,7 @@ var Human = cc.Node.extend({
         //自分が配置されたマーカーから、特定距離(5)のマーカーを全部取得する
         //this.targetDistance = this.getRandNumberFromRange(1, 5);
         for (var i = 0; i < this.distances.length; i++) {
+            if(this.game.selectedMarker.col == null && this.game.selectedMarker.col == null) return;
             if (this.distances[i].col == this.game.selectedMarker.col && this.distances[i].row == this.game.selectedMarker.row) {
                 this.targetMarkers.push(this.distances[i]);
             }
@@ -200,7 +206,8 @@ var Human = cc.Node.extend({
         this.setRoute();
     },
     setRouteType033: function () {
-        this.maxDistance = 5;
+        //this.maxDistance = 5;
+        this.maxDistance = 2;
         //if (this.targetMarker != null) return;
         this.walkSpeed = 1.8 * 2;
         //敵のenemyの存在するマーカーを全部取得する
@@ -369,17 +376,17 @@ var Human = cc.Node.extend({
                 return;
             }
         }
-        for (var j = 0; j < this.game.markers.length; j++) {
-            if (this.game.markers[j].col == col && this.game.markers[j].row == row && this.game.markers[j].colorId == "WHITE") {
-                if (this.game.markers[j].baseMapType == 1) {
-                    return this.game.markers[j];
+        for (var j = 0; j < this.game.chips.length; j++) {
+            if (this.game.chips[j].col == col && this.game.chips[j].row == row && this.game.chips[j].colorId == "WHITE") {
+                if (this.game.chips[j].baseMapType == 1) {
+                    return this.game.chips[j];
                 }
             }
         }
-        for (var j = 0; j < this.game.markers.length; j++) {
-            if (this.game.markers[j].col == col && this.game.markers[j].row == row) {
-                if (this.game.markers[j].baseMapType == 1) {
-                    return this.game.markers[j];
+        for (var j = 0; j < this.game.chips.length; j++) {
+            if (this.game.chips[j].col == col && this.game.chips[j].row == row) {
+                if (this.game.chips[j].baseMapType == 1) {
+                    return this.game.chips[j];
                 }
             }
         }
@@ -411,9 +418,9 @@ var Human = cc.Node.extend({
         return rand;
     },
     getMarker: function (col, row) {
-        for (var j = 0; j < this.game.markers.length; j++) {
-            if (this.game.markers[j].col == col && this.game.markers[j].row == row) {
-                return this.game.markers[j];
+        for (var j = 0; j < this.game.chips.length; j++) {
+            if (this.game.chips[j].col == col && this.game.chips[j].row == row) {
+                return this.game.chips[j];
             }
         }
         return null;
@@ -473,19 +480,15 @@ var Human = cc.Node.extend({
         this.sprite = cc.Sprite.create(this.image, cc.rect(0, 0, this.imgWidth, this.imgHeight));
         this.sprite.runAction(this.ra);
         this.sprite.setAnchorPoint(0.5, 0.5);
-        this.sprite.setPosition(this.imgWidth / 4, this.imgHeight / 2);
+        this.sprite.setPosition(this.imgWidth / 4, this.imgHeight * 2/5);
         this.addChild(this.sprite);
         /*
-
         if(this.colorName == "GREEN"){
-
                 this.ship = cc.Sprite.create("res/ship.png");
                 this.ship.setPosition(32,800);
                 this.sprite.addChild(this.ship);
                 this.sprite.setVisible(false);
         }
-
-
         */
     },
     moveToTarget: function (object, speed, targetDist) {
@@ -517,7 +520,7 @@ var Human = cc.Node.extend({
             if (this.colorName == "GREEN") {
                 if (object.colorId == "WHITE") {
                     object.colorId = this.colorName;
-                    object.isRender = true;
+                    //object.isRender = true;
                     //object.spriteBlack.setVisible(false);
                 }
             }
@@ -590,7 +593,7 @@ var Human = cc.Node.extend({
             this.sprite.stopAllActions();
             var frameSeq = [];
             for (var i = 0; i < this.widthCnt; i++) {
-                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 0, this.imgWidth, this
+                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 1, this.imgWidth, this
                     .imgHeight));
                 frameSeq.push(frame);
             }
@@ -605,7 +608,7 @@ var Human = cc.Node.extend({
             this.sprite.stopAllActions();
             var frameSeq = [];
             for (var i = 0; i < this.widthCnt; i++) {
-                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 1, this.imgWidth, this
+                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 0, this.imgWidth, this
                     .imgHeight));
                 frameSeq.push(frame);
             }

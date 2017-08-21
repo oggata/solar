@@ -9,41 +9,42 @@ var BattleWindow = cc.Node.extend({
         this.fieldScale = 1;
         this.field.setScale(this.fieldScale);
         this.addChild(this.field);
-        this.markers = [];
+        //this.markers = [];
         this.chips = [];
         this.initMap();
         this.debris_array = [];
         this.humans = [];
         this.coins = [];
-        this.maxCoinCnt = 15;
+        this.maxCoinCnt = 20;
         this.orderCnt = 0;
         this.orderCnt2 = 0;
+        this.orderMaxCnt = 1;
         this.gameTimeCnt = 0;
         this.gameTime = 0;
         this.maxGameTime = 60;
         this.enemyCnt = 4;
         this.materials = [];
         //配置可能なリストを作る
-        this.positionalMarkers = [];
-        for (var j = 0; j < this.markers.length; j++) {
+        this.positionalChips = [];
+        for (var j = 0; j < this.chips.length; j++) {
             ////スピードはMAPCHIPTYPEによって違う (1:普通 2:山 3:海)
-            if (this.markers[j].mapChipType == 1) {
-                this.positionalMarkers.push(this.markers[j]);
+            if (this.chips[j].mapChipType == 1) {
+                this.positionalChips.push(this.chips[j]);
             }
         }
         //コンピューターの時は配置可能リストの中から、ランダムで配置する
         //if (this.game.isCom == true) {
         for (var i = 0; i < this.enemyCnt; i++) {
-            this.positionalMarkers.sort(this.shuffle);
-            this.addHuman(this.positionalMarkers[0].col, this.positionalMarkers[0].row, "RED", 1, 1);
+            this.positionalChips.sort(this.shuffle);
+            this.addHuman(this.positionalChips[0].col, this.positionalChips[0].row, "RED", 1, 1);
         }
         //}
         //marker
         this.selectedMarker = cc.Sprite.create("res/map-base-red.png");
         this.field.addChild(this.selectedMarker, 9999999999);
         this.selectedMarker.setPosition(100, 300);
-        this.selectedMarker.col = 1;
-        this.selectedMarker.row = 1;
+        this.selectedMarker.col = null;
+        this.selectedMarker.row = null;
         //this.selectedMarkerCol = 1;
         //this.selectedMarkerRow = 1;
         //player
@@ -61,10 +62,17 @@ var BattleWindow = cc.Node.extend({
         this.shipLandDirection = -10;
         this.scheduleUpdate();
 
-            if (this.coins.length <= this.maxCoinCnt) {
-                this.positionalMarkers.sort(this.shuffle);
-                this.addCoin(this.positionalMarkers[0].col, this.positionalMarkers[0].row);
-            }
+
+/*
+        if (this.coins.length <= this.maxCoinCnt) {
+            this.positionalChips.sort(this.shuffle);
+            this.addCoin(this.positionalChips[0].col, this.positionalChips[0].row);
+        }
+*/
+        for (var i = 0; i < this.maxCoinCnt; i++) {
+            this.positionalChips.sort(this.shuffle);
+            this.addCoin(this.positionalChips[0].col, this.positionalChips[0].row);
+        }
 
     },
     getCurrentMarker: function (x, y) {
@@ -77,11 +85,18 @@ var BattleWindow = cc.Node.extend({
     setLand: function () {
         this.ship.setVisible(true);
         this.shipPosY += this.shipLandDirection;
-        if (this.player.getPosition().y + 100 >= this.shipPosY) {
+        if (this.player.getPosition().y + 20 >= this.shipPosY) {
             this.shipLandDirection = 0;
             this.shipLandingCnt += 1;
         }
-        if (this.shipLandingCnt >= 10) {
+        //船のランディング停止時間 20
+        //if (this.shipLandingCnt >= 10) {
+
+            //cc.log("player visible on");
+            //cc.log(this.player.getPosition().x);
+            //this.player.setVisible(true);
+        //}
+        if (this.shipLandingCnt >= 20) {
             this.shipLandDirection = 30;
             this.player.setVisible(true);
         }
@@ -90,20 +105,17 @@ var BattleWindow = cc.Node.extend({
     setShipHidden: function () {
         this.shipLandingCnt = 0;
         this.shipLandDirection = -10;
-        //this.battleWindow.setLand();
+        //this.setLand();
         this.ship.setVisible(false);
         this.shipPosY = this.player.getPosition().y + 800;
     },
     update: function (dt) {
-
         //時間を計測
         this.gameTimeCnt++;
         if (this.gameTimeCnt >= 30) {
             this.gameTimeCnt = 0;
             this.gameTime++;
         }
-
-
         //デブリをupdate
         for (var i = 0; i < this.debris_array.length; i++) {
             if (this.debris_array[i].update() == false) {
@@ -117,47 +129,54 @@ var BattleWindow = cc.Node.extend({
                 this.materials.splice(i, 1);
             }
         }
-
         //定期的にマップを再描画する
         this.orderCnt++;
-        if (this.orderCnt >= 30) {
+        if (this.orderCnt >= this.orderMaxCnt) {
             this.orderCnt = 0;
             for (var j = 0; j < this.coins.length; j++) {
                 this.field.reorderChild(this.coins[j], Math.floor(99999999 - (this.coins[j].col + this.coins[j].row) + 1));
             }
             for (var j = 0; j < this.chips.length; j++) {
-                this.field.reorderChild(this.chips[j], Math.floor(99999999 - (this.chips[j].col + this.chips[j].row) + 0));
+                var _ajust = 0;
+                if (this.chips[j].baseMapType == 2) {
+                    _ajust = 1;
+                }
+                this.field.reorderChild(this.chips[j], Math.floor(99999999 - (this.chips[j].col + this.chips[j].row) + _ajust));
             }
-            for (var j = 0; j < this.markers.length; j++) {
-                this.field.reorderChild(this.markers[j], Math.floor(99999999 - (this.markers[j].col + this.markers[j].row) + 0));
-            }
+            //for (var j = 0; j < this.markers.length; j++) {
+            //    this.field.reorderChild(this.markers[j], Math.floor(99999999 - (this.markers[j].col + this.markers[j].row) + 0));
+            //}
+            /*
             if (this.coins.length <= this.maxCoinCnt) {
-                this.positionalMarkers.sort(this.shuffle);
-                this.addCoin(this.positionalMarkers[0].col, this.positionalMarkers[0].row);
+                this.positionalChips.sort(this.shuffle);
+                this.addCoin(this.positionalChips[0].col, this.positionalChips[0].row);
             }
+            */
         }
 
-        if (this.mode == "gaming") {
-            this.shipPosY = this.player.getPosition().y + 800;
             //ローバーをupdateする
             for (var j = 0; j < this.humans.length; j++) {
                 if (this.humans[j].update() == false) {
                     this.field.removeChild(this.humans[j]);
                     this.humans.splice(j, 1);
-                }else{
+                } else {
                     this.field.reorderChild(this.humans[j], Math.floor(99999999 - (this.humans[j].col + this.humans[j].row) + 1));
                 }
             }
-        }
 
-        //markerとplayerのcollision判定
-        for (var m = 0; m < this.markers.length; m++) {
-            if (this.player.col == this.markers[m].col && this.player.row == this.markers[m].row) {
-                //cc.log("col:" + this.player.col + "row:" + this.player.row + "/select col:" + this.selectedMarker.col + "select row:" + this.selectedMarker.row);
-//this.markers[m].spriteGreen.setVisible(true);
-            }
+        if (this.mode == "gaming") {
+            this.orderMaxCnt = 30;
+            this.shipPosY = this.player.getPosition().y + 800;
         }
-
+        /*
+                //markerとplayerのcollision判定
+                for (var m = 0; m < this.markers.length; m++) {
+                    if (this.player.col == this.markers[m].col && this.player.row == this.markers[m].row) {
+                        //cc.log("col:" + this.player.col + "row:" + this.player.row + "/select col:" + this.selectedMarker.col + "select row:" + this.selectedMarker.row);
+        //this.markers[m].spriteGreen.setVisible(true);
+                    }
+                }
+        */
         //humanとcoinのcollision判定
         for (var h = 0; h < this.humans.length; h++) {
             for (var c = 0; c < this.coins.length; c++) {
@@ -169,7 +188,7 @@ var BattleWindow = cc.Node.extend({
                     if (this.humans[h].colorName == "GREEN") {
                         //ランダムで素材をaddする
                         //var _rand = this.getRandNumberFromRange(1, 5);
-                        if(this.coins[c].typeNum){
+                        if (this.coins[c].typeNum) {
                             var _typeNum = this.coins[c].typeNum;
                             this.game.addMaterial(_typeNum);
                             this.addMaterial(_typeNum);
@@ -178,7 +197,6 @@ var BattleWindow = cc.Node.extend({
                 }
             }
         }
-
         //human同士のcollision判定
         for (var h1 = 0; h1 < this.humans.length; h1++) {
             for (var h2 = 0; h2 < this.humans.length; h2++) {
@@ -196,14 +214,15 @@ var BattleWindow = cc.Node.extend({
                 }
             }
         }
-
         //占領率の測定
         var _occupiedCnt = 0;
+        /*
         for (var m = 0; m < this.markers.length; m++) {
             //if (this.markers[m].spriteGreen.isVisible() == true) {
             //    _occupiedCnt++;
             //}
         }
+        */
         this.game.captureCnt = _occupiedCnt;
         //コインをupdateする
         for (var j = 0; j < this.coins.length; j++) {
@@ -220,7 +239,6 @@ var BattleWindow = cc.Node.extend({
         if (this.player.hp <= 0) {
             this.mode = "result";
         }
-
     },
     addMaterial: function (mcode) {
         var _material = new Material(this, mcode, 0, false);
@@ -253,11 +271,7 @@ var BattleWindow = cc.Node.extend({
             for (var col = 0; col < 28; col++) {
                 //// (1:普通 2:山岳 3:海)
                 var _rand = CONFIG.MAP[_incrementNum];
-
-//this.chip = cc.Sprite.create("res/map-chip-3-001-a.png");
-
-
-
+                //this.chip = cc.Sprite.create("res/map-chip-3-001-a.png");
                 if (_rand == 1) {
                     //var _rand2 = this.getRandNumberFromRange(1,5);
                     this.chip = cc.Sprite.create("res/map-chip-3-001-a.png");
@@ -268,19 +282,19 @@ var BattleWindow = cc.Node.extend({
                 if (_rand == 3) {
                     this.chip = cc.Sprite.create("res/map-chip-3-003.png");
                 }
-
+                this.chip.mapChipType = _rand;
                 this.chip.col = col;
                 this.chip.row = row;
+this.chip.setOpacity(0.4*255);
+
                 this.chips.push(this.chip);
                 this.chip.setAnchorPoint(0.5, 0.5);
-
-
-
-//this.spriteGreen = cc.Sprite.create("res/map-base-green.png");
-//this.chip.addChild(this.spriteGreen);
-//this.spriteGreen.setAnchorPoint(0.5, 0.5);
-//this.spriteGreen.setVisible(false);
-
+                this.chip.colorId = "WHITE";
+                this.chip.baseMapType = _rand;
+                //this.spriteGreen = cc.Sprite.create("res/map-base-green.png");
+                //this.chip.addChild(this.spriteGreen);
+                //this.spriteGreen.setAnchorPoint(0.5, 0.5);
+                //this.spriteGreen.setVisible(false);
                 //左端
                 //-320, 300
                 //右端
@@ -298,11 +312,10 @@ var BattleWindow = cc.Node.extend({
                 //20
                 this.chip.setPosition(
                     (col + row) * _chipW / 2 * -1 + _chipW * col + 624, _chipH / 2 * (col + row) - _chipH);
-
-//if(_rand == 2){
-    //this.field.addChild(this.chip, 1 - (col + row));
-//}
-this.field.addChild(this.chip, 1 - (col + row));
+                //if(_rand == 2){
+                //this.field.addChild(this.chip, 1 - (col + row));
+                //}
+                this.field.addChild(this.chip, 1 - (col + row));
                 this.marker = new Marker(this, col, row, _rand, null, this.game.colorName);
                 this.marker.setPosition(
                     (col + row) * _chipW / 2 * -1 + _chipW * col + 624, _chipH / 2 * (col + row) - _chipH);
@@ -315,7 +328,7 @@ this.field.addChild(this.chip, 1 - (col + row));
                 }
                 */
                 this.field.addChild(this.marker);
-                this.markers.push(this.marker);
+                //this.markers.push(this.marker);
                 _incrementNum++;
             }
         }
@@ -340,19 +353,19 @@ this.field.addChild(this.chip, 1 - (col + row));
         return false;
     },
     isOwnTerritory: function (colorName, col, row) {
-        for (var i = 0; i < this.markers.length; i++) {
-            if (this.markers[i].col == col && this.markers[i].row == row && this.markers[i].colorId == colorName) {
+        for (var i = 0; i < this.chips.length; i++) {
+            if (this.chips[i].col == col && this.chips[i].row == row && this.chips[i].colorId == colorName) {
                 return true;
             }
         }
         return false;
     },
     addPoint2: function (colorName, col, row) {
-        for (var i = 0; i < this.markers.length; i++) {
-            if (this.markers[i].mapChipType == 1) {
-                if (this.markers[i].col == col && this.markers[i].row == row) {
-                    this.markers[i].colorId = colorName;
-                    this.markers[i].isRender = true;
+        for (var i = 0; i < this.chips.length; i++) {
+            if (this.chips[i].mapChipType == 1) {
+                if (this.chips[i].col == col && this.chips[i].row == row) {
+                    this.chips[i].colorId = colorName;
+                    //this.chips[i].isRender = true;
                     return true;
                 }
             }
@@ -362,22 +375,22 @@ this.field.addChild(this.chip, 1 - (col + row));
     getMarker: function (posX, posY) {
         var _mindist = 9999999;
         var _mindistMarker = null;
-        for (var i = 0; i < this.markers.length; i++) {
+        for (var i = 0; i < this.chips.length; i++) {
             var _distance = Math.sqrt(
-                (posX - this.markers[i].getPosition().x * this.game.battleWindowScale) * (posX - this.markers[i].getPosition().x *
-                    this.game.battleWindowScale) + (posY - this.markers[i].getPosition().y * this.game.battleWindowScale) * (posY -
-                    this.markers[i].getPosition().y * this.game.battleWindowScale));
+                (posX - this.chips[i].getPosition().x * this.game.battleWindowScale) * (posX - this.chips[i].getPosition().x *
+                    this.game.battleWindowScale) + (posY - this.chips[i].getPosition().y * this.game.battleWindowScale) * (posY -
+                    this.chips[i].getPosition().y * this.game.battleWindowScale));
             if (_mindist > _distance) {
                 _mindist = _distance;
-                _mindistMarker = this.markers[i];
+                _mindistMarker = this.chips[i];
             }
         }
         return _mindistMarker;
     },
     getMarker2: function (col, row) {
-        for (var i = 0; i < this.markers.length; i++) {
-            if (this.markers[i].col == col && this.markers[i].row == row) {
-                return this.markers[i];
+        for (var i = 0; i < this.chips.length; i++) {
+            if (this.chips[i].col == col && this.chips[i].row == row) {
+                return this.chips[i];
             }
         }
         return null;

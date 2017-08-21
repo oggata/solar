@@ -146,7 +146,7 @@ var GameLayer = cc.Layer.extend({
             this.battleWindow.setShipHidden();
         }
         //画面表示
-        this.maxCaptureCnt = this.battleWindow.positionalMarkers.length * this.destCaptureRate;
+        this.maxCaptureCnt = this.battleWindow.positionalChips.length * this.destCaptureRate;
         this.captureRate = Math.floor(this.captureCnt / this.maxCaptureCnt * 100) / 100;
         if (this.captureRate >= 1) {
             this.captureRate = 1;
@@ -289,7 +289,7 @@ var GameLayer = cc.Layer.extend({
                 this.labelStartCnt005.setVisible(true);
             }
             //試合結果を表示する
-            if (this.endCnt == 30 * 1) {
+            if (this.endCnt == 30 * 3) {
                 //cc.log("window open!!");
                 //cc.sys.openURL("http://webdesign.about.com/");
                 this.labelStartCnt005.setVisible(false);
@@ -350,7 +350,7 @@ var GameLayer = cc.Layer.extend({
     goToListLayer: function (errorNum) {
         var scene = cc.Scene.create();
         //次のステージへいくためにstorageは必ず受けた渡す
-        scene.addChild(ListLayer.create(this.storage, errorNum));
+        scene.addChild(DiscoveryLayer.create(this.storage, errorNum));
         cc.director.runScene(cc.TransitionFadeTR.create(0.5, scene));
     },
     getRandNumberFromRange: function (min, max) {

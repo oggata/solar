@@ -234,7 +234,7 @@ var PlanetLayer = cc.Layer.extend({
     goToListLayer: function (pSender) {
         playSE_Button(this.storage);
         var scene = cc.Scene.create();
-        scene.addChild(ListLayer.create(this.storage));
+        scene.addChild(DiscoveryLayer.create(this.storage));
         cc.director.runScene(cc.TransitionFadeTR.create(0.5, scene));
     },
     goToGameLayer: function (cardId) {

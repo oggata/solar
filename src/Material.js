@@ -4,19 +4,35 @@ var Material = cc.Node.extend({
         this.game = game;
         this.amount = 1;
         this.materialCode = mCode;
-        this.orderCnt = orderCnt;    
+        this.orderCnt = orderCnt;
+
+/*
+        if (_rand2 == 1) {
+            this.image = "res/material-map-001.png";
+        }
+        if (_rand2 == 2) {
+            this.image = "res/material-map-002.png";
+        }
+        if (_rand2 == 3) {
+            this.image = "res/material-map-003.png";
+        }
+        if (_rand2 == 4) {
+            this.image = "res/material-map-004.png";
+        }
+*/
+
         //this.image = "res/sozai001.png";
         if(mCode == 1){
-            this.image = "res/sozai001.png";
+            this.image = "res/material-map-001.png";
         }
         if(mCode == 2){
-            this.image = "res/sozai002.png";
+            this.image = "res/material-map-002.png";
         }
         if(mCode == 3){
-            this.image = "res/sozai003.png";
+            this.image = "res/material-map-003.png";
         }
         if(mCode == 4){
-            this.image = "res/sozai004.png";
+            this.image = "res/material-map-004.png";
         }
         if(mCode == 5){
             this.image = "res/sozai005.png";
@@ -26,6 +42,8 @@ var Material = cc.Node.extend({
         }
         this.sprite = cc.Sprite.create(this.image);
         this.addChild(this.sprite);
+//this.sprite.setOpacity(0.1);
+
         this.amountLabel = new cc.LabelTTF(this.amount, "Arial", 28);
         this.amountLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
 if(isVisibleLabel == true){
