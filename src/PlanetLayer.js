@@ -69,6 +69,8 @@ var PlanetLayer = cc.Layer.extend({
             */
         }, this);
         launchButton.setPosition(320, 340);
+        
+/*
         var coinButton = new cc.MenuItemImage("res/button_get_coin.png", "res/button_get_coin_on.png", function () {
             if (this.pastSecond >= 1) {
                 this.errorLabel.setString("" + this.pastSecond + "秒で1クリスタルに変換できます.");
@@ -96,9 +98,11 @@ var PlanetLayer = cc.Layer.extend({
             cc.sys.localStorage.clear();
         }, this);
         debugButton2.setPosition(100, 50);
-        var menu001 = new cc.Menu(launchButton, coinButton, debugButton, debugButton2, backButton);
+*/
+        var menu001 = new cc.Menu(launchButton,backButton);
         menu001.setPosition(0, 0);
         this.inputNode.addChild(menu001);
+
         this.coinAmountLabel = new cc.LabelTTF("x " + this.storage.totalCoinAmount, "Arial", 24);
         this.coinAmountLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         //this.coinAmountLabel.enableStroke(new cc.Color(0, 0, 0, 255), 2, false);
@@ -110,6 +114,7 @@ var PlanetLayer = cc.Layer.extend({
         //this.timeLabel.enableStroke(new cc.Color(0, 0, 0, 255), 2, false);
         //this.inputNode.addChild(this.timeLabel);
         this.timeLabel.setPosition(320, 450);
+
         this.playerNameLabel = new cc.LabelTTF(this.storage.playerName, "Arial", 18);
         this.playerNameLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         //this.addChild(this.playerNameLabel);
@@ -235,13 +240,13 @@ var PlanetLayer = cc.Layer.extend({
         playSE_Button(this.storage);
         var scene = cc.Scene.create();
         scene.addChild(DiscoveryLayer.create(this.storage));
-        cc.director.runScene(cc.TransitionFadeTR.create(0.5, scene));
+        cc.director.runScene(cc.TransitionFadeTR.create(1.0, scene));
     },
     goToGameLayer: function (cardId) {
         var scene = cc.Scene.create();
         //次のステージへいくためにstorageは必ず受けた渡す
         scene.addChild(GameLayer.create(this.storage, cardId));
-        cc.director.runScene(cc.TransitionFadeTR.create(0.3, scene));
+        cc.director.runScene(cc.TransitionFadeTR.create(1.0, scene));
     },
     showInfo: function (text) {
         console.log(text);

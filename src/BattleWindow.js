@@ -168,15 +168,14 @@ var BattleWindow = cc.Node.extend({
             this.orderMaxCnt = 30;
             this.shipPosY = this.player.getPosition().y + 800;
         }
-        /*
+        
                 //markerとplayerのcollision判定
-                for (var m = 0; m < this.markers.length; m++) {
-                    if (this.player.col == this.markers[m].col && this.player.row == this.markers[m].row) {
-                        //cc.log("col:" + this.player.col + "row:" + this.player.row + "/select col:" + this.selectedMarker.col + "select row:" + this.selectedMarker.row);
-        //this.markers[m].spriteGreen.setVisible(true);
+                for (var m = 0; m < this.chips.length; m++) {
+                    if (this.player.col + 1 == this.chips[m].col && this.player.row == this.chips[m].row) {
+this.chips[m].spriteGreen.setVisible(true);
                     }
                 }
-        */
+
         //humanとcoinのcollision判定
         for (var h = 0; h < this.humans.length; h++) {
             for (var c = 0; c < this.coins.length; c++) {
@@ -216,13 +215,13 @@ var BattleWindow = cc.Node.extend({
         }
         //占領率の測定
         var _occupiedCnt = 0;
-        /*
-        for (var m = 0; m < this.markers.length; m++) {
-            //if (this.markers[m].spriteGreen.isVisible() == true) {
-            //    _occupiedCnt++;
-            //}
+        
+        for (var m = 0; m < this.chips.length; m++) {
+            if (this.chips[m].spriteGreen.isVisible() == true) {
+                _occupiedCnt++;
+            }
         }
-        */
+        
         this.game.captureCnt = _occupiedCnt;
         //コインをupdateする
         for (var j = 0; j < this.coins.length; j++) {
@@ -291,10 +290,14 @@ this.chip.setOpacity(0.4*255);
                 this.chip.setAnchorPoint(0.5, 0.5);
                 this.chip.colorId = "WHITE";
                 this.chip.baseMapType = _rand;
-                //this.spriteGreen = cc.Sprite.create("res/map-base-green.png");
-                //this.chip.addChild(this.spriteGreen);
+                
+                this.spriteGreen = cc.Sprite.create("res/map-base-green.png");
+                this.chip.addChild(this.spriteGreen);
+
+this.chip.spriteGreen = this.spriteGreen;
+
                 //this.spriteGreen.setAnchorPoint(0.5, 0.5);
-                //this.spriteGreen.setVisible(false);
+                this.spriteGreen.setVisible(false);
                 //左端
                 //-320, 300
                 //右端

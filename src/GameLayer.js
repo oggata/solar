@@ -205,10 +205,10 @@ var GameLayer = cc.Layer.extend({
         this.occupiedRateLabel.setAnchorPoint(1, 0);
         this.occupiedRateLabel.setPosition(240, 80);
         this.header.addChild(this.occupiedRateLabel, 999999);
-        this.timeLabel = new cc.LabelTTF("123", "Arial", 24);
+        this.timeLabel = new cc.LabelTTF("123", "Arial", 25);
         this.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
-        this.timeLabel.setAnchorPoint(0, 0);
-        this.timeLabel.setPosition(320, 110);
+        this.timeLabel.setAnchorPoint(0.5, 0);
+        this.timeLabel.setPosition(325, 90);
         this.header.addChild(this.timeLabel, 999999);
         //this.occupiedGauge = new Gauge(530, 20, 'GREEN');
         //this.occupiedGauge.setAnchorPoint(0, 0);
@@ -317,14 +317,6 @@ var GameLayer = cc.Layer.extend({
             }
         }
     },
-    /*
-    addBattleEffect: function (colorName, cardId) {
-        this.battleEffect = new BattleEffect(this, colorName, cardId);
-        this.addChild(this.battleEffect, 99999999);
-        this.battleEffect.setPosition(0, 240);
-        this.battleEffects.push(this.battleEffect);
-    },
-    */
     setStartLabel: function () {
         this.labelStartCnt001 = cc.Sprite.create("res/label_starttime001.png");
         this.labelStartCnt001.setPosition(320, 500);
@@ -351,7 +343,7 @@ var GameLayer = cc.Layer.extend({
         var scene = cc.Scene.create();
         //次のステージへいくためにstorageは必ず受けた渡す
         scene.addChild(DiscoveryLayer.create(this.storage, errorNum));
-        cc.director.runScene(cc.TransitionFadeTR.create(0.5, scene));
+        cc.director.runScene(cc.TransitionFadeTR.create(1.0, scene));
     },
     getRandNumberFromRange: function (min, max) {
         var rand = min + Math.floor(Math.random() * (max - min));

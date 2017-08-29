@@ -206,8 +206,8 @@ if(this.game.mode != "gaming") return;
         this.setRoute();
     },
     setRouteType033: function () {
-        //this.maxDistance = 5;
-        this.maxDistance = 2;
+        this.maxDistance = 6;
+        //this.maxDistance = 2;
         //if (this.targetMarker != null) return;
         this.walkSpeed = 1.8 * 2;
         //敵のenemyの存在するマーカーを全部取得する
