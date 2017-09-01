@@ -29,10 +29,10 @@ var Material = cc.Node.extend({
             this.image = "res/material-map-002.png";
         }
         if(mCode == 3){
-            this.image = "res/material-map-003.png";
+            this.image = "res/material-map-001.png";
         }
         if(mCode == 4){
-            this.image = "res/material-map-004.png";
+            this.image = "res/material-map-002.png";
         }
         if(mCode == 5){
             this.image = "res/sozai005.png";

@@ -276,7 +276,7 @@ this.chips[m].spriteGreen.setVisible(true);
                     this.chip = cc.Sprite.create("res/map-chip-3-001-a.png");
                 }
                 if (_rand == 2) {
-                    this.chip = cc.Sprite.create("res/map-chip-3-002.png");
+                    this.chip = cc.Sprite.create("res/map-chip-3-002-1.png");
                 }
                 if (_rand == 3) {
                     this.chip = cc.Sprite.create("res/map-chip-3-003.png");
@@ -284,7 +284,7 @@ this.chips[m].spriteGreen.setVisible(true);
                 this.chip.mapChipType = _rand;
                 this.chip.col = col;
                 this.chip.row = row;
-this.chip.setOpacity(0.4*255);
+this.chip.setOpacity(0.95*255);
 
                 this.chips.push(this.chip);
                 this.chip.setAnchorPoint(0.5, 0.5);

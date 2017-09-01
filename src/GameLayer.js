@@ -88,7 +88,7 @@ var GameLayer = cc.Layer.extend({
         this.baseNode.setPosition(0, 0);
         this.addChild(this.baseNode);
         this.battleWindow = new BattleWindow(this);
-        this.addChild(this.battleWindow, 999);
+        this.addChild(this.battleWindow);
         this.battleWindow.setPosition(0, 0);
         this.battleWindowScale = 0.1;
         this.maxBattleWindowScale = 1.0;
@@ -199,7 +199,7 @@ var GameLayer = cc.Layer.extend({
         this.header = cc.Sprite.create("res/header001.png");
         this.header.setPosition(320, 1136 - 150);
         this.header.setAnchorPoint(0.5, 0);
-        this.addChild(this.header, 999999);
+        this.addChild(this.header, 999999999999);
         this.occupiedRateLabel = new cc.LabelTTF(this.greenScore, "Arial", 46);
         this.occupiedRateLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         this.occupiedRateLabel.setAnchorPoint(1, 0);

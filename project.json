@@ -34,6 +34,7 @@
         "src/Gauge.js",
         "src/Material.js",
         "src/Deburis.js",
-        "src/DiscoveryLayer.js"
+        "src/DiscoveryLayer.js",
+        "src/PlanetSprite.js"
     ]
 }

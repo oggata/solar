@@ -54,19 +54,6 @@ var PlanetLayer = cc.Layer.extend({
         var launchButton = new cc.MenuItemImage("res/button_get_card.png", "res/button_get_card_on.png", function () {
             this.launchCnt = 1;
             this.sprite.setOpacity(255 * 4);
-            /*
-            if (this.storage.totalCoinAmount <= 0) {
-                this.errorLabel.setString("クリスタルが不足しています.");
-                this.error.setVisible(true);
-                this.errorCnt = 1;
-            } else {
-                this.storage.totalCoinAmount -= 1;
-                //var _rand = this.getRandNumberFromRange(1, 6);
-                //var _card = CONFIG.CARD[_rand];
-                //this.storage.saveCreatureDataToStorage(_card);
-                this.goToGameLayer();
-            }
-            */
         }, this);
         launchButton.setPosition(320, 340);
         
@@ -99,6 +86,7 @@ var PlanetLayer = cc.Layer.extend({
         }, this);
         debugButton2.setPosition(100, 50);
 */
+
         var menu001 = new cc.Menu(launchButton,backButton);
         menu001.setPosition(0, 0);
         this.inputNode.addChild(menu001);
