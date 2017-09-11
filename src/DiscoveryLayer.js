@@ -47,6 +47,9 @@ var DiscoveryLayer = cc.Layer.extend({
         this.labelTitle = cc.Sprite.create("res/label_title.png");
         this.labelTitle.setPosition(320, 600);
         this.addChild(this.labelTitle, 9999999);
+
+        this.timeCnt = 0;
+
         this.labelOpacity = 1;
         this.stopPowerX = 0.05;
         this.planets = [];
@@ -77,7 +80,7 @@ var DiscoveryLayer = cc.Layer.extend({
         for (var i = 0; i < 100; i++) {
             var _x = this.getRandNumberFromRange(1, 10000);
             var _y = this.getRandNumberFromRange(1, 10000);
-            if (this.getMostNearPlanet(_x, _y, 500) == null) {
+            if (this.getMostNearPlanet(_x, _y, 800) == null) {
                 this.planetSprite = new PlanetSprite(this);
                 this.baseNode.addChild(this.planetSprite);
                 this.planets.push(this.planetSprite);
@@ -115,11 +118,9 @@ var DiscoveryLayer = cc.Layer.extend({
         this.cameraTargetPosY = 0;
         //カメラの設定
         if (this.rocketSprite.basePlanet == null) {
-            //this.baseNode.setPosition(320 - this.rocketSprite.getPosition().x, 480 - this.rocketSprite.getPosition().y);
             this.cameraTargetPosX = 320 - this.rocketSprite.getPosition().x;
             this.cameraTargetPosY = 480 - this.rocketSprite.getPosition().y;
         } else {
-            //this.baseNode.setPosition(320 - this.rocketSprite.basePlanet.getPosition().x, 480 - this.rocketSprite.basePlanet.getPosition().y);
             this.cameraTargetPosX = 320 - this.rocketSprite.basePlanet.getPosition().x;
             this.cameraTargetPosY = 480 - this.rocketSprite.basePlanet.getPosition().y;
         }
@@ -127,8 +128,8 @@ var DiscoveryLayer = cc.Layer.extend({
         this.cameraPosY = this.cameraTargetPosY;
         this.baseNode.setPosition(this.cameraTargetPosX, this.cameraTargetPosY);
         //メッセージの制御
-        this.messageLabel = cc.LabelTTF.create("", "Arial", 22);
-        this.messageLabel.setPosition(120, 850);
+        this.messageLabel = cc.LabelTTF.create("", "Arial", 18);
+        this.messageLabel.setPosition(160, 240);
         this.messageLabel.setAnchorPoint(0, 1);
         this.messageLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.addChild(this.messageLabel);
@@ -137,25 +138,53 @@ var DiscoveryLayer = cc.Layer.extend({
         this.messageTime = 0;
         this.visibleStrLenght = 0;
         this.launchCnt = 0;
-        var launchButton = new cc.MenuItemImage("res/button_get_card.png", "res/button_get_card_on.png", function () {
+        this.launchButton = new cc.MenuItemImage("res/button_launch.png", "res/button_launch.png", function () {
             this.launchCnt = 1;
             this.sprite.setOpacity(255 * 4);
         }, this);
-        launchButton.setPosition(320, 240);
-        var menu001 = new cc.Menu(launchButton);
+        this.launchButton.setPosition(320, 300);
+        var menu001 = new cc.Menu(this.launchButton);
         menu001.setPosition(0, 0);
         this.addChild(menu001);
         this.baseNodeScale = 1;
         this.initializeWarpAnimation();
-
-
         this.howto = cc.Sprite.create("res/howto.png");
         this.howto.setPosition(320, 200);
         //this.addChild(this.howto, 9999999);
+        this.tutorial = cc.Sprite.create("res/icon_howto.png");
+        this.baseNode.addChild(this.tutorial, 9999999);
+        this.cameraSpeed = 1;
 
+
+this.fromP = cc.p(1,1);
+this.toP = cc.p(1,1);
+
+
+
+        this.isPullRocket = false;
         return true;
     },
     update: function (dt) {
+
+        this.timeCnt++;
+        if(this.timeCnt>=30 * 3){
+            this.labelTitle.setVisible(false);
+        }
+        this.tutorial.setPosition(this.rocketSprite.getPosition().x, this.rocketSprite.getPosition().y - 140);
+        //基盤の惑星があれば、探索できる
+        if (this.rocketSprite.basePlanet == null) {
+            this.launchButton.setVisible(false);
+        } else {
+            this.launchButton.setVisible(true);
+        }
+        //動いていない場合、引っ張ることができる
+        if (this.dx == 0 && this.dy == 0) {
+            this.tutorial.setVisible(true);
+this.isPullRocket = true;
+        } else {
+            this.tutorial.setVisible(false);
+this.isPullRocket = false;
+        }
         //発射
         if (this.launchCnt >= 1) {
             this.launchCnt++;
@@ -217,43 +246,41 @@ var DiscoveryLayer = cc.Layer.extend({
         }
         this.rocketSprite.setPosition(this.rocketSprite.getPosition().x + this.dx, this.rocketSprite.getPosition().y +
             this.dy);
+        this.setCameraSpeed();
+        this.baseNode.setPosition(this.cameraPosX, this.cameraPosY);
+    },
+    setCameraSpeed: function () {
         //カメラの設定
         if (this.rocketSprite.basePlanet == null) {
+            //拠点の惑星があれば、その惑星の中心にカメラを固定する
             this.cameraTargetPosX = 320 - this.rocketSprite.getPosition().x;
-            this.cameraTargetPosY = 480 - this.rocketSprite.getPosition().y;
+            this.cameraTargetPosY = 580 - this.rocketSprite.getPosition().y;
         } else {
+            //拠点の惑星があれば、ロケットをカメラが追いかける
             this.cameraTargetPosX = 320 - this.rocketSprite.basePlanet.getPosition().x;
-            this.cameraTargetPosY = 480 - this.rocketSprite.basePlanet.getPosition().y;
+            this.cameraTargetPosY = 580 - this.rocketSprite.basePlanet.getPosition().y;
         }
-        if (Math.abs(this.baseNode.getPosition().x - this.cameraTargetPosX) >= 20) {
-            this.cameraSpeedX = 20;
-        } else if (Math.abs(this.baseNode.getPosition().x - this.cameraTargetPosX) >= 10) {
-            this.cameraSpeedX = 10;
-        } else if (Math.abs(this.baseNode.getPosition().x - this.cameraTargetPosX) >= 5) {
-            this.cameraSpeedX = 5;
+        //カメラスピードの決定
+        if (Math.abs(this.baseNode.getPosition().x - this.cameraTargetPosX) >= 50) {
+            this.cameraSpeedX = 50;
         } else {
-            this.cameraSpeedX = 0;
+            this.cameraSpeedX = Math.abs(this.baseNode.getPosition().x - this.cameraTargetPosX);
         }
         if (this.baseNode.getPosition().x <= this.cameraTargetPosX) {
             this.cameraPosX += this.cameraSpeedX;
         } else {
             this.cameraPosX -= this.cameraSpeedX;
         }
-        if (Math.abs(this.baseNode.getPosition().y - this.cameraTargetPosY) >= 20) {
-            this.cameraSpeedY = 20;
-        } else if (Math.abs(this.baseNode.getPosition().y - this.cameraTargetPosY) >= 10) {
-            this.cameraSpeedY = 10;
-        } else if (Math.abs(this.baseNode.getPosition().y - this.cameraTargetPosY) >= 5) {
-            this.cameraSpeedY = 5;
+        if (Math.abs(this.baseNode.getPosition().y - this.cameraTargetPosY) >= 50) {
+            this.cameraSpeedY = 50;
         } else {
-            this.cameraSpeedY = 0;
+            this.cameraSpeedY = Math.abs(this.baseNode.getPosition().y - this.cameraTargetPosY);
         }
         if (this.baseNode.getPosition().y <= this.cameraTargetPosY) {
             this.cameraPosY += this.cameraSpeedY;
         } else {
             this.cameraPosY -= this.cameraSpeedY;
         }
-        this.baseNode.setPosition(this.cameraPosX, this.cameraPosY);
     },
     setBrakingDistance: function () {
         //惑星との距離によって制動距離を変える
@@ -328,7 +355,7 @@ var DiscoveryLayer = cc.Layer.extend({
         this.infoWindow = cc.Sprite.create("res/info.png");
         //this.infoWindow.setAnchorPoint(0, 0);
         this.infoWindow.setPosition(320, 1000);
-        this.addChild(this.infoWindow,999999999);
+        this.addChild(this.infoWindow, 999999999);
         this.fuelLabel = cc.LabelTTF.create("123 / 143", "Arial", 25);
         this.fuelLabel.setPosition(120, 160);
         this.fuelLabel.setAnchorPoint(0, 1);
@@ -401,11 +428,13 @@ var DiscoveryLayer = cc.Layer.extend({
         //}
     },
     touchStart: function (location) {
+        if(this.isPullRocket == false) return;
         this.fromP = cc.p(location.x, location.y);
         this.drawNode = cc.DrawNode.create();
         this.addChild(this.drawNode);
     },
     touchMove: function (location) {
+        if(this.isPullRocket == false) return;
         this.removeChild(this.drawNode);
         this.drawNode = cc.DrawNode.create();
         this.addChild(this.drawNode);
@@ -413,6 +442,7 @@ var DiscoveryLayer = cc.Layer.extend({
         this.drawNode.drawSegment(this.fromP, this.toP, this.lineWidth, this.lineColor);
     },
     touchFinish: function (location) {
+        if(this.isPullRocket == false) return;
         //launch
         this.dx = (this.fromP.x - this.toP.x) / 20;
         this.dy = (this.fromP.y - this.toP.y) / 20;

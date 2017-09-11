@@ -3,27 +3,33 @@ var BattleWindow = cc.Node.extend({
         this._super();
         this.game = game;
         this.mode = "wait";
+        //フィールドを追加する
         this.field = cc.Node.create();
         this.field.setAnchorPoint(0, 0);
         this.field.setPosition(0, 0);
         this.fieldScale = 1;
         this.field.setScale(this.fieldScale);
         this.addChild(this.field);
-        //this.markers = [];
+        //配列を用意する
         this.chips = [];
         this.initMap();
         this.debris_array = [];
         this.humans = [];
         this.coins = [];
+        this.escapes = [];
+        //最大値を設定する
         this.maxCoinCnt = 20;
         this.orderCnt = 0;
         this.orderCnt2 = 0;
         this.orderMaxCnt = 1;
+        this.gameScore = 0;
         this.gameTimeCnt = 0;
         this.gameTime = 0;
-        this.maxGameTime = 60;
-        this.enemyCnt = 4;
+        this.enemyCnt = 0;
+        //this.enemies = [];
+        this.enemySpeed = 1;
         this.materials = [];
+        this.result = null;
         //配置可能なリストを作る
         this.positionalChips = [];
         for (var j = 0; j < this.chips.length; j++) {
@@ -45,8 +51,6 @@ var BattleWindow = cc.Node.extend({
         this.selectedMarker.setPosition(100, 300);
         this.selectedMarker.col = null;
         this.selectedMarker.row = null;
-        //this.selectedMarkerCol = 1;
-        //this.selectedMarkerRow = 1;
         //player
         this.human = new Human(this, 10, 10, "GREEN", 1, 1, 99);
         this.field.addChild(this.human);
@@ -61,53 +65,51 @@ var BattleWindow = cc.Node.extend({
         this.shipLandingCnt = 0;
         this.shipLandDirection = -10;
         this.scheduleUpdate();
-
-
-/*
-        if (this.coins.length <= this.maxCoinCnt) {
-            this.positionalChips.sort(this.shuffle);
-            this.addCoin(this.positionalChips[0].col, this.positionalChips[0].row);
-        }
-*/
+        //materialを足す
         for (var i = 0; i < this.maxCoinCnt; i++) {
             this.positionalChips.sort(this.shuffle);
             this.addCoin(this.positionalChips[0].col, this.positionalChips[0].row);
         }
-
+        //escape
+        for (var i = 0; i < 3; i++) {
+            this.positionalChips.sort(this.shuffle);
+            this.positionalChips.sort(this.shuffle);
+            this.addEscape(this.positionalChips[0].col, this.positionalChips[0].row);
+        }
     },
     getCurrentMarker: function (x, y) {
         var posX = (x - this.game.lastTouchGameLayerX);
         var posY = (y - this.game.lastTouchGameLayerY);
         var marker = this.getMarker(posX, posY);
-        //this.launchedMarker.setPosition(marker.getPosition().x, marker.getPosition().y);
         return marker;
     },
-    setLand: function () {
+    //status : send get
+    setShipLand: function (status) {
         this.ship.setVisible(true);
         this.shipPosY += this.shipLandDirection;
-        if (this.player.getPosition().y + 20 >= this.shipPosY) {
+        if (this.player.getPosition().y + 50 >= this.shipPosY) {
             this.shipLandDirection = 0;
             this.shipLandingCnt += 1;
         }
-        //船のランディング停止時間 20
-        //if (this.shipLandingCnt >= 10) {
-
-            //cc.log("player visible on");
-            //cc.log(this.player.getPosition().x);
-            //this.player.setVisible(true);
-        //}
         if (this.shipLandingCnt >= 20) {
             this.shipLandDirection = 30;
-            this.player.setVisible(true);
+            if(status == "send"){
+                this.player.setVisible(true);
+            }else if(status == "get"){
+                this.player.setVisible(false);
+            }
         }
         this.ship.setPosition(this.player.getPosition().x, this.shipPosY);
     },
     setShipHidden: function () {
         this.shipLandingCnt = 0;
         this.shipLandDirection = -10;
-        //this.setLand();
         this.ship.setVisible(false);
         this.shipPosY = this.player.getPosition().y + 800;
+    },
+    setDifficulty:function(){
+        this.enemyCnt = this.gameScore + 2;
+        this.enemySpeed = 1.2 * 2 + this.gameScore * 0.1;
     },
     update: function (dt) {
         //時間を計測
@@ -116,6 +118,15 @@ var BattleWindow = cc.Node.extend({
             this.gameTimeCnt = 0;
             this.gameTime++;
         }
+
+        this.setDifficulty();
+
+        //for (var i = 0; i < this.enemyCnt; i++) {
+        if(this.humans.length < this.enemyCnt){
+            this.positionalChips.sort(this.shuffle);
+            this.addHuman(this.positionalChips[0].col, this.positionalChips[0].row, "RED", 1, 1);
+        }
+
         //デブリをupdate
         for (var i = 0; i < this.debris_array.length; i++) {
             if (this.debris_array[i].update() == false) {
@@ -143,38 +154,57 @@ var BattleWindow = cc.Node.extend({
                 }
                 this.field.reorderChild(this.chips[j], Math.floor(99999999 - (this.chips[j].col + this.chips[j].row) + _ajust));
             }
-            //for (var j = 0; j < this.markers.length; j++) {
-            //    this.field.reorderChild(this.markers[j], Math.floor(99999999 - (this.markers[j].col + this.markers[j].row) + 0));
-            //}
-            /*
+
+            for (var j = 0; j < this.escapes.length; j++) {
+                var _ajust = 0;
+                this.field.reorderChild(this.escapes[j], Math.floor(99999999 - (this.escapes[j].col + this.escapes[j].row) + _ajust));
+            }
+
             if (this.coins.length <= this.maxCoinCnt) {
                 this.positionalChips.sort(this.shuffle);
                 this.addCoin(this.positionalChips[0].col, this.positionalChips[0].row);
             }
-            */
         }
+        //ローバーをupdateする
+        for (var j = 0; j < this.humans.length; j++) {
+            if (this.humans[j].update() == false) {
 
-            //ローバーをupdateする
-            for (var j = 0; j < this.humans.length; j++) {
-                if (this.humans[j].update() == false) {
+
+                    this.destroyEffect = new DestroyEffect(this);
+                    this.field.addChild(this.destroyEffect);
+                    this.destroyEffect.setPosition(this.humans[j].getPosition().x,this.humans[j].getPosition().y);
+
+                //if(this.humans[j].colorName != "GREEN"){
                     this.field.removeChild(this.humans[j]);
                     this.humans.splice(j, 1);
-                } else {
-                    this.field.reorderChild(this.humans[j], Math.floor(99999999 - (this.humans[j].col + this.humans[j].row) + 1));
-                }
-            }
 
+
+
+                //}
+            } else {
+                this.field.reorderChild(this.humans[j], Math.floor(99999999 - (this.humans[j].col + this.humans[j].row) + 1));
+            }
+        }
         if (this.mode == "gaming") {
             this.orderMaxCnt = 30;
             this.shipPosY = this.player.getPosition().y + 800;
         }
-        
-                //markerとplayerのcollision判定
-                for (var m = 0; m < this.chips.length; m++) {
-                    if (this.player.col + 1 == this.chips[m].col && this.player.row == this.chips[m].row) {
-this.chips[m].spriteGreen.setVisible(true);
-                    }
+        //markerとplayerのcollision判定
+        for (var m = 0; m < this.chips.length; m++) {
+            if (this.player.col + 1 == this.chips[m].col && this.player.row == this.chips[m].row) {
+                this.chips[m].spriteGreen.setVisible(true);
+            }
+        }
+
+        //humanとescapeのcollision判定
+        for (var h = 0; h < this.humans.length; h++) {
+            for (var e = 0; e < this.escapes.length; e++) {
+                if (this.humans[h].col == this.escapes[e].col && this.humans[h].row == this.escapes[e].row && this.humans[h].colorName == "GREEN") {
+                    this.mode = "result";
+                    this.result = "success";
                 }
+            }
+        }
 
         //humanとcoinのcollision判定
         for (var h = 0; h < this.humans.length; h++) {
@@ -190,6 +220,7 @@ this.chips[m].spriteGreen.setVisible(true);
                         if (this.coins[c].typeNum) {
                             var _typeNum = this.coins[c].typeNum;
                             this.game.addMaterial(_typeNum);
+                            this.gameScore+=1;
                             this.addMaterial(_typeNum);
                         }
                     }
@@ -206,7 +237,7 @@ this.chips[m].spriteGreen.setVisible(true);
                             this.humans[h1].hp = 0;
                             this.humans[h2].hp = 0;
                             //for (var i = 0; i <= 5; i++) {
-                            this.addDeburis(this.humans[h1].getPosition().x + 20, this.humans[h1].getPosition().y + 20, 1);
+//this.addDeburis(this.humans[h1].getPosition().x + 20, this.humans[h1].getPosition().y + 20, 1);
                             //}
                         }
                     }
@@ -215,13 +246,11 @@ this.chips[m].spriteGreen.setVisible(true);
         }
         //占領率の測定
         var _occupiedCnt = 0;
-        
         for (var m = 0; m < this.chips.length; m++) {
             if (this.chips[m].spriteGreen.isVisible() == true) {
                 _occupiedCnt++;
             }
         }
-        
         this.game.captureCnt = _occupiedCnt;
         //コインをupdateする
         for (var j = 0; j < this.coins.length; j++) {
@@ -230,13 +259,10 @@ this.chips[m].spriteGreen.setVisible(true);
                 this.coins.splice(j, 1);
             }
         }
-        //時間がなくなったら試合終了
-        if (this.gameTime >= this.maxGameTime) {
-            this.mode = "result";
-        }
         //自プレイヤーが死んだから試合終了
         if (this.player.hp <= 0) {
             this.mode = "result";
+            this.result = "failed";
         }
     },
     addMaterial: function (mcode) {
@@ -245,6 +271,17 @@ this.chips[m].spriteGreen.setVisible(true);
         this.field.addChild(_material, 9999999999999);
         this.materials.push(_material);
     },
+
+    addEscape: function (col,row) {
+        var _escape = cc.Sprite.create("res/escape.png");
+        var _marker = this.getMarker2(col, row);
+        _escape.col = col;
+        _escape.row = row;
+        _escape.setPosition(_marker.getPosition().x,_marker.getPosition().y);
+        this.field.addChild(_escape, 9999999999999);
+        this.escapes.push(_escape);
+    },
+
     addHuman: function (col, row, colorName, markerId, algorithmId) {
         //if (this.humans.length >= 20) return;
         var _rand = this.getRandNumberFromRange(1, 6);
@@ -284,18 +321,14 @@ this.chips[m].spriteGreen.setVisible(true);
                 this.chip.mapChipType = _rand;
                 this.chip.col = col;
                 this.chip.row = row;
-this.chip.setOpacity(0.95*255);
-
+                this.chip.setOpacity(0.95 * 255);
                 this.chips.push(this.chip);
                 this.chip.setAnchorPoint(0.5, 0.5);
                 this.chip.colorId = "WHITE";
                 this.chip.baseMapType = _rand;
-                
                 this.spriteGreen = cc.Sprite.create("res/map-base-green.png");
                 this.chip.addChild(this.spriteGreen);
-
-this.chip.spriteGreen = this.spriteGreen;
-
+                this.chip.spriteGreen = this.spriteGreen;
                 //this.spriteGreen.setAnchorPoint(0.5, 0.5);
                 this.spriteGreen.setVisible(false);
                 //左端

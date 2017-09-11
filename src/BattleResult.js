@@ -3,7 +3,7 @@ var BattleResult = cc.Node.extend({
         this._super();
         this.game = game;
         this.resultSprite = cc.Sprite.create("res/result2.png");
-        this.resultSprite.setPosition(0, 40);
+        this.resultSprite.setPosition(0, 0);
         this.addChild(this.resultSprite);
         this.titleLabel = cc.LabelTTF.create("YOU ARE FIRST VISITER!", "Arial", 42);
         this.titleLabel.setPosition(70, 800);

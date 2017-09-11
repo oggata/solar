@@ -12,7 +12,7 @@ var Debris = cc.Node.extend({
         if (this.blockNum == 21) {
             this.sprite = cc.Sprite.create("res/bit_021.png");
         }
-        this.sprite.setScale(0.64);
+        this.sprite.setScale(1.4);
 
         this.addChild(this.sprite);
         this.dx = 0;

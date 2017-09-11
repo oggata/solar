@@ -8,11 +8,11 @@ var Human = cc.Node.extend({
         this.markerId = markerId;
         this.algorithmId = algorithmId;
         if (colorName == "RED") {
-            this.image = "res/utyujin3.png";
+            this.image = "res/utyujin.png";
             this.imgWidth = 640 / 4;
             this.imgHeight = 640 / 4;
             this.widthCnt = 4;
-            this.setScale(0.7, 0.7);
+            this.setScale(1.2, 1.2);
             this.span = 0.08;
         } else {
             this.image = "res/utyu.png";
@@ -43,7 +43,6 @@ var Human = cc.Node.extend({
         this.reverseArr = [];
         this.distances = [];
         this.setDistance(this.col, this.row);
-        //this.moveType = this.getRandNumberFromRange(1, 6);
         this.moveType = moveType;
         if (this.moveType == 99) {
             this.setRouteType000();
@@ -54,25 +53,91 @@ var Human = cc.Node.extend({
         } else {
             this.setRouteType033();
         }
-        //this.setRouteType000();
-        this.aliveCnt = 0;
         this.walkSpeed = 2.5;
         this.maxDistance = 5;
-        this.isDraw = true;
+
+        this.deadCnt = 0;
+        this.isDead = false;
+        this.flushCnt = 0;
+        this.isSpriteVisible = true;
     },
     update: function () {
+        if (this.game.game.gameDirection == "right_up") {
+            var _marker = this.getMarker(this.col + 1, this.row);
+            if (_marker) {
+                this.game.selectedMarker.col = this.col + 1;
+                this.game.selectedMarker.row = this.row;
+                if(this.colorName == "GREEN"){
+                    this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
+                }
+            }
+        }
+        if (this.game.game.gameDirection == "right_down") {
+            var _marker = this.getMarker(this.col, this.row - 1);
+            if (_marker) {
+                this.game.selectedMarker.col = this.col;
+                this.game.selectedMarker.row = this.row - 1;
+                if(this.colorName == "GREEN"){
+                    this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
+                }
+            }
+        }
+        if (this.game.game.gameDirection == "left_up") {
+            var _marker = this.getMarker(this.col, this.row + 1);
+            if (_marker) {
+                this.game.selectedMarker.col = this.col;
+                this.game.selectedMarker.row = this.row + 1;
+                if(this.colorName == "GREEN"){
+                    this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
+                }
+            }
+        }
+        if (this.game.game.gameDirection == "left_down") {
+            var _marker = this.getMarker(this.col - 1, this.row);
+            if (_marker) {
+                this.game.selectedMarker.col = this.col - 1;
+                this.game.selectedMarker.row = this.row;
+                if(this.colorName == "GREEN"){
+                    this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
+                }
+            }
+        }
         if (this.hp <= 0) {
+
+    this.flushCnt++;
+    if(this.flushCnt >= 3){
+        this.flushCnt = 0;
+        if(this.isSpriteVisible == true){
+            this.isSpriteVisible = false;
+        }else{
+            this.isSpriteVisible = true;
+        }
+        this.sprite.setVisible(this.isSpriteVisible);
+    }
+
+
+
+
+this.deadCnt++;
+if(this.deadCnt>=30 * 3){
+    this.isDead = true;
+    //this.game.addDeburis(this.getPosition().x + 50, this.getPosition().y + 50, 1);
+    
+            for (var i = 0; i <= 5; i++) {
+                this.game.addDeburis(this.getPosition().x + 70, this.getPosition().y + 70, 1);
+            }
+    return false;
+}
+
+/*
             for (var i = 0; i <= 3; i++) {
                 this.game.addDeburis(this.getPosition().x + 50, this.getPosition().y + 50, 1);
             }
-            return false;
+*/
+            //return false;
         }
         if (this.hp > 0) {
-
-
-if(this.game.mode != "gaming") return;
-
-
+            if (this.game.mode != "gaming") return;
             this.timeCnt++;
             if (this.timeCnt >= 30 * 1) {
                 this.timeCnt = 0;
@@ -80,8 +145,14 @@ if(this.game.mode != "gaming") return;
             if (this.reverseArr.length >= 1) {
                 if (this.reverseArr[0]) {
                     this.targetMarker = this.getMarker(this.reverseArr[0].col, this.reverseArr[0].row);
+                    //このターゲットに敵がいないことを確認する
                     if (this.targetMarker) {
-                        this.moveToTarget(this.targetMarker, this.walkSpeed, this.walkSpeed);
+                        var _cnt = this.getHumanCnt(this.targetMarker.col, this.targetMarker.row);
+                        if (_cnt == 0) {
+                            this.moveToTarget(this.targetMarker, this.walkSpeed, this.walkSpeed);
+                        }else{
+                            this.targetMarker = null;
+                        }
                     }
                 }
             } else {
@@ -104,6 +175,18 @@ if(this.game.mode != "gaming") return;
             }
         }
         return true;
+    },
+    getHumanCnt: function (targetCol, targetRow) {
+        return 0;
+        var cnt = 0;
+        for (var h = 0; h < this.game.humans.length; h++) {
+            if (this.game.humans[h].col == targetCol 
+                && this.game.humans[h].row == targetRow 
+                && this.game.humans[h].colorName == "RED") {
+                cnt++;
+            }
+        }
+        return cnt;
     },
     setDistance: function (col, row) {
         this.distances = [];
@@ -175,23 +258,15 @@ if(this.game.mode != "gaming") return;
                 }
             }
         }
-        /*
-        for (var i = 0; i < this.distances.length; i++) {
-            var _marker = this.getMarker(this.distances[i].col, this.distances[i].row);
-            if (_marker) {
-                _marker.testLabel.setString(this.distances[i].dist);
-            }
-        }*/
     },
     //プレイヤー用。ターゲットされたマーカーを追いかける
     setRouteType000: function () {
-        this.maxDistance = 20;
+        this.maxDistance = 2;
         this.walkSpeed = 2.1 * 2;
-        this.isDraw = true;
         //自分が配置されたマーカーから、特定距離(5)のマーカーを全部取得する
         //this.targetDistance = this.getRandNumberFromRange(1, 5);
         for (var i = 0; i < this.distances.length; i++) {
-            if(this.game.selectedMarker.col == null && this.game.selectedMarker.col == null) return;
+            if (this.game.selectedMarker.col == null && this.game.selectedMarker.col == null) return;
             if (this.distances[i].col == this.game.selectedMarker.col && this.distances[i].row == this.game.selectedMarker.row) {
                 this.targetMarkers.push(this.distances[i]);
             }
@@ -208,8 +283,8 @@ if(this.game.mode != "gaming") return;
     setRouteType033: function () {
         this.maxDistance = 6;
         //this.maxDistance = 2;
-        //if (this.targetMarker != null) return;
-        this.walkSpeed = 1.8 * 2;
+        //this.walkSpeed = 1.2 * 2;
+        this.walkSpeed = this.game.enemySpeed;
         //敵のenemyの存在するマーカーを全部取得する
         if (this.colorName == "GREEN") {
             this.enemyColorName = "RED";
@@ -243,12 +318,9 @@ if(this.game.mode != "gaming") return;
         if (this.hasPlayer == true && this.targetDistance <= 5) {
             this.setRoute();
         } else {
-            //this.walkSpeed = 2.5;
             this.targetMarkers = [];
             //自分が配置されたマーカーから、特定距離(5)のマーカーを全部取得する
             this.targetDistance = this.getRandNumberFromRange(1, 4);
-            //cc.log("enemy have no eye" + this.distances.length);
-            //this.targetDistance = 1;
             for (var i = 0; i < this.distances.length; i++) {
                 if (this.distances[i].dist == this.targetDistance) {
                     var _marker = this.getMarker(this.distances[i].col, this.distances[i].row);
@@ -267,7 +339,6 @@ if(this.game.mode != "gaming") return;
     //(ドローワーtype)自陣を塗っていく
     setRouteType001: function () {
         this.walkSpeed = 2.5 * 3;
-        this.isDraw = true;
         //自分が配置されたマーカーから、特定距離(5)のマーカーを全部取得する
         this.targetDistance = this.getRandNumberFromRange(1, 4);
         for (var i = 0; i < this.distances.length; i++) {
@@ -287,7 +358,6 @@ if(this.game.mode != "gaming") return;
     //(コイナーtype)コインを取得する
     setRouteType002: function () {
         this.walkSpeed = 2.5 * 3;
-        this.isDraw = false;
         //coinの存在するマーカーを全部取得する
         for (var c = 0; c < this.game.coins.length; c++) {
             for (var i = 0; i < this.distances.length; i++) {
@@ -315,7 +385,6 @@ if(this.game.mode != "gaming") return;
     //(アタッカーtype)敵に攻撃を仕掛ける
     setRouteType003: function () {
         this.walkSpeed = 2 * 3;
-        this.isDraw = false;
         //敵のenemyの存在するマーカーを全部取得する
         if (this.colorName == "GREEN") {
             this.enemyColorName = "RED";
@@ -480,16 +549,8 @@ if(this.game.mode != "gaming") return;
         this.sprite = cc.Sprite.create(this.image, cc.rect(0, 0, this.imgWidth, this.imgHeight));
         this.sprite.runAction(this.ra);
         this.sprite.setAnchorPoint(0.5, 0.5);
-        this.sprite.setPosition(this.imgWidth / 4, this.imgHeight * 2/5);
+        this.sprite.setPosition(this.imgWidth / 4, this.imgHeight * 2 / 5);
         this.addChild(this.sprite);
-        /*
-        if(this.colorName == "GREEN"){
-                this.ship = cc.Sprite.create("res/ship.png");
-                this.ship.setPosition(32,800);
-                this.sprite.addChild(this.ship);
-                this.sprite.setVisible(false);
-        }
-        */
     },
     moveToTarget: function (object, speed, targetDist) {
         var diffX = Math.floor(object.getPosition().x - this.getPosition().x);
@@ -516,7 +577,6 @@ if(this.game.mode != "gaming") return;
             this.setPosition(this.getPosition().x + speedX, this.getPosition().y + speedY);
         } else {
             this.setPosition(object.getPosition().x, object.getPosition().y);
-            //if (this.isDraw == true) {
             if (this.colorName == "GREEN") {
                 if (object.colorId == "WHITE") {
                     object.colorId = this.colorName;
@@ -524,7 +584,6 @@ if(this.game.mode != "gaming") return;
                     //object.spriteBlack.setVisible(false);
                 }
             }
-            //}
             this.col = object.col;
             this.row = object.row;
             this.targetMarker = null;

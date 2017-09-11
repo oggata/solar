@@ -14,10 +14,10 @@ var Coin = cc.Node.extend({
             this.image = "res/material-map-002.png";
         }
         if (_rand2 == 3) {
-            this.image = "res/material-map-001.png";
+            this.image = "res/material-map-003.png";
         }
         if (_rand2 == 4) {
-            this.image = "res/material-map-002.png";
+            this.image = "res/material-map-004.png";
         }
         this.sprite = cc.Sprite.create(this.image);
         this.sprite.setAnchorPoint(0.5, 0);
