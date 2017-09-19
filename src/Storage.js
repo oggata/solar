@@ -3,11 +3,11 @@ var Storage = cc.Class.extend(
     ctor : function () 
     {
         this.creatureData = new Object();
-        this.deckData = new Object();
-        this.enemyDeckData = new Object();
+        //this.deckData = new Object();
+        //this.enemyDeckData = new Object();
 
-        this.eventData = new Object();
-        this.enemyEventData = new Object();
+        //this.eventData = new Object();
+        //this.enemyEventData = new Object();
         
         //this.startPositionData = [];
        // this.enemyStartPositionData = [];
@@ -21,6 +21,8 @@ var Storage = cc.Class.extend(
         this.targetTime = parseInt( new Date() /1000 );
         this.lastUpdatedTime = parseInt( new Date() /1000 );
         this.battleTargetUserId = 0;
+
+        /*
         this.enemyUserId = 0;
         this.enemyColorName = "";
         this.enemyTouchPosX = 0;
@@ -34,10 +36,10 @@ var Storage = cc.Class.extend(
         //this.webSocketHelper = new WebSocketHelper(this);
         this.users = [];
         this.userId = 0;
-        
+        */
 
-        this.isSteal = false;
-        this.isConnectionError = false;
+        //this.isSteal = false;
+        //this.isConnectionError = false;
     },
 
     init : function () { },
@@ -47,7 +49,7 @@ var Storage = cc.Class.extend(
         var _getData = this.getDataFromStorage();
         cc.sys.localStorage.setItem("gameStorage",_getData);
     },
-
+/*
     saveDeckDataToStorage : function(deckNum,card) 
     {
         //すでにある場合は、設定値の変更
@@ -83,7 +85,8 @@ var Storage = cc.Class.extend(
         var _acceptData = cc.sys.localStorage.getItem("gameStorage");
         cc.sys.localStorage.setItem("gameStorage",_getData);
     },
-
+*/
+/*
     saveEventDataToStorage : function(tickNum,card,col,row) 
     {
         //すでにある場合は、設定値の変更
@@ -123,8 +126,8 @@ var Storage = cc.Class.extend(
         var _acceptData = cc.sys.localStorage.getItem("gameStorage");
         cc.sys.localStorage.setItem("gameStorage",_getData);
     },
-
-    saveCreatureDataToStorage : function(card) 
+*/
+    saveCreatureDataToStorage : function(card,addCount) 
     {
         //すでにある場合は、設定値の変更
         var savedData = this.creatureData;
@@ -139,7 +142,7 @@ var Storage = cc.Class.extend(
                     var _txt = 
                         '{"id":' + Math.floor(card["id"]) + 
                         ',"image":"' + card["image"] + '"' + 
-                        ',"cnt":' + Math.floor(savedDataObj.cnt + 1) + 
+                        ',"cnt":' + Math.floor(savedDataObj.cnt + addCount) + 
                         ',"lastUpdatedTime":' + 0 + 
                         '}'
                     ;
@@ -151,12 +154,10 @@ var Storage = cc.Class.extend(
 
         if(_updateCnt == 0)
         {
-            //cc.log("insert data.");
-            //card.id = this.getRandNumberFromRange(1,9999999999);
             var _txt = 
                 '{"id":' + Math.floor(card["id"]) + 
                 ',"image":"' + card["image"] + '"' + 
-                ',"cnt":' + 1 + 
+                ',"cnt":' + addCount + 
                 ',"lastUpdatedTime":' + 0 + 
                 '}'
             ;
@@ -207,7 +208,7 @@ var Storage = cc.Class.extend(
                 incKeyCnt++;
             }
         }
-
+/*
         var _deckData = '';
         var keyCnt = Object.keys(this.deckData).length;
         var incKeyCnt = 1;
@@ -237,13 +238,13 @@ var Storage = cc.Class.extend(
                 incKeyCnt++;
             }
         }
-
+*/
         //return '{"saveData" : true, "creatureData":{"111":{"id":1,"score":123},"222":{"id":1,"score":123},"333":{"id":1,"score":123}}}';
         var rtn = '{';
         rtn += '"saveData" : true,';
         rtn += '"creatureData":{' + _creatureData + '},';
-        rtn += '"deckData":{' + _deckData + '},';
-        rtn += '"eventData":{' + _eventData + '},';
+        //rtn += '"deckData":{' + _deckData + '},';
+        //rtn += '"eventData":{' + _eventData + '},';
         rtn += '"playerName" :"' + this.playerName + '",';
         rtn += '"totalGameScore" :' + this.totalGameScore + ',';
         rtn += '"maxGameScore" :' + this.maxGameScore + ',';
@@ -301,79 +302,6 @@ var Storage = cc.Class.extend(
         this.bgmVolume        = getData["bgmVolume"];
         this.seVolume         = getData["seVolume"];
         this.lastUpdatedTime  = getData["lastUpdatedTime"];
-    },
-
-    SYNC_ENEMY_DATA_ON_BATTLE : function(posX,posY,colorName,gameStatus,turnCnt,cardId,_effectTurnCnt){
-        var _deckData = '';
-        var keyCnt = Object.keys(this.deckData).length;
-        var incKeyCnt = 1;
-        for (var key in this.deckData) {
-            if (this.deckData.hasOwnProperty(key)) {
-                var value = this.deckData[key];
-                _deckData += '"' + key + '":' + JSON.stringify(value);
-                if(incKeyCnt != keyCnt)
-                {
-                    _deckData += ',';
-                }
-                incKeyCnt++;
-            }
-        }
-
-        var _eventData = '';
-        var keyCnt = Object.keys(this.eventData).length;
-        var incKeyCnt = 1;
-        for (var key in this.eventData) {
-            if (this.eventData.hasOwnProperty(key)) {
-                var value = this.eventData[key];
-                _eventData += '"' + key + '":' + JSON.stringify(value);
-                if(incKeyCnt != keyCnt)
-                {
-                    _eventData += ',';
-                }
-                incKeyCnt++;
-            }
-        }
-
-        //var _startPositionDataTxt = JSON.stringify(this.startPositionData);
-        //cc.log(_startPositionDataTxt);
-        var _data = '{' + '"type":"SYNC_ENEMY_DATA_ON_BATTLE",' 
-        + '"userId":' + this.battleTargetUserId 
-        + ',' 
-        + '"battleTargetUserId":' + this.userId 
-        + ',' 
-        + '"enemyTouchPosX":' + posX
-        + ',' 
-        + '"enemyTouchPosY":' + posY
-        + ',' 
-        + '"enemyTreasureAmount":' + this.treasureAmount 
-        + ',' 
-        + '"enemyColorName":"' + colorName + '"'
-        + ',' 
-        + '"enemyBattleStatus":"' + gameStatus + '"'
-        + ',' 
-        + '"enemyTurnNum":' + turnCnt + ''
-        + ',' 
-        + '"enemyUsedCardId":' + cardId + ''
-        + ',' 
-        + '"enemyUsedCardTurn":' + _effectTurnCnt + ''
-        + ',' 
-        + '"enemyUsedCardMsg":"' + "aaaaa" + '"'
-        + ',' 
-        + '"enemyDeckData":{' + _deckData + '}'
-        + ',' 
-        + '"enemyEventData":{' + _eventData + '}'
-        + '}';
-        //return '{"saveData" : true, "creatureData":{"111":{"id":1,"score":123},"222":{"id":1,"score":123},"333":{"id":1,"score":123}}}';
-        //this.webSocketHelper.sendMsg(_data);
-    },
-
-    CONNECTION_ERROR : function(){
-        var _data = '{' 
-            + '"type":"CONNECTION_ERROR",' 
-            + '"userId":' + this.battleTargetUserId
-            + '}';
-        //cc.log(_data);
-        //this.webSocketHelper.sendMsg(_data);
     },
 
     initSDK : function() 

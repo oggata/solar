@@ -5,11 +5,7 @@ var TopLayer = cc.Layer.extend({
         //////////////////////////////
         // 1. super init first
         this._super();
-        /*
-                this.baseNode = cc.LayerColor.create(new cc.Color(0, 0, 0, 255), 640, 1136);
-                this.baseNode.setPosition(0, 0);
-                this.addChild(this.baseNode);
-        */
+
         this.baseNode = cc.Sprite.create("res/back_top.png");
         this.baseNode.setAnchorPoint(0, 0);
         this.baseNode.setPosition(0, 0);

@@ -8,11 +8,11 @@ var Human = cc.Node.extend({
         this.markerId = markerId;
         this.algorithmId = algorithmId;
         if (colorName == "RED") {
-            this.image = "res/utyujin.png";
-            this.imgWidth = 640 / 4;
-            this.imgHeight = 640 / 4;
-            this.widthCnt = 4;
-            this.setScale(1.2, 1.2);
+            this.image = "res/enemy99.png";
+            this.imgWidth = 1280 / 8;
+            this.imgHeight = 1280 / 8;
+            this.widthCnt = 7;
+            this.setScale(1.3, 1.3);
             this.span = 0.08;
         } else {
             this.image = "res/utyu.png";
@@ -55,7 +55,6 @@ var Human = cc.Node.extend({
         }
         this.walkSpeed = 2.5;
         this.maxDistance = 5;
-
         this.deadCnt = 0;
         this.isDead = false;
         this.flushCnt = 0;
@@ -67,7 +66,7 @@ var Human = cc.Node.extend({
             if (_marker) {
                 this.game.selectedMarker.col = this.col + 1;
                 this.game.selectedMarker.row = this.row;
-                if(this.colorName == "GREEN"){
+                if (this.colorName == "GREEN") {
                     this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
                 }
             }
@@ -77,7 +76,7 @@ var Human = cc.Node.extend({
             if (_marker) {
                 this.game.selectedMarker.col = this.col;
                 this.game.selectedMarker.row = this.row - 1;
-                if(this.colorName == "GREEN"){
+                if (this.colorName == "GREEN") {
                     this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
                 }
             }
@@ -87,7 +86,7 @@ var Human = cc.Node.extend({
             if (_marker) {
                 this.game.selectedMarker.col = this.col;
                 this.game.selectedMarker.row = this.row + 1;
-                if(this.colorName == "GREEN"){
+                if (this.colorName == "GREEN") {
                     this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
                 }
             }
@@ -97,43 +96,36 @@ var Human = cc.Node.extend({
             if (_marker) {
                 this.game.selectedMarker.col = this.col - 1;
                 this.game.selectedMarker.row = this.row;
-                if(this.colorName == "GREEN"){
+                if (this.colorName == "GREEN") {
                     this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
                 }
             }
         }
         if (this.hp <= 0) {
-
-    this.flushCnt++;
-    if(this.flushCnt >= 3){
-        this.flushCnt = 0;
-        if(this.isSpriteVisible == true){
-            this.isSpriteVisible = false;
-        }else{
-            this.isSpriteVisible = true;
-        }
-        this.sprite.setVisible(this.isSpriteVisible);
-    }
-
-
-
-
-this.deadCnt++;
-if(this.deadCnt>=30 * 3){
-    this.isDead = true;
-    //this.game.addDeburis(this.getPosition().x + 50, this.getPosition().y + 50, 1);
-    
-            for (var i = 0; i <= 5; i++) {
-                this.game.addDeburis(this.getPosition().x + 70, this.getPosition().y + 70, 1);
+            this.flushCnt++;
+            if (this.flushCnt >= 3) {
+                this.flushCnt = 0;
+                if (this.isSpriteVisible == true) {
+                    this.isSpriteVisible = false;
+                } else {
+                    this.isSpriteVisible = true;
+                }
+                this.sprite.setVisible(this.isSpriteVisible);
             }
-    return false;
-}
-
-/*
-            for (var i = 0; i <= 3; i++) {
-                this.game.addDeburis(this.getPosition().x + 50, this.getPosition().y + 50, 1);
+            this.deadCnt++;
+            if (this.deadCnt >= 30 * 3) {
+                this.isDead = true;
+                //this.game.addDeburis(this.getPosition().x + 50, this.getPosition().y + 50, 1);
+                for (var i = 0; i <= 5; i++) {
+                    //this.game.addDeburis(this.getPosition().x + 70, this.getPosition().y + 70, 1);
+                }
+                return false;
             }
-*/
+            /*
+                        for (var i = 0; i <= 3; i++) {
+                            this.game.addDeburis(this.getPosition().x + 50, this.getPosition().y + 50, 1);
+                        }
+            */
             //return false;
         }
         if (this.hp > 0) {
@@ -150,7 +142,7 @@ if(this.deadCnt>=30 * 3){
                         var _cnt = this.getHumanCnt(this.targetMarker.col, this.targetMarker.row);
                         if (_cnt == 0) {
                             this.moveToTarget(this.targetMarker, this.walkSpeed, this.walkSpeed);
-                        }else{
+                        } else {
                             this.targetMarker = null;
                         }
                     }
@@ -180,9 +172,8 @@ if(this.deadCnt>=30 * 3){
         return 0;
         var cnt = 0;
         for (var h = 0; h < this.game.humans.length; h++) {
-            if (this.game.humans[h].col == targetCol 
-                && this.game.humans[h].row == targetRow 
-                && this.game.humans[h].colorName == "RED") {
+            if (this.game.humans[h].col == targetCol && this.game.humans[h].row == targetRow && this.game.humans[h].colorName ==
+                "RED") {
                 cnt++;
             }
         }

@@ -5,6 +5,7 @@ var Material = cc.Node.extend({
         this.amount = 1;
         this.materialCode = mCode;
         this.orderCnt = orderCnt;
+        this.image = "res/sozai001.png";
         if (mCode == 1) {
             this.image = "res/sozai001.png";
         }
@@ -47,5 +48,8 @@ var Material = cc.Node.extend({
     setAmount: function () {
         this.scaleAdd = 0.2;
         this.amountLabel.setString("x" + this.amount);
+        if(this.amount == 0){
+            this.amountLabel.setVisible(false);
+        }
     },
 });

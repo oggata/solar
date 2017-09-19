@@ -35,7 +35,7 @@ var GameLayer = cc.Layer.extend({
             cc.sys.localStorage.clear();
         }
         //isCom = true;
-        this.storage.saveDeckDataToStorage(1, CONFIG.CARD[1]);
+        //this.storage.saveDeckDataToStorage(1, CONFIG.CARD[1]);
         //playBattleBGM(this.storage);
         //this.isCom = isCom;
         //画面サイズの取得
@@ -58,10 +58,10 @@ var GameLayer = cc.Layer.extend({
             this.redUserId = this.storage.userId;
         }
         //ステータス
-        this.destCaptureRate = 0.1;
-        this.captureCnt = 0;
-        this.maxCaptureCnt = 0;
-        this.captureRate = 0;
+        //this.destCaptureRate = 0.1;
+        //this.captureCnt = 0;
+        //this.maxCaptureCnt = 0;
+        //this.captureRate = 0;
         this.gameStatus = "wait";
         this.result = null;
         this.gameStartTimeCnt = 0;
@@ -91,14 +91,14 @@ var GameLayer = cc.Layer.extend({
         this.addChild(this.battleWindow);
         this.battleWindow.setPosition(0, 0);
         this.battleWindowScale = 0.1;
-        this.maxBattleWindowScale = 1.0;
+        this.maxBattleWindowScale = 1.2;
         this.battleWindow.setScale(this.battleWindowScale);
         this.setHeaderLabel();
         this.setStartLabel();
         this.resultSprite = new BattleResult(this);
         this.addChild(this.resultSprite, 9999);
         //this.resultSprite.setAnchorPoint(0,0);
-        this.resultSprite.setPosition(640/2,1136/2);
+        this.resultSprite.setPosition(640 / 2, 1136 / 2);
         this.resultSprite.setVisible(false);
         this.scheduleUpdate();
         this.firstTouchX = 0;
@@ -107,29 +107,30 @@ var GameLayer = cc.Layer.extend({
         var _centerMarker = this.battleWindow.getMarker2(this.battleWindow.player.col, this.battleWindow.player.row);
         this.baseNodePosX = this.targetBaseNodePosX = 320 - _centerMarker.getPosition().x * this.battleWindowScale;
         this.baseNodePosY = this.targetBaseNodePosY = 400 - _centerMarker.getPosition().y * this.battleWindowScale;
-
         this.gameDirection = "";
         this.isMapMoving = false;
+        this.labelStartCnt007Cnt = 0;
         return true;
     },
     update: function (dt) {
         if (this.gameStatus == "gaming") {
             this.battleWindow.setShipHidden();
         }
-        //画面表示
-        this.maxCaptureCnt = this.battleWindow.positionalChips.length * this.destCaptureRate;
-        this.captureRate = Math.floor(this.captureCnt / this.maxCaptureCnt * 100) / 100;
-        if (this.captureRate >= 1) {
-            this.captureRate = 1;
+        if (this.labelStartCnt007.isVisible()) {
+            this.labelStartCnt007Cnt++;
+        }
+        if (this.labelStartCnt007Cnt >= 30) {
+            this.labelStartCnt007Cnt = 0;
+            this.labelStartCnt007.setVisible(false);
         }
         /*
-        //目標を上回ったらゲーム終了
-        if (this.captureRate >= 1) {
-            this.battleWindow.mode = "result";
-        }
+                //画面表示
+                this.maxCaptureCnt = this.battleWindow.positionalChips.length * this.destCaptureRate;
+                this.captureRate = Math.floor(this.captureCnt / this.maxCaptureCnt * 100) / 100;
+                if (this.captureRate >= 1) {
+                    this.captureRate = 1;
+                }
         */
-        //this.occupiedGauge.update(this.captureRate);
-        //this.occupiedRateLabel.setString(Math.floor(this.captureRate * 100) + "%");
         //常に中央を表示するようにする
         var _centerMarker = this.battleWindow.getMarker2(this.battleWindow.player.col, this.battleWindow.player.row);
         //this.battleWindowScale
@@ -209,23 +210,23 @@ var GameLayer = cc.Layer.extend({
         this.addChild(this.header, 999999999999);
         this.scoreLabel = new cc.LabelTTF(this.greenScore, "Arial", 20);
         this.scoreLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
-        this.scoreLabel.setAnchorPoint(0, 0);
-        this.scoreLabel.setPosition(90, 105);
+        this.scoreLabel.setAnchorPoint(1, 0);
+        this.scoreLabel.setPosition(340, 105);
         this.header.addChild(this.scoreLabel, 999999);
-
-        this.gauge = new Gauge(256,10,"white");
+        this.gauge = new Gauge(256, 10, "white");
         this.header.addChild(this.gauge);
-        this.gauge.setPosition(87,87);
-
-        this.alertLevelLabel = new cc.LabelTTF("LV:1", "Arial", 20);
-        this.alertLevelLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
-        this.alertLevelLabel.setAnchorPoint(1, 0);
-        this.alertLevelLabel.setPosition(350, 105);
+        this.gauge.setPosition(87, 87);
+        this.alertLevelLabel = new cc.LabelTTF("LV:1", "Arial", 42);
+        this.alertLevelLabel.setFontFillColor(new cc.Color(0, 0, 0, 255));
+        this.alertLevelLabel.setAnchorPoint(0.5, 0);
+        this.alertLevelLabel.setPosition(45, 80);
         this.header.addChild(this.alertLevelLabel, 999999);
     },
     updateLabel: function () {
         //this.timeLabel.setString(this.battleWindow.gameTime + "");
         this.scoreLabel.setString(this.battleWindow.gameScore + "");
+        this.alertLevelLabel.setString(this.battleWindow.gameLevel);
+        this.gauge.update(this.battleWindow.gameOccupyRate);
     },
     setPrepareStatus: function () {
         if (this.gameStatus == "prepare") {
@@ -276,17 +277,22 @@ var GameLayer = cc.Layer.extend({
             this.result = this.battleWindow.result;
             this.endCnt++;
             //成功時のみshipがお迎えに来る
-            if(this.battleWindow.result == "success"){
+            if (this.battleWindow.result == "success") {
                 this.battleWindow.setShipLand("get");
                 //スケールを縮小する
+                /*
                 this.battleWindowScale -= 0.005;
                 if (this.battleWindowScale <= 0.01) {
                     this.battleWindowScale = 0.01;
-                }
-            }else{
+                }*/
                 this.battleWindowScale += 0.02;
-                if (this.battleWindowScale >= 1.2) {
-                    this.battleWindowScale = 1.2;
+                if (this.battleWindowScale >= 1.5) {
+                    this.battleWindowScale = 1.5;
+                }
+            } else {
+                this.battleWindowScale += 0.02;
+                if (this.battleWindowScale >= 1.5) {
+                    this.battleWindowScale = 1.5;
                 }
             }
             //常に中央を表示するようにする
@@ -297,14 +303,14 @@ var GameLayer = cc.Layer.extend({
             this.setScroll();
             //そこまで!のラベルを表示する
             if (0 <= this.endCnt && this.endCnt < 30 * 1) {
-                if(this.battleWindow.result == "success"){
+                if (this.battleWindow.result == "success") {
                     this.labelStartCnt006.setVisible(true);
-                }else{
+                } else {
                     this.labelStartCnt005.setVisible(true);
                 }
             }
             //試合結果を表示する
-            if (this.endCnt == 30 * 5) {
+            if (this.endCnt == 30 * 2.2) {
                 //cc.log("window open!!");
                 //cc.sys.openURL("http://webdesign.about.com/");
                 this.labelStartCnt005.setVisible(false);
@@ -312,33 +318,40 @@ var GameLayer = cc.Layer.extend({
                 this.resultSprite.setVisible(true);
                 this.resultSprite.sendMessage();
             }
+            if (this.endCnt == 5) {
+                this.storage.saveCreatureDataToStorage(CONFIG.CARD[1], 1);
+            }
         }
     },
     setStartLabel: function () {
         this.labelStartCnt001 = cc.Sprite.create("res/label_starttime001.png");
-        this.labelStartCnt001.setPosition(320, 500);
+        this.labelStartCnt001.setPosition(320, 600);
         this.addChild(this.labelStartCnt001, 99999999);
         this.labelStartCnt001.setVisible(false);
         this.labelStartCnt002 = cc.Sprite.create("res/label_starttime002.png");
-        this.labelStartCnt002.setPosition(320, 500);
+        this.labelStartCnt002.setPosition(320, 600);
         this.addChild(this.labelStartCnt002, 99999999);
         this.labelStartCnt002.setVisible(false);
         this.labelStartCnt003 = cc.Sprite.create("res/label_starttime003.png");
-        this.labelStartCnt003.setPosition(320, 500);
+        this.labelStartCnt003.setPosition(320, 600);
         this.addChild(this.labelStartCnt003, 99999999);
         this.labelStartCnt003.setVisible(false);
         this.labelStartCnt004 = cc.Sprite.create("res/label_starttime004.png");
-        this.labelStartCnt004.setPosition(320, 500);
+        this.labelStartCnt004.setPosition(320, 600);
         this.addChild(this.labelStartCnt004, 99999999);
         this.labelStartCnt004.setVisible(false);
         this.labelStartCnt005 = cc.Sprite.create("res/label_starttime005.png");
-        this.labelStartCnt005.setPosition(320, 500);
+        this.labelStartCnt005.setPosition(320, 600);
         this.addChild(this.labelStartCnt005, 99999999);
         this.labelStartCnt005.setVisible(false);
         this.labelStartCnt006 = cc.Sprite.create("res/label_starttime006.png");
-        this.labelStartCnt006.setPosition(320, 500);
+        this.labelStartCnt006.setPosition(320, 600);
         this.addChild(this.labelStartCnt006, 99999999);
         this.labelStartCnt006.setVisible(false);
+        this.labelStartCnt007 = cc.Sprite.create("res/label_starttime007.png");
+        this.labelStartCnt007.setPosition(320, 600);
+        this.addChild(this.labelStartCnt007, 99999999);
+        this.labelStartCnt007.setVisible(false);
     },
     goToListLayer: function (errorNum) {
         var scene = cc.Scene.create();
@@ -369,20 +382,15 @@ var GameLayer = cc.Layer.extend({
     },
     touchFinish: function (location) {},
     */
-
-    touchStart: function(location) {
-        //if (this.tutorial.tutorialPage != 0) return;
+    touchStart: function (location) {
         this.firstTouchX = location.x;
         this.firstTouchY = location.y;
     },
-
-    touchMove: function(location) {
-//cc.log("move");
-        //if (this.tutorial.tutorialPage != 0) return;
+    touchMove: function (location) {
         var roopCnt = 1;
-        var dist = Math.sqrt((this.firstTouchX - location.x) * (this.firstTouchX - location.x) + (this.firstTouchY - location.y) * (this.firstTouchY - location.y));
+        var dist = Math.sqrt((this.firstTouchX - location.x) * (this.firstTouchX - location.x) + (this.firstTouchY -
+            location.y) * (this.firstTouchY - location.y));
         if (this.isMapMoving == false && dist >= 10) {
-
             if (this.firstTouchX < location.x && this.firstTouchY < location.y) {
                 //右上
                 cc.log("右上");
@@ -406,18 +414,12 @@ var GameLayer = cc.Layer.extend({
                 cc.log("左下");
                 this.gameDirection = "left_down";
                 this.isMapMoving = true;
-            } else {
-
-            }
+            } else {}
         }
     },
-    touchFinish: function(location) {
-        //if (this.tutorial.tutorialPage != 0) return;
-        //playSE_Direction(this.storage);
+    touchFinish: function (location) {
         this.isMapMoving = false;
     },
-
-
 });
 GameLayer.create = function (storage, hackingType, isCom) {
     return new GameLayer(storage, hackingType, isCom);

@@ -19,6 +19,7 @@
         "src/GameLayer.js",
         "src/CardLayer.js",
         "src/LifeLayer.js",
+        "src/ItemLayer.js",
         "src/Storage.js",
         "src/Sound.js",
         "src/CardList.js",
@@ -34,6 +35,9 @@
         "src/Gauge.js",
         "src/Material.js",
         "src/Deburis.js",
+"src/Destroy2Effect.js",
+"src/DestroyEffect.js",
+
         "src/DiscoveryLayer.js",
         "src/PlanetSprite.js"
     ]

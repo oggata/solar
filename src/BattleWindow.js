@@ -22,7 +22,10 @@ var BattleWindow = cc.Node.extend({
         this.orderCnt = 0;
         this.orderCnt2 = 0;
         this.orderMaxCnt = 1;
+        this.gameLevel = 1;
+        this.gameNextLevelScore = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3];
         this.gameScore = 0;
+        this.gameOccupyRate = 0;
         this.gameTimeCnt = 0;
         this.gameTime = 0;
         this.enemyCnt = 0;
@@ -77,6 +80,27 @@ var BattleWindow = cc.Node.extend({
             this.addEscape(this.positionalChips[0].col, this.positionalChips[0].row);
         }
     },
+    getCurrentLevel: function () {
+        var _level = 0;
+        var _sumScore = 0;
+        var _rate = 0;
+        for (var i = 0; i < this.gameNextLevelScore.length; i++) {
+            _sumScore += this.gameNextLevelScore[i];
+            if (this.gameScore >= _sumScore) {
+                _level += 1;
+            } else {
+                _level += 1;
+                _rate = (_sumScore - this.gameScore) / this.gameNextLevelScore[i];
+                break;
+            }
+        }
+        if (this.gameLevel != _level) {
+            this.game.labelStartCnt007.setVisible(true);
+        }
+        this.gameLevel = _level;
+        this.gameOccupyRate = (1 - _rate);
+        return null;
+    },
     getCurrentMarker: function (x, y) {
         var posX = (x - this.game.lastTouchGameLayerX);
         var posY = (y - this.game.lastTouchGameLayerY);
@@ -93,9 +117,9 @@ var BattleWindow = cc.Node.extend({
         }
         if (this.shipLandingCnt >= 20) {
             this.shipLandDirection = 30;
-            if(status == "send"){
+            if (status == "send") {
                 this.player.setVisible(true);
-            }else if(status == "get"){
+            } else if (status == "get") {
                 this.player.setVisible(false);
             }
         }
@@ -107,26 +131,23 @@ var BattleWindow = cc.Node.extend({
         this.ship.setVisible(false);
         this.shipPosY = this.player.getPosition().y + 800;
     },
-    setDifficulty:function(){
-        this.enemyCnt = this.gameScore + 2;
-        this.enemySpeed = 1.2 * 2 + this.gameScore * 0.1;
+    setDifficulty: function () {
+        this.enemyCnt = this.gameLevel + 2;
+        this.enemySpeed = 1.2 * 2 + this.gameLevel * 0.1;
     },
     update: function (dt) {
+        var _test = this.getCurrentLevel();
         //時間を計測
         this.gameTimeCnt++;
         if (this.gameTimeCnt >= 30) {
             this.gameTimeCnt = 0;
             this.gameTime++;
         }
-
         this.setDifficulty();
-
-        //for (var i = 0; i < this.enemyCnt; i++) {
-        if(this.humans.length < this.enemyCnt){
+        if (this.humans.length < this.enemyCnt) {
             this.positionalChips.sort(this.shuffle);
             this.addHuman(this.positionalChips[0].col, this.positionalChips[0].row, "RED", 1, 1);
         }
-
         //デブリをupdate
         for (var i = 0; i < this.debris_array.length; i++) {
             if (this.debris_array[i].update() == false) {
@@ -154,12 +175,11 @@ var BattleWindow = cc.Node.extend({
                 }
                 this.field.reorderChild(this.chips[j], Math.floor(99999999 - (this.chips[j].col + this.chips[j].row) + _ajust));
             }
-
             for (var j = 0; j < this.escapes.length; j++) {
                 var _ajust = 0;
-                this.field.reorderChild(this.escapes[j], Math.floor(99999999 - (this.escapes[j].col + this.escapes[j].row) + _ajust));
+                this.field.reorderChild(this.escapes[j], Math.floor(99999999 - (this.escapes[j].col + this.escapes[j].row) +
+                    _ajust));
             }
-
             if (this.coins.length <= this.maxCoinCnt) {
                 this.positionalChips.sort(this.shuffle);
                 this.addCoin(this.positionalChips[0].col, this.positionalChips[0].row);
@@ -168,18 +188,11 @@ var BattleWindow = cc.Node.extend({
         //ローバーをupdateする
         for (var j = 0; j < this.humans.length; j++) {
             if (this.humans[j].update() == false) {
-
-
-                    this.destroyEffect = new DestroyEffect(this);
-                    this.field.addChild(this.destroyEffect);
-                    this.destroyEffect.setPosition(this.humans[j].getPosition().x,this.humans[j].getPosition().y);
-
-                //if(this.humans[j].colorName != "GREEN"){
-                    this.field.removeChild(this.humans[j]);
-                    this.humans.splice(j, 1);
-
-
-
+                if (this.humans[j].colorName == "GREEN") {
+                    this.addDestroy(this.humans[j].getPosition().x, this.humans[j].getPosition().y + 80);
+                }
+                this.field.removeChild(this.humans[j]);
+                this.humans.splice(j, 1);
                 //}
             } else {
                 this.field.reorderChild(this.humans[j], Math.floor(99999999 - (this.humans[j].col + this.humans[j].row) + 1));
@@ -189,39 +202,41 @@ var BattleWindow = cc.Node.extend({
             this.orderMaxCnt = 30;
             this.shipPosY = this.player.getPosition().y + 800;
         }
+        /*
         //markerとplayerのcollision判定
         for (var m = 0; m < this.chips.length; m++) {
             if (this.player.col + 1 == this.chips[m].col && this.player.row == this.chips[m].row) {
                 this.chips[m].spriteGreen.setVisible(true);
             }
         }
-
+        */
         //humanとescapeのcollision判定
         for (var h = 0; h < this.humans.length; h++) {
             for (var e = 0; e < this.escapes.length; e++) {
-                if (this.humans[h].col == this.escapes[e].col && this.humans[h].row == this.escapes[e].row && this.humans[h].colorName == "GREEN") {
+                if (this.humans[h].col == this.escapes[e].col && this.humans[h].row == this.escapes[e].row && this.humans[h].colorName ==
+                    "GREEN") {
                     this.mode = "result";
                     this.result = "success";
                 }
             }
         }
-
         //humanとcoinのcollision判定
         for (var h = 0; h < this.humans.length; h++) {
             for (var c = 0; c < this.coins.length; c++) {
                 if (this.humans[h].col == this.coins[c].col && this.humans[h].row == this.coins[c].row) {
                     this.coins[c].hp = 0;
-                    for (var i = 0; i <= 3; i++) {
-                        this.addDeburis(this.coins[c].getPosition().x + 20, this.coins[c].getPosition().y + 20, 1);
-                    }
+                    //for (var i = 0; i <= 3; i++) {
+                    //this.addDeburis(this.coins[c].getPosition().x + 20, this.coins[c].getPosition().y + 20, 1);
+                    //}
                     if (this.humans[h].colorName == "GREEN") {
                         //ランダムで素材をaddする
                         //var _rand = this.getRandNumberFromRange(1, 5);
                         if (this.coins[c].typeNum) {
                             var _typeNum = this.coins[c].typeNum;
                             this.game.addMaterial(_typeNum);
-                            this.gameScore+=1;
+                            this.gameScore += 1;
                             this.addMaterial(_typeNum);
+                            //this.addDestroy(this.coins[c].getPosition().x,this.coins[c].getPosition().y);
                         }
                     }
                 }
@@ -237,13 +252,14 @@ var BattleWindow = cc.Node.extend({
                             this.humans[h1].hp = 0;
                             this.humans[h2].hp = 0;
                             //for (var i = 0; i <= 5; i++) {
-//this.addDeburis(this.humans[h1].getPosition().x + 20, this.humans[h1].getPosition().y + 20, 1);
+                            //this.addDeburis(this.humans[h1].getPosition().x + 20, this.humans[h1].getPosition().y + 20, 1);
                             //}
                         }
                     }
                 }
             }
         }
+        /*
         //占領率の測定
         var _occupiedCnt = 0;
         for (var m = 0; m < this.chips.length; m++) {
@@ -252,6 +268,7 @@ var BattleWindow = cc.Node.extend({
             }
         }
         this.game.captureCnt = _occupiedCnt;
+        */
         //コインをupdateする
         for (var j = 0; j < this.coins.length; j++) {
             if (this.coins[j].update() == false) {
@@ -265,23 +282,26 @@ var BattleWindow = cc.Node.extend({
             this.result = "failed";
         }
     },
+    addDestroy: function (x, y) {
+        this.destroyEffect = new Destroy2Effect(this);
+        this.field.addChild(this.destroyEffect, 99999999);
+        this.destroyEffect.setPosition(x, y);
+    },
     addMaterial: function (mcode) {
         var _material = new Material(this, mcode, 0, false);
         _material.setPosition(this.player.getPosition().x, this.player.getPosition().y + 50);
         this.field.addChild(_material, 9999999999999);
         this.materials.push(_material);
     },
-
-    addEscape: function (col,row) {
+    addEscape: function (col, row) {
         var _escape = cc.Sprite.create("res/escape.png");
         var _marker = this.getMarker2(col, row);
         _escape.col = col;
         _escape.row = row;
-        _escape.setPosition(_marker.getPosition().x,_marker.getPosition().y);
+        _escape.setPosition(_marker.getPosition().x, _marker.getPosition().y);
         this.field.addChild(_escape, 9999999999999);
         this.escapes.push(_escape);
     },
-
     addHuman: function (col, row, colorName, markerId, algorithmId) {
         //if (this.humans.length >= 20) return;
         var _rand = this.getRandNumberFromRange(1, 6);
@@ -291,6 +311,7 @@ var BattleWindow = cc.Node.extend({
         this.humans.push(this.human);
     },
     addCoin: function (col, row) {
+        //この場所にすでにcoinが入っていないかcheckする
         this.coin = new Coin(this, col, row);
         this.coin.col = col;
         this.coin.row = row;
@@ -326,11 +347,13 @@ var BattleWindow = cc.Node.extend({
                 this.chip.setAnchorPoint(0.5, 0.5);
                 this.chip.colorId = "WHITE";
                 this.chip.baseMapType = _rand;
+                /*
                 this.spriteGreen = cc.Sprite.create("res/map-base-green.png");
                 this.chip.addChild(this.spriteGreen);
                 this.chip.spriteGreen = this.spriteGreen;
                 //this.spriteGreen.setAnchorPoint(0.5, 0.5);
                 this.spriteGreen.setVisible(false);
+                */
                 //左端
                 //-320, 300
                 //右端

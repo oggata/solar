@@ -1,3 +1,8 @@
+var CustomTableViewCell = cc.TableViewCell.extend({
+    draw: function (ctx) {
+        this._super(ctx);
+    }
+});
 var DiscoveryLayer = cc.Layer.extend({
     sprite: null,
     ctor: function (storage, cardId) {
@@ -47,9 +52,7 @@ var DiscoveryLayer = cc.Layer.extend({
         this.labelTitle = cc.Sprite.create("res/label_title.png");
         this.labelTitle.setPosition(320, 600);
         this.addChild(this.labelTitle, 9999999);
-
         this.timeCnt = 0;
-
         this.labelOpacity = 1;
         this.stopPowerX = 0.05;
         this.planets = [];
@@ -138,14 +141,6 @@ var DiscoveryLayer = cc.Layer.extend({
         this.messageTime = 0;
         this.visibleStrLenght = 0;
         this.launchCnt = 0;
-        this.launchButton = new cc.MenuItemImage("res/button_launch.png", "res/button_launch.png", function () {
-            this.launchCnt = 1;
-            this.sprite.setOpacity(255 * 4);
-        }, this);
-        this.launchButton.setPosition(320, 300);
-        var menu001 = new cc.Menu(this.launchButton);
-        menu001.setPosition(0, 0);
-        this.addChild(menu001);
         this.baseNodeScale = 1;
         this.initializeWarpAnimation();
         this.howto = cc.Sprite.create("res/howto.png");
@@ -154,20 +149,81 @@ var DiscoveryLayer = cc.Layer.extend({
         this.tutorial = cc.Sprite.create("res/icon_howto.png");
         this.baseNode.addChild(this.tutorial, 9999999);
         this.cameraSpeed = 1;
-
-
-this.fromP = cc.p(1,1);
-this.toP = cc.p(1,1);
-
-
-
+        this.fromP = cc.p(1, 1);
+        this.toP = cc.p(1, 1);
+        this.header = cc.Sprite.create("res/header002.png");
+        this.header.setPosition(320, 1136 - 150);
+        this.header.setAnchorPoint(0.5, 0);
+        this.addChild(this.header, 999999999999);
+        this.orderCnt = 0;
+        this.materials = [];
+        this.addMaterial(1);
+        this.addMaterial(2);
+        this.addMaterial(1);
+        this.addMaterial(3);
+        this.addMaterial(3);
         this.isPullRocket = false;
+        this.createTable();
         return true;
     },
+    createTable: function () {
+        //var winSize = cc.Director.getInstance().getWinSize();
+        var tableView = cc.TableView.create(this, cc.size(600, 1130));
+        tableView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
+        tableView.setPosition(0, 0);
+        tableView.setDelegate(this);
+        tableView.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
+        this.addChild(tableView);
+        tableView.reloadData();
+    },
+    tableCellSizeForIndex: function (table, idx) {
+        return cc.size(300, 100);
+    },
+    tableCellAtIndex: function (table, idx) {
+        var strValue = idx.toFixed(0);
+        var cell = table.dequeueCell();
+        var label;
+        if (!cell) {
+            cell = new CustomTableViewCell();
+            label = cc.LabelTTF.create(strValue, "Helvetica", 15);
+            label.setPosition(50, 0);
+            label.setAnchorPoint(0, 0);
+            label.setTag("comment");
+            cell.addChild(label);
+        } else {
+            label = cell.getChildByTag("comment");
+            //var txt = responses[strValue];
+            label.setString("xxx");
+        }
+        return cell;
+    },
+    numberOfCellsInTableView: function (table) {
+        //return responses.length;
+        return 20;
+    },
+    addMaterial: function (mcode) {
+        var _isFristMat = true;
+        for (var i = 0; i < this.materials.length; i++) {
+            if (this.materials[i].materialCode == mcode) {
+                _isFristMat = false;
+                this.materials[i].amount += 1;
+                this.materials[i].setAmount();
+            }
+        }
+        if (_isFristMat == true) {
+            this.orderCnt += 1;
+            var _material = new Material(this, mcode, this.orderCnt, true);
+            this.materials.push(_material);
+            this.addChild(_material, 999999);
+            //_material.setPosition(610 - 62 * (this.orderCnt - 1), 110);
+            //_material.setPosition(570, 160 - this.orderCnt * 45);
+            cc.log(this.orderCnt);
+            _material.setPosition(540, 1100 - this.orderCnt * 55);
+        }
+    },
     update: function (dt) {
-
         this.timeCnt++;
-        if(this.timeCnt>=30 * 3){
+        if (this.timeCnt >= 30 * 3) {
             this.labelTitle.setVisible(false);
         }
         this.tutorial.setPosition(this.rocketSprite.getPosition().x, this.rocketSprite.getPosition().y - 140);
@@ -180,10 +236,10 @@ this.toP = cc.p(1,1);
         //動いていない場合、引っ張ることができる
         if (this.dx == 0 && this.dy == 0) {
             this.tutorial.setVisible(true);
-this.isPullRocket = true;
+            this.isPullRocket = true;
         } else {
             this.tutorial.setVisible(false);
-this.isPullRocket = false;
+            this.isPullRocket = false;
         }
         //発射
         if (this.launchCnt >= 1) {
@@ -353,35 +409,35 @@ this.isPullRocket = false;
     },
     setInfoWindow: function () {
         this.infoWindow = cc.Sprite.create("res/info.png");
-        //this.infoWindow.setAnchorPoint(0, 0);
-        this.infoWindow.setPosition(320, 1000);
+        this.infoWindow.setAnchorPoint(0, 0);
+        this.infoWindow.setPosition(0, 1136 - 220);
         this.addChild(this.infoWindow, 999999999);
         this.fuelLabel = cc.LabelTTF.create("123 / 143", "Arial", 25);
         this.fuelLabel.setPosition(120, 160);
         this.fuelLabel.setAnchorPoint(0, 1);
         this.fuelLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.infoWindow.addChild(this.fuelLabel);
+        //this.infoWindow.addChild(this.fuelLabel);
         //this.fuelLabel.setAnchorPoint(0, 1);
         this.levelLabel = cc.LabelTTF.create("12", "Arial", 25);
         this.levelLabel.setPosition(120, 105);
         this.levelLabel.setAnchorPoint(0, 1);
         this.levelLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.infoWindow.addChild(this.levelLabel);
+        //this.infoWindow.addChild(this.levelLabel);
         this.planetCntLabel = cc.LabelTTF.create("1 / 12312234", "Arial", 25);
         this.planetCntLabel.setPosition(620, 50);
         this.planetCntLabel.setAnchorPoint(1, 1);
         this.planetCntLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.infoWindow.addChild(this.planetCntLabel);
+        //this.infoWindow.addChild(this.planetCntLabel);
         this.distanceLabel = cc.LabelTTF.create("123242343km", "Arial", 25);
         this.distanceLabel.setPosition(620, 105);
         this.distanceLabel.setAnchorPoint(1, 1);
         this.distanceLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.infoWindow.addChild(this.distanceLabel);
+        //this.infoWindow.addChild(this.distanceLabel);
         this.timeLabel = new cc.LabelTTF("00:00:00", "Arial", 18);
         this.timeLabel.setFontFillColor(new cc.Color(0, 0, 0, 255));
         this.timeLabel.enableStroke(new cc.Color(0, 0, 0, 255), 2, false);
-        this.infoWindow.addChild(this.timeLabel);
-        this.timeLabel.setPosition(450, 145);
+        this.addChild(this.timeLabel);
+        this.timeLabel.setPosition(320, 340);
         this.pastSecond = this.getPastSecond2();
         if (this.pastSecond <= 0) {
             this.pastSecond = 0;
@@ -391,9 +447,9 @@ this.isPullRocket = false;
         }
         this.timeLabel.setString("残り" + this.pastSecond + "秒");
         this.timeGauge = new TimeGauge(this);
-        this.timeGauge.setPosition(470, 145);
+        this.timeGauge.setPosition(330, 360);
         this.timeGauge.setScale(0.4);
-        this.infoWindow.addChild(this.timeGauge);
+        this.addChild(this.timeGauge);
         var coinButton = new cc.MenuItemImage("res/button_get_coin.png", "res/button_get_coin_on.png", function () {
             if (this.pastSecond >= 1) {
                 this.errorLabel.setString("" + this.pastSecond + "秒で1クリスタルに変換できます.");
@@ -404,10 +460,18 @@ this.isPullRocket = false;
                 this.storage.addCoin(1);
             }
         }, this);
-        coinButton.setPosition(560, 140);
+        coinButton.setPosition(450, 360);
         var menu001 = new cc.Menu(coinButton);
         menu001.setPosition(0, 0);
-        this.infoWindow.addChild(menu001);
+        this.addChild(menu001);
+        this.launchButton = new cc.MenuItemImage("res/button_launch.png", "res/button_launch.png", function () {
+            this.launchCnt = 1;
+            this.sprite.setOpacity(255 * 4);
+        }, this);
+        this.launchButton.setPosition(320, 300);
+        var menu001 = new cc.Menu(this.launchButton);
+        menu001.setPosition(0, 0);
+        this.addChild(menu001);
     },
     getMostNearPlanet: function (_x, _y, _dist) {
         for (var i = 0; i < this.planets.length; i++) {
@@ -428,13 +492,13 @@ this.isPullRocket = false;
         //}
     },
     touchStart: function (location) {
-        if(this.isPullRocket == false) return;
+        if (this.isPullRocket == false) return;
         this.fromP = cc.p(location.x, location.y);
         this.drawNode = cc.DrawNode.create();
         this.addChild(this.drawNode);
     },
     touchMove: function (location) {
-        if(this.isPullRocket == false) return;
+        if (this.isPullRocket == false) return;
         this.removeChild(this.drawNode);
         this.drawNode = cc.DrawNode.create();
         this.addChild(this.drawNode);
@@ -442,7 +506,7 @@ this.isPullRocket = false;
         this.drawNode.drawSegment(this.fromP, this.toP, this.lineWidth, this.lineColor);
     },
     touchFinish: function (location) {
-        if(this.isPullRocket == false) return;
+        if (this.isPullRocket == false) return;
         //launch
         this.dx = (this.fromP.x - this.toP.x) / 20;
         this.dy = (this.fromP.y - this.toP.y) / 20;
