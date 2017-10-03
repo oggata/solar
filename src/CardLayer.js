@@ -7,15 +7,15 @@ var CardLayer = cc.Layer.extend({
         this.viewSize = cc.director.getVisibleSize();
         var size = cc.winSize;
         this.storage = storage;
-        this.baseNode = cc.LayerColor.create(new cc.Color(255, 191, 0, 255), 640, 1136);
+        this.baseNode = cc.LayerColor.create(new cc.Color(17, 31, 62, 255), 640, 1136);
         this.baseNode.setPosition(0, 0);
         this.addChild(this.baseNode);
 
         //var _rand = this.getRandNumberFromRange(1, 13);
-        var _card = CONFIG.CARD[cardId];
+        var _card = CONFIG.PLANET[1];
 
         this.cardPosY = 1500;
-        this.card = cc.Sprite.create(_card.image);
+        this.card = cc.Sprite.create("res/planet_milk.png");
         this.baseNode.addChild(this.card);
         this.card.setPosition(320, this.cardPosY);
         this.labelSprite = cc.Sprite.create("res/label_get_a_normal_card.png");
@@ -74,7 +74,7 @@ var CardLayer = cc.Layer.extend({
         this.ra = cc.RepeatForever.create(cc.Animate.create(this.wa));
         this.sprite = cc.Sprite.create(this.image, cc.rect(0, 0, this.itemWidth, this.itemHeight));
         this.sprite.runAction(this.ra);
-        this.sprite.setPosition(320,1136/2 - 50);
+        this.sprite.setPosition(320,1136/2);
         this.sprite.setScale(2.5,2.5);
         this.baseNode.addChild(this.sprite);
     },
@@ -120,7 +120,7 @@ var CardLayer = cc.Layer.extend({
     goToStageLayer: function (pSender) {
         var scene = cc.Scene.create();
         //次のステージへいくためにstorageは必ず受けた渡す
-        scene.addChild(GameLayer.create(this.storage, [], 0));
+        scene.addChild(DiscoveryLayer2.create(this.storage, [], 0));
         cc.director.runScene(cc.TransitionFade.create(1.5, scene));
     },
     goToCardLayer: function (pSender) {

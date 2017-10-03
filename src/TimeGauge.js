@@ -28,7 +28,7 @@ var TimeGauge = cc.Node.extend({
         this.gaugeSprite004.setVisible(false);
         this.gaugeSprite005.setVisible(false);
         this.gaugeSprite006.setVisible(false);
-        var _rate = this.game.pastSecond / this.game.maxChargeTime;
+        var _rate = this.game.fuelPastSecond / this.game.maxChargeTime;
         if (_rate >= 0.8) {
             this.gaugeSprite001.setVisible(true);
         } else if (_rate >= 0.6) {

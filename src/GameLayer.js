@@ -95,11 +95,12 @@ var GameLayer = cc.Layer.extend({
         this.battleWindow.setScale(this.battleWindowScale);
         this.setHeaderLabel();
         this.setStartLabel();
+
         this.resultSprite = new BattleResult(this);
         this.addChild(this.resultSprite, 9999);
         //this.resultSprite.setAnchorPoint(0,0);
-        this.resultSprite.setPosition(640 / 2, 1136 / 2);
-        this.resultSprite.setVisible(false);
+//this.resultSprite.setPosition(640 / 2, 1136 / 2);
+this.resultSprite.setVisible(false);
         this.scheduleUpdate();
         this.firstTouchX = 0;
         this.firstTouchY = 0;
@@ -352,12 +353,6 @@ var GameLayer = cc.Layer.extend({
         this.labelStartCnt007.setPosition(320, 600);
         this.addChild(this.labelStartCnt007, 99999999);
         this.labelStartCnt007.setVisible(false);
-    },
-    goToListLayer: function (errorNum) {
-        var scene = cc.Scene.create();
-        //次のステージへいくためにstorageは必ず受けた渡す
-        scene.addChild(DiscoveryLayer.create(this.storage, errorNum));
-        cc.director.runScene(cc.TransitionFadeTR.create(1.0, scene));
     },
     getRandNumberFromRange: function (min, max) {
         var rand = min + Math.floor(Math.random() * (max - min));

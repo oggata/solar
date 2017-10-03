@@ -8,11 +8,12 @@ var Human = cc.Node.extend({
         this.markerId = markerId;
         this.algorithmId = algorithmId;
         if (colorName == "RED") {
-            this.image = "res/enemy99.png";
+            this.image = "res/enemy88.png";
             this.imgWidth = 1280 / 8;
             this.imgHeight = 1280 / 8;
-            this.widthCnt = 7;
-            this.setScale(1.3, 1.3);
+            this.widthCnt = 4;
+            //this.setScale(1.3, 1.3);
+            //this.setScale(0.8, 0.8);
             this.span = 0.08;
         } else {
             this.image = "res/utyu.png";

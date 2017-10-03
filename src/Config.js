@@ -73,73 +73,6 @@ CONFIG.MAP = [
     2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
 ];
 
-CONFIG.BATTLE_LIST_POSITION = [{},
-    { 
-        "x"         : 140 + 180*0,
-        "y"         : 750
-    },
-    { 
-        "x"         : 140 + 180*1,
-        "y"         : 750
-    },
-    { 
-        "x"         : 140 + 180*2,
-        "y"         : 750
-    },
-
-    { 
-        "x"         : 140 + 180*0,
-        "y"         : 450
-    },
-    { 
-        "x"         : 140 + 180*1,
-        "y"         : 450
-    },
-    { 
-        "x"         : 140 + 180*2,
-        "y"         : 450
-    },
-];
-
-CONFIG.LIST_POSITION = [{},
-    { 
-        "x"         : 140 + 180*0,
-        "y"         : CONFIG.BASE_CARD_Y - 240 * 0
-    },
-    { 
-        "x"         : 140 + 180*1,
-        "y"         : CONFIG.BASE_CARD_Y - 240 * 0
-    },
-    { 
-        "x"         : 140 + 180*2,
-        "y"         : CONFIG.BASE_CARD_Y - 240 * 0
-    },
-    { 
-        "x"         : 140 + 180*0,
-        "y"         : CONFIG.BASE_CARD_Y - 240 * 1
-    },
-    { 
-        "x"         : 140 + 180*1,
-        "y"         : CONFIG.BASE_CARD_Y - 240 * 1
-    },
-    { 
-        "x"         : 140 + 180*2,
-        "y"         : CONFIG.BASE_CARD_Y - 240 * 1
-    },
-    { 
-        "x"         : 140 + 180*0,
-        "y"         : CONFIG.BASE_CARD_Y - 240 * 2
-    },
-    { 
-        "x"         : 140 + 180*1,
-        "y"         : CONFIG.BASE_CARD_Y - 240 * 2
-    },
-    { 
-        "x"         : 140 + 180*2,
-        "y"         : CONFIG.BASE_CARD_Y - 240 * 2
-    }
-];
-
 CONFIG.CARD = [
     { 
     },
@@ -166,89 +99,91 @@ CONFIG.CARD = [
         "strong"     : [0,1,0,0],
         "isOwnTerritory" : false,
         "maxPopulation" : 0,
+    }
+];
+
+
+CONFIG.PLANET = [
+    { 
+    },
+    { 
+        "id"         : 1,
+        "name"       : "AAA",
+        "description": "AAA",
+        "genre"      : "aaa",
+        "image"      : "res/planet_w350_001.png",
+        "type"       : [1]
+    },
+    { 
+        "id"         : 2,
+        "name"       : "BBB",
+        "description": "BBB",
+        "genre"      : "bbb",
+        "image"      : "res/planet_w350_002.png",
+        "type"       : [1]
     },
     { 
         "id"         : 3,
         "name"       : "CCC",
-        "description": "",
-        "genre"      : "village",
-        "useTxt"     : "新しい地点を攻略開始",
-        "image"      : "res/sozai003.png",
-        "weak"       : [],
-        "strong"     : [0,0,1,0],
-        "isOwnTerritory" : false,
-        "maxPopulation" : 2,
+        "description": "CCC",
+        "genre"      : "ccc",
+        "image"      : "res/planet_w350_003.png",
+        "type"       : [1]
     },
     { 
         "id"         : 4,
         "name"       : "DDD",
-        "description": "",
-        "genre"      : "village",
-        "useTxt"     : "新しい地点を攻略開始",
-        "image"      : "res/sozai004.png",
-        "weak"       : [],
-        "strong"     : [0,0,0,1],
-        "isOwnTerritory" : false,
-        "maxPopulation" : 2,
+        "description": "DDD",
+        "genre"      : "ddd",
+        "image"      : "res/planet_w350_004.png",
+        "type"       : [1]
     },
     { 
         "id"         : 5,
         "name"       : "EEE",
-        "description": "",
-        "genre"      : "castle",
-        "useTxt"     : "新しい地点を攻略開始",
-        "image"      : "res/sozai005.png",
-        "weak"       : [],
-        "strong"     : [1,0,0,0],
-        "isOwnTerritory" : false,
-        "maxPopulation" : 2,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "type"       : [1]
     },
     { 
         "id"         : 6,
-        "name"       : "FFF",
-        "description": "",
-        "genre"      : "castle",
-        "useTxt"     : "新しい地点を攻略開始",
-        "image"      : "res/sozai006.png",
-        "weak"       : [],
-        "strong"     : [0,1,0,0],
-        "isOwnTerritory" : false,
-        "maxPopulation" : 2,
+        "name"       : "EEE",
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "type"       : [1]
     },
     { 
         "id"         : 7,
-        "name"       : "GGG",
-        "description": "",
-        "genre"      : "castle",
-        "useTxt"     : "新しい地点を攻略開始",
-        "image"      : "res/card002.png",
-        "weak"       : [6],
-        "strong"     : [6],
-        "isOwnTerritory" : false,
-        "maxPopulation" : 2,
+        "name"       : "EEE",
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "type"       : [1]
     },
     { 
         "id"         : 8,
-        "name"       : "HHH",
-        "description": "",
-        "genre"      : "castle",
-        "useTxt"     : "効果なし",
-        "image"      : "res/card003.png",
-        "weak"       : [6],
-        "strong"     : [6],
-        "isOwnTerritory" : true,
-        "maxPopulation" : 2,
+        "name"       : "EEE",
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "type"       : [1]
     },
     { 
         "id"         : 9,
-        "name"       : "",
-        "description": "",
-        "genre"      : "castle",
-        "useTxt"     : "効果なし",
-        "image"      : "res/card004.png",
-        "weak"       : [6],
-        "strong"     : [6],
-        "isOwnTerritory" : true,
-        "maxPopulation" : 2,
+        "name"       : "EEE",
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "type"       : [1]
+    },
+    { 
+        "id"         : 10,
+        "name"       : "EEE",
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "type"       : [1]
     }
 ];

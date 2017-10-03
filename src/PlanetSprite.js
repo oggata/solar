@@ -2,35 +2,31 @@ var PlanetSprite = cc.Node.extend({
     ctor: function (game) {
         this._super();
         this.game = game;
-
-var _rand = this.getRandNumberFromRange(1,4);
+        var _rand = this.getRandNumberFromRange(1, 4);
+        _rand = 1;
         this.planetSprite = cc.Sprite.create("res/planet_w350_001.png");
         //this.addChild(this.planetSprite);
-
-if(_rand == 1){
-        this.planetSprite = cc.Sprite.create("res/planet_w350_001.png");
-        //this.addChild(this.planetSprite);
-}
-if(_rand == 2){
+        if (_rand == 1) {
+            this.planetSprite = cc.Sprite.create("res/planet_w350_001.png");
+            //this.addChild(this.planetSprite);
+        }
+        if (_rand == 2) {
             this.planetSprite = cc.Sprite.create("res/planet_w350_002.png");
-        //this.addChild(this.planetSprite);
-}
-if(_rand == 3){
+            //this.addChild(this.planetSprite);
+        }
+        if (_rand == 3) {
             this.planetSprite = cc.Sprite.create("res/planet_w350_003.png");
-        //this.addChild(this.planetSprite);
-}
-if(_rand == 4){
+            //this.addChild(this.planetSprite);
+        }
+        if (_rand == 4) {
             this.planetSprite = cc.Sprite.create("res/planet_w350_004.png");
-        //this.addChild(this.planetSprite);
-}
-this.addChild(this.planetSprite);
-
-        
-
-        this.planetSpriteW = 350;
+            //this.addChild(this.planetSprite);
+        }
+        this.addChild(this.planetSprite);
+        this.planetSpriteW = 120;
         this.satelliteSprite = cc.Sprite.create("res/start.png");
         this.planetSprite.addChild(this.satelliteSprite);
-        this.satelliteSprite.setOpacity(255*0);
+        this.satelliteSprite.setOpacity(255 * 0);
         this.names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
             'U', 'V', 'W', 'X', 'Y', 'Z'
         ];
@@ -53,11 +49,13 @@ this.addChild(this.planetSprite);
         return Math.random() - .5;
     },
     update: function () {
+        //if(this.game.shipDistType == "SET_FREE_DIST") return true;
+        if (this.game.masterShip.status == "SET_FREE_DIST") return true;
         //角度を増やします
         this.degree += 1;
         var centerX = this.planetSpriteW / 2;
         var centerY = this.planetSpriteW / 2;
-        var radius = this.planetSpriteW / 2 + 20;
+        var radius = this.planetSpriteW / 2 + 50;
         //角度をラジアンに変換します
         var rad = this.degree * Math.PI / 180;
         //X座標 = 円の中心のX座標 + 半径 × Cos(ラジアン)を出す

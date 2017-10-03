@@ -3,6 +3,10 @@ var Storage = cc.Class.extend(
     ctor : function () 
     {
         this.creatureData = new Object();
+
+        this.planetData = new Object();
+
+        this.shipData = new Object();
         //this.deckData = new Object();
         //this.enemyDeckData = new Object();
 
@@ -22,6 +26,14 @@ var Storage = cc.Class.extend(
         this.lastUpdatedTime = parseInt( new Date() /1000 );
         this.battleTargetUserId = 0;
 
+
+/*
+this.shipDx = 0;
+this.shipDy = 0;
+this.shipTargetSecond = 0;
+this.shipTargetPlanetId = 0;
+this.shipStatus = null;
+*/
         /*
         this.enemyUserId = 0;
         this.enemyColorName = "";
@@ -167,6 +179,96 @@ var Storage = cc.Class.extend(
         cc.sys.localStorage.setItem("gameStorage",_getData);
     },
 
+
+    saveShipDataToStorage : function(card,dx,dy,targetTime,targetPlanetId,status,addCount) 
+    {
+        //すでにある場合は、設定値の変更
+        var savedData = this.shipData;
+        var _updateCnt = 0;
+        for (var savedDataKey in savedData) {
+            if (savedData.hasOwnProperty(savedDataKey)) {
+                var savedDataValue = savedData[savedDataKey];
+                var inputCreatureId= "ID_" + card["id"];
+                if(savedDataKey == inputCreatureId)
+                {
+                    var savedDataObj = JSON.parse(savedDataValue);
+                    var _txt = 
+                        '{"id":' + Math.floor(card["id"]) + 
+                        ',"image":"' + card["image"] + '"' + 
+                        //',"cnt":' + Math.floor(savedDataObj.cnt + addCount) + 
+                        ',"dx":' + dx + 
+                        ',"dy":' + dy + 
+                        ',"targetTime":' + targetTime + 
+                        ',"targetPlanetId":' + targetPlanetId + 
+                        ',"status":' + '"' + status  + '"' +
+                        ',"lastUpdatedTime":' + 0 + 
+                        '}'
+                    ;
+                    this.shipData["ID_" + card["id"]] = _txt;
+                    _updateCnt+=1;
+                }
+            }
+        }
+
+        if(_updateCnt == 0)
+        {
+            var _txt = 
+                '{"id":' + Math.floor(card["id"]) + 
+                ',"image":"' + card["image"] + '"' + 
+                //',"cnt":' + Math.floor(savedDataObj.cnt + addCount) + 
+                ',"dx":' + dx + 
+                ',"dy":' + dy + 
+                ',"targetTime":' + targetTime + 
+                ',"targetPlanetId":' + targetPlanetId + 
+                ',"status":' + '"' + status  + '"' +
+                ',"lastUpdatedTime":' + 0 + 
+                '}'
+            ;
+            this.shipData["ID_" + card["id"]] = _txt;
+        }
+        var _getData = this.getDataFromStorage();
+        cc.sys.localStorage.setItem("gameStorage",_getData);
+    },
+
+    savePlanetDataToStorage : function(card,addCount) 
+    {
+        //すでにある場合は、設定値の変更
+        var savedData = this.planetData;
+        var _updateCnt = 0;
+        for (var savedDataKey in savedData) {
+            if (savedData.hasOwnProperty(savedDataKey)) {
+                var savedDataValue = savedData[savedDataKey];
+                var inputCreatureId= "ID_" + card["id"];
+                if(savedDataKey == inputCreatureId)
+                {
+                    var savedDataObj = JSON.parse(savedDataValue);
+                    var _txt = 
+                        '{"id":' + Math.floor(card["id"]) + 
+                        ',"image":"' + card["image"] + '"' + 
+                        ',"cnt":' + Math.floor(savedDataObj.cnt + addCount) + 
+                        ',"lastUpdatedTime":' + 0 + 
+                        '}'
+                    ;
+                    this.planetData["ID_" + card["id"]] = _txt;
+                    _updateCnt+=1;
+                }
+            }
+        }
+
+        if(_updateCnt == 0)
+        {
+            var _txt = 
+                '{"id":' + Math.floor(card["id"]) + 
+                ',"image":"' + card["image"] + '"' + 
+                ',"cnt":' + addCount + 
+                ',"lastUpdatedTime":' + 0 + 
+                '}'
+            ;
+            this.planetData["ID_" + card["id"]] = _txt;
+        }
+        var _getData = this.getDataFromStorage();
+        cc.sys.localStorage.setItem("gameStorage",_getData);
+    },
     getRandNumberFromRange: function(min, max) {
         var rand = min + Math.floor(Math.random() * (max - min));
         return rand;
@@ -239,12 +341,43 @@ var Storage = cc.Class.extend(
             }
         }
 */
+        var _shipData = '';
+        var keyCnt = Object.keys(this.shipData).length;
+        var incKeyCnt = 1;
+        for (var key in this.shipData) {
+            if (this.shipData.hasOwnProperty(key)) {
+                var value = this.shipData[key];
+                _shipData += '"' + key + '":' + JSON.stringify(value);
+                if(incKeyCnt != keyCnt)
+                {
+                    _shipData += ',';
+                }
+                incKeyCnt++;
+            }
+        }
+
+        var _planetData = '';
+        var keyCnt = Object.keys(this.planetData).length;
+        var incKeyCnt = 1;
+        for (var key in this.planetData) {
+            if (this.planetData.hasOwnProperty(key)) {
+                var value = this.planetData[key];
+                _planetData += '"' + key + '":' + JSON.stringify(value);
+                if(incKeyCnt != keyCnt)
+                {
+                    _planetData += ',';
+                }
+                incKeyCnt++;
+            }
+        }
         //return '{"saveData" : true, "creatureData":{"111":{"id":1,"score":123},"222":{"id":1,"score":123},"333":{"id":1,"score":123}}}';
         var rtn = '{';
         rtn += '"saveData" : true,';
         rtn += '"creatureData":{' + _creatureData + '},';
         //rtn += '"deckData":{' + _deckData + '},';
         //rtn += '"eventData":{' + _eventData + '},';
+        rtn += '"shipData":{' + _shipData + '},';
+        rtn += '"planetData":{' + _planetData + '},';
         rtn += '"playerName" :"' + this.playerName + '",';
         rtn += '"totalGameScore" :' + this.totalGameScore + ',';
         rtn += '"maxGameScore" :' + this.maxGameScore + ',';
@@ -255,6 +388,15 @@ var Storage = cc.Class.extend(
         rtn += '"treasureAmount" :' + this.treasureAmount + ',';
         rtn += '"lastUpdatedTime" :' + this.lastUpdatedTime + '';
         rtn += '}';
+        
+
+/*
+this.shipDx = 0;
+this.shipDy = 0;
+this.shipTargetSecond = 0;
+this.shipTargetPlanetId = 0;
+this.shipStatus = null;
+*/
         /*
         cc.log("------------------------>");
         cc.log(rtn);
@@ -275,21 +417,22 @@ var Storage = cc.Class.extend(
             }
         }
 
-        this.deckData = new Object();
-        var stData = getData['deckData'];
+
+        this.shipData = new Object();
+        var stData = getData['shipData'];
         for (var key in stData) {
             if (stData.hasOwnProperty(key)) {
                 var value = stData[key];
-                this.deckData[key] = value;
+                this.shipData[key] = value;
             }
         }
 
-        this.eventData = new Object();
-        var stData = getData['eventData'];
+        this.planetData = new Object();
+        var stData = getData['planetData'];
         for (var key in stData) {
             if (stData.hasOwnProperty(key)) {
                 var value = stData[key];
-                this.eventData[key] = value;
+                this.planetData[key] = value;
             }
         }
 

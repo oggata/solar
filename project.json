@@ -19,7 +19,9 @@
         "src/GameLayer.js",
         "src/CardLayer.js",
         "src/LifeLayer.js",
-        "src/ItemLayer.js",
+        "src/PlanetsLayer.js",
+        "src/MissionsLayer.js",
+        "src/ItemLayer2.js",
         "src/Storage.js",
         "src/Sound.js",
         "src/CardList.js",
@@ -35,10 +37,15 @@
         "src/Gauge.js",
         "src/Material.js",
         "src/Deburis.js",
+        "src/DevelopLayer.js",
+
 "src/Destroy2Effect.js",
 "src/DestroyEffect.js",
+"src/SpaceListLayer.js",
 
+"src/Footer.js",
         "src/DiscoveryLayer.js",
+        "src/DiscoveryLayer2.js",
         "src/PlanetSprite.js"
     ]
 }

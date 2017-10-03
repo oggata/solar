@@ -18,7 +18,7 @@ var BattleWindow = cc.Node.extend({
         this.coins = [];
         this.escapes = [];
         //最大値を設定する
-        this.maxCoinCnt = 20;
+        this.maxCoinCnt = 5;
         this.orderCnt = 0;
         this.orderCnt2 = 0;
         this.orderMaxCnt = 1;
@@ -67,6 +67,12 @@ var BattleWindow = cc.Node.extend({
         this.shipPosY = 800;
         this.shipLandingCnt = 0;
         this.shipLandDirection = -10;
+
+
+
+
+
+
         this.scheduleUpdate();
         //materialを足す
         for (var i = 0; i < this.maxCoinCnt; i++) {
@@ -234,7 +240,7 @@ var BattleWindow = cc.Node.extend({
                         if (this.coins[c].typeNum) {
                             var _typeNum = this.coins[c].typeNum;
                             this.game.addMaterial(_typeNum);
-                            this.gameScore += 1;
+                            //this.gameScore += 1;
                             this.addMaterial(_typeNum);
                             //this.addDestroy(this.coins[c].getPosition().x,this.coins[c].getPosition().y);
                         }
@@ -324,20 +330,21 @@ var BattleWindow = cc.Node.extend({
         var _chipW = 32 * 3;
         var _chipH = 20 * 3;
         var _incrementNum = 0;
+
+        var _dirPath = "004";
         for (var row = 0; row < 28; row++) {
             for (var col = 0; col < 28; col++) {
                 //// (1:普通 2:山岳 3:海)
                 var _rand = CONFIG.MAP[_incrementNum];
                 //this.chip = cc.Sprite.create("res/map-chip-3-001-a.png");
-                if (_rand == 1) {
-                    //var _rand2 = this.getRandNumberFromRange(1,5);
-                    this.chip = cc.Sprite.create("res/map-chip-3-001-a.png");
-                }
+                //if (_rand == 1) {
+                    this.chip = cc.Sprite.create("res/planets/" + _dirPath + "/map-chip-a.png");
+                //}
                 if (_rand == 2) {
-                    this.chip = cc.Sprite.create("res/map-chip-3-002-1.png");
+                    this.chip = cc.Sprite.create("res/planets/" + _dirPath + "/map-chip-b.png");
                 }
                 if (_rand == 3) {
-                    this.chip = cc.Sprite.create("res/map-chip-3-003.png");
+                    this.chip = cc.Sprite.create("res/planets/" + _dirPath + "/map-chip-c.png");
                 }
                 this.chip.mapChipType = _rand;
                 this.chip.col = col;
@@ -347,48 +354,39 @@ var BattleWindow = cc.Node.extend({
                 this.chip.setAnchorPoint(0.5, 0.5);
                 this.chip.colorId = "WHITE";
                 this.chip.baseMapType = _rand;
-                /*
-                this.spriteGreen = cc.Sprite.create("res/map-base-green.png");
-                this.chip.addChild(this.spriteGreen);
-                this.chip.spriteGreen = this.spriteGreen;
-                //this.spriteGreen.setAnchorPoint(0.5, 0.5);
-                this.spriteGreen.setVisible(false);
-                */
-                //左端
-                //-320, 300
-                //右端
-                //(39 + 0) * -16 + 32 * 39 + 320
-                //-624 + 944
-                //(0 + 39) * -16 + 32 * 0 + x = 0
-                //-624 + 0 + x = 0
-                //x = 624
-                //(col + row) * -16 + 32 * col + 624
-                //10 * (col + row) + x = 0
-                //10 * (1 + 1) + x = 0
-                //390 + x = 0
-                //x = -390
-                //314
-                //20
+
                 this.chip.setPosition(
                     (col + row) * _chipW / 2 * -1 + _chipW * col + 624, _chipH / 2 * (col + row) - _chipH);
-                //if(_rand == 2){
-                //this.field.addChild(this.chip, 1 - (col + row));
-                //}
+
                 this.field.addChild(this.chip, 1 - (col + row));
                 this.marker = new Marker(this, col, row, _rand, null, this.game.colorName);
                 this.marker.setPosition(
                     (col + row) * _chipW / 2 * -1 + _chipW * col + 624, _chipH / 2 * (col + row) - _chipH);
-                /*
-                var _rand2 = CONFIG.HIDDEN_MAP[_incrementNum];
-                if (_rand2 == 1) {
-                    //this.marker.spriteBlack.setVisible(true);
-                } else {
-                    this.marker.spriteBlack.setVisible(false);
-                }
-                */
                 this.field.addChild(this.marker);
-                //this.markers.push(this.marker);
                 _incrementNum++;
+
+                if (_rand == 2) {
+                    var _rand3 = this.getRandNumberFromRange(1,5);
+                    if(_rand3 == 1){
+                        this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-a.png");
+                    }else if(_rand3 == 2){
+                        this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-a.png");
+                    }else if(_rand3 == 3){
+                        this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-a.png");
+                    }else{
+                        this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-a.png");
+                    }
+                    this.tree.setAnchorPoint(0,0);
+                    this.chip.addChild(this.tree);      
+                }
+
+                if (_rand == 3) {
+                    
+                    this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-b.png");
+                    this.tree.setAnchorPoint(0,0);
+                    this.chip.addChild(this.tree);  
+                    
+                }
             }
         }
     },
