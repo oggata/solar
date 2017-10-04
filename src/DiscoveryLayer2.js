@@ -35,6 +35,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
             cc.log("例外..");
             cc.sys.localStorage.clear();
         }
+        /*
         var keyCnt = Object.keys(this.storage.planetData).length;
         if (keyCnt == 0) {
             //this.storage.saveShipDataToStorage(CONFIG.CARD[1], 0, 0, 0, 1, "NO_DIST", 1);
@@ -48,6 +49,9 @@ var DiscoveryLayer2 = cc.Layer.extend({
                 }
             }
         }
+        */
+this.storage.savePlanetDataToStorage(CONFIG.PLANET[1], 1);
+
         this.distanceNum = 143230;
         this.viewSize = cc.director.getVisibleSize();
         var size = cc.winSize;
@@ -56,10 +60,18 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.backNode.setPosition(0, 0);
         this.addChild(this.backNode);
 
+
+this.header1 = new Header(this);
+this.addChild(this.header1,999999);
+this.header1.setAnchorPoint(0.5,0);
+this.header1.setPosition(320, 1136 - 72);
+
+/*
         this.header = cc.Sprite.create("res/header_owned_top.png");
-        this.header.setAnchorPoint(0,0);
-        this.header.setPosition(0, 1136-136);
+        this.header.setAnchorPoint(0, 0);
+        this.header.setPosition(0, 1136 - 136);
         this.addChild(this.header);
+
 
         this.buttonShipStatus = new cc.MenuItemImage("res/button_ship_status.png", "res/button_ship_status.png", function () {
             cc.log("aa");
@@ -68,9 +80,21 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.buttonShipStatus.setPosition(40, 70);
         var menu005 = new cc.Menu(this.buttonShipStatus);
         menu005.setPosition(0, 0);
-        this.header.addChild(menu005);
-
-
+        //this.header.addChild(menu005);
+*/
+/*
+        this.fuelLabel = new cc.LabelTTF("11", "Meiryo", 26);
+        this.fuelLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+        this.header.addChild(this.fuelLabel);
+        this.fuelLabel.setPosition(370, 105);
+        this.fuelLabel.setAnchorPoint(1, 0.5);
+        this.fuelLabel.textAlign = cc.TEXT_ALIGNMENT_RIGHT;
+        this.coinLabel = new cc.LabelTTF("11", "Meiryo", 26);
+        this.coinLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+        this.header.addChild(this.coinLabel);
+        this.coinLabel.setAnchorPoint(1, 0.5);
+        this.coinLabel.setPosition(590, 105);
+*/
         this.maxChargeTime = 60 * 3;
         this.labelTitle = cc.Sprite.create("res/label_title.png");
         this.labelTitle.setPosition(320, 600);
@@ -166,35 +190,31 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.cameraSpeed = 1;
         this.fromP = cc.p(1, 1);
         this.toP = cc.p(1, 1);
-        this.header = cc.Sprite.create("res/header002.png");
-        this.header.setPosition(320, 1136 - 150);
-        this.header.setAnchorPoint(0.5, 0);
-        this.addChild(this.header, 999999999999);
-        //this.isPullRocket = false;
+/*
+this.header = cc.Sprite.create("res/header002.png");
+this.header.setPosition(320, 1136 - 150);
+this.header.setAnchorPoint(0.5, 0);
+this.addChild(this.header, 999999999999);
+*/
         this.footer = new Footer(this);
         this.addChild(this.footer);
-        //this.shipDistType = "NO_DIST";
         this.explorationArrow = cc.Sprite.create("res/marker_search.png");
         this.explorationArrow.setPosition(0, 1136 - 220);
         this.baseNode.addChild(this.explorationArrow);
         this.explorationArrow.setVisible(false);
-
         this.explorationDistLabel = cc.LabelTTF.create("500KM", "Arial", 42);
         this.explorationDistLabel.setPosition(160, 240);
-        //this.explorationDistLabel.setAnchorPoint(0, 1);
         this.explorationDistLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.baseNode.addChild(this.explorationDistLabel);
-        //this.explorationDistLabel.setAnchorPoint(0, 1);
-
-
         this.explorationRarityLabel = cc.LabelTTF.create("S:0.01%/\nA:0.02%/\nB:0.001%/\nC:0.005%", "Arial", 18);
         this.explorationRarityLabel.setPosition(160, 240);
         this.explorationRarityLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.baseNode.addChild(this.explorationRarityLabel);
-
         this.masterShip = null;
         var keyCnt = Object.keys(this.storage.shipData).length;
         if (keyCnt == 0) {
+            this.InfoMenu.uiWindowAccount.setVisible(true);
+            this.InfoMenu.infoNode.setVisible(true);
             this.storage.saveShipDataToStorage(CONFIG.CARD[1], 0, 0, 0, 1, "NO_DIST", 1);
         }
         for (var key in this.storage.shipData) {
@@ -225,22 +245,18 @@ var DiscoveryLayer2 = cc.Layer.extend({
         } else {
             this.basePlanet.setVisible(true);
         }
-        this.setInfoWindow();
+        //this.setInfoWindow();
         return true;
     },
     update: function (dt) {
-
-        this.fuelLabel.setString("FUEL : " + this.storage.totalCoinAmount);
-
-
-if(this.InfoMenu.infoNode.isVisible()){
-    this.uiShipMonitor.setVisible(false);
-}else{
-    this.uiShipMonitor.setVisible(true);
-}
-
+        this.header1.fuelLabel.setString("" + this.storage.totalCoinAmount);
+        if (this.InfoMenu.infoNode.isVisible()) {
+            this.uiShipMonitor.setVisible(false);
+        } else {
+            this.uiShipMonitor.setVisible(true);
+        }
         //時間を進める
-        this.timeGauge.update();
+        this.header1.timeGauge.update();
         if (this.errorCnt >= 1) {
             this.errorCnt++;
             if (this.errorCnt >= 30 * 2) {
@@ -248,15 +264,14 @@ if(this.InfoMenu.infoNode.isVisible()){
                 this.error.setVisible(false);
             }
         }
-        
         this.fuelPastSecond = this.getPastSecond();
         if (this.fuelPastSecond <= 0) {
             this.fuelPastSecond = 0;
-            this.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+            this.header1.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         } else {
-            this.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+            this.header1.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         }
-        this.timeLabel.setString("残り" + this.fuelPastSecond + "秒");
+        this.header1.timeLabel.setString("残り" + this.fuelPastSecond + "秒");
         /*
         if (this.dx != 0 || this.dy != 0) {
             this.labelOpacity -= 0.05;
@@ -266,7 +281,6 @@ if(this.InfoMenu.infoNode.isVisible()){
             }
         }
         */
-
         this.InfoMenu.update();
         if (this.masterShip.status == "MOVING") {
             this.addInsekiCnt++;
@@ -312,7 +326,7 @@ if(this.InfoMenu.infoNode.isVisible()){
         if (this.timeCnt >= 30 * 3) {
             this.labelTitle.setVisible(false);
         }
-//this.uiShipMonitor.setPosition(this.rocketSprite.getPosition().x, this.rocketSprite.getPosition().y - 140);
+        //this.uiShipMonitor.setPosition(this.rocketSprite.getPosition().x, this.rocketSprite.getPosition().y - 140);
         if (this.rocketSprite.basePlanet != null) {
             //メッセージ表示の管理
             this.messageTime++;
@@ -401,7 +415,7 @@ if(this.InfoMenu.infoNode.isVisible()){
     setUiShipMonitor: function () {
         //ランディング 001
         this.uiShipMonitor = cc.Sprite.create("res/menu_ship.png");
-        this.uiShipMonitor.setPosition(320,220);
+        this.uiShipMonitor.setPosition(320, 220);
         this.addChild(this.uiShipMonitor, 9999999);
         this.uiShipMonitor001 = cc.Sprite.create("res/ui_ship_monitor_001.png");
         this.uiShipMonitor001.setAnchorPoint(0, 0);
@@ -487,7 +501,7 @@ if(this.InfoMenu.infoNode.isVisible()){
             this.pastSecond = 0;
             //経過した秒数が0秒 + 既存のステータスがmovigの場合は到着処理を行う
             if (this.masterShip.status == "MOVING") {
-                var _rand = this.getRandNumberFromRange(1,7);
+                var _rand = this.getRandNumberFromRange(1, 7);
                 this.storage.savePlanetDataToStorage(CONFIG.PLANET[_rand], 1);
                 this.masterShip.status = "FINISH";
                 this.masterShip.dx = 0;
@@ -588,79 +602,6 @@ if(this.InfoMenu.infoNode.isVisible()){
         this.storage.saveCurrentData();
         //}
     },
-    setInfoWindow: function () {
-        this.header = cc.Sprite.create("res/header.png");
-        this.header.setAnchorPoint(0, 0);
-        this.header.setPosition(0, 1136 - 180);
-        this.backNode.addChild(this.header);
-        /*
-                this.infoWindow = cc.Sprite.create("res/info.png");
-                this.infoWindow.setAnchorPoint(0, 0);
-                this.infoWindow.setPosition(0, 1136 - 220);
-                this.addChild(this.infoWindow, 999999999);
-                this.fuelLabel = cc.LabelTTF.create("123 / 143", "Arial", 25);
-                this.fuelLabel.setPosition(120, 160);
-                this.fuelLabel.setAnchorPoint(0, 1);
-                this.fuelLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-                //this.infoWindow.addChild(this.fuelLabel);
-                //this.fuelLabel.setAnchorPoint(0, 1);
-                this.levelLabel = cc.LabelTTF.create("12", "Arial", 25);
-                this.levelLabel.setPosition(120, 105);
-                this.levelLabel.setAnchorPoint(0, 1);
-                this.levelLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-                //this.infoWindow.addChild(this.levelLabel);
-                this.planetCntLabel = cc.LabelTTF.create("1 / 12312234", "Arial", 25);
-                this.planetCntLabel.setPosition(620, 50);
-                this.planetCntLabel.setAnchorPoint(1, 1);
-                this.planetCntLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-                //this.infoWindow.addChild(this.planetCntLabel);
-                this.distanceLabel = cc.LabelTTF.create("123242343km", "Arial", 25);
-                this.distanceLabel.setPosition(620, 105);
-                this.distanceLabel.setAnchorPoint(1, 1);
-                this.distanceLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-                //this.infoWindow.addChild(this.distanceLabel);
-        */
-        this.fuelLabel = cc.LabelTTF.create("FUEL : 100", "Arial", 25);
-        this.fuelLabel.setPosition(20, 160);
-        this.fuelLabel.setAnchorPoint(0, 1);
-        this.fuelLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.header.addChild(this.fuelLabel);
-        this.timeLabel = new cc.LabelTTF("00:00:00", "Arial", 18);
-        this.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
-        //this.timeLabel.enableStroke(new cc.Color(0, 0, 0, 255), 2, false);
-        this.header.addChild(this.timeLabel);
-        this.timeLabel.setPosition(510, 125);
-        //this.timeLabel.setString("残り" + this.pastSecond + "秒");
-        this.timeGauge = new TimeGauge(this);
-        this.timeGauge.setPosition(510, 150);
-        this.timeGauge.setScale(0.4);
-        this.header.addChild(this.timeGauge);
-        var coinButton = new cc.MenuItemImage("res/button_get_coin.png", "res/button_get_coin_on.png", function () {
-            if (this.fuelPastSecond >= 1) {
-                this.errorLabel.setString("" + this.fuelPastSecond + "秒で1クリスタルに変換できます.");
-                this.error.setVisible(true);
-                this.errorCnt = 1;
-            } else {
-                this.storage.addCoin(1);
-                this.setTargetTime();
-            }
-        }, this);
-        coinButton.setPosition(600, 150);
-        var menu001 = new cc.Menu(coinButton);
-        menu001.setPosition(0, 0);
-        this.header.addChild(menu001);
-        /*
-        this.launchButton = new cc.MenuItemImage("res/button_launch.png", "res/button_launch.png", function () {
-            //this.launchCnt = 1;
-            this.sprite.setOpacity(255 * 4);
-        }, this);
-        this.launchButton.setPosition(320, 300);
-        var menu001 = new cc.Menu(this.launchButton);
-        menu001.setPosition(0, 0);
-        this.addChild(menu001);
-        this.setRocketSearchCompleate();
-*/
-    },
     getMostNearPlanet: function (_x, _y, _dist) {
         for (var i = 0; i < this.planets.length; i++) {
             var _distance = Math.sqrt(
@@ -707,20 +648,14 @@ if(this.InfoMenu.infoNode.isVisible()){
         this.toP = cc.p(this.shipP.x + this.tmpDx2, this.shipP.y + this.tmpDy2);
         this.lineWidth = 2;
         this.drawNode2.drawSegment(this.shipP, this.toP, this.lineWidth, this.lineColor);
-        this.InfoMenu.shipTargetTimeLabel.setString("残り時間 : " + Math.ceil(this.pulledDist) + "min");
-
-
-this.explorationDistLabel.setString(Math.ceil(this.pulledDist) + "KM");
-
+        this.InfoMenu.shipTargetTimeLabel.setString("" + Math.ceil(this.pulledDist) + "");
+        this.explorationDistLabel.setString(Math.ceil(this.pulledDist) + "KM");
         this.explorationArrow.setVisible(true);
         this.explorationDistLabel.setVisible(true);
         this.explorationRarityLabel.setVisible(true);
         this.explorationArrow.setPosition(this.toP.x, this.toP.y);
         this.explorationDistLabel.setPosition(this.toP.x, this.toP.y - 50);
-
-
-this.explorationRarityLabel.setPosition(this.toP.x, this.toP.y - 120);
-
+        this.explorationRarityLabel.setPosition(this.toP.x, this.toP.y - 120);
         var _rad = this.getRadian(this.fromP.x, this.fromP.y, this.toP.x, this.toP.y);
         //cc.log(_rad);
         //var _rad = this.getRadian(0,100,this.toP.x - this.fromP.x,this.toP.y - this.fromP.y);
@@ -769,8 +704,6 @@ this.explorationRarityLabel.setPosition(this.toP.x, this.toP.y - 120);
     shuffle: function () {
         return Math.random() - .5;
     },
-
-
     goToDiscoveryLayer: function (cardId) {
         var scene = cc.Scene.create();
         //次のステージへいくためにstorageは必ず受けた渡す
@@ -795,16 +728,6 @@ this.explorationRarityLabel.setPosition(this.toP.x, this.toP.y - 120);
         scene.addChild(PlanetsLayer.create(this.storage, cardId));
         cc.director.runScene(cc.TransitionFadeTR.create(1.0, scene));
     },
-    /*
-    goToGameLayer: function (cardId) {
-        var scene = cc.Scene.create();
-        //次のステージへいくためにstorageは必ず受けた渡す
-        var cardId = 1;
-        scene.addChild(GameLayer.create(this.storage, cardId));
-        cc.director.runScene(cc.TransitionFadeTR.create(1.0, scene));
-    },
-    */
-
     goToDevelopLayer: function () {
         var scene = cc.Scene.create();
         //次のステージへいくためにstorageは必ず受けた渡す

@@ -36,6 +36,9 @@
         "src/Coin.js",
         "src/Gauge.js",
         "src/Material.js",
+ "src/InfoMenu.js",
+ "src/PlanetDetail.js",
+  "src/Ship.js",
         "src/Deburis.js",
         "src/DevelopLayer.js",
 

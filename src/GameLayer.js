@@ -34,14 +34,9 @@ var GameLayer = cc.Layer.extend({
             cc.log("例外..");
             cc.sys.localStorage.clear();
         }
-        //isCom = true;
-        //this.storage.saveDeckDataToStorage(1, CONFIG.CARD[1]);
-        //playBattleBGM(this.storage);
-        //this.isCom = isCom;
         //画面サイズの取得
         this.viewSize = cc.director.getVisibleSize();
         var size = cc.winSize;
-        //this.storage = storage;
         //storageのリセット
         this.storage.isSteal = false;
         this.storage.eventData = new Object();
@@ -57,11 +52,6 @@ var GameLayer = cc.Layer.extend({
             this.greenUserId = this.storage.battleTargetUserId;
             this.redUserId = this.storage.userId;
         }
-        //ステータス
-        //this.destCaptureRate = 0.1;
-        //this.captureCnt = 0;
-        //this.maxCaptureCnt = 0;
-        //this.captureRate = 0;
         this.gameStatus = "wait";
         this.result = null;
         this.gameStartTimeCnt = 0;
@@ -91,15 +81,12 @@ var GameLayer = cc.Layer.extend({
         this.addChild(this.battleWindow);
         this.battleWindow.setPosition(0, 0);
         this.battleWindowScale = 0.1;
-        this.maxBattleWindowScale = 1.2;
+        this.maxBattleWindowScale = 0.85;
         this.battleWindow.setScale(this.battleWindowScale);
         this.setHeaderLabel();
         this.setStartLabel();
-
         this.resultSprite = new BattleResult(this);
         this.addChild(this.resultSprite, 9999);
-        //this.resultSprite.setAnchorPoint(0,0);
-//this.resultSprite.setPosition(640 / 2, 1136 / 2);
 this.resultSprite.setVisible(false);
         this.scheduleUpdate();
         this.firstTouchX = 0;
@@ -124,14 +111,6 @@ this.resultSprite.setVisible(false);
             this.labelStartCnt007Cnt = 0;
             this.labelStartCnt007.setVisible(false);
         }
-        /*
-                //画面表示
-                this.maxCaptureCnt = this.battleWindow.positionalChips.length * this.destCaptureRate;
-                this.captureRate = Math.floor(this.captureCnt / this.maxCaptureCnt * 100) / 100;
-                if (this.captureRate >= 1) {
-                    this.captureRate = 1;
-                }
-        */
         //常に中央を表示するようにする
         var _centerMarker = this.battleWindow.getMarker2(this.battleWindow.player.col, this.battleWindow.player.row);
         //this.battleWindowScale
@@ -320,7 +299,7 @@ this.resultSprite.setVisible(false);
                 this.resultSprite.sendMessage();
             }
             if (this.endCnt == 5) {
-                this.storage.saveCreatureDataToStorage(CONFIG.CARD[1], 1);
+                //this.storage.saveCreatureDataToStorage(CONFIG.CARD[1], 1);
             }
         }
     },

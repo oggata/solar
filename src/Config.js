@@ -102,6 +102,45 @@ CONFIG.CARD = [
     }
 ];
 
+CONFIG.MISSION = [
+    { 
+    },
+    { 
+        "id"         : 1,
+        "name"       : "レア惑星を探せ",
+        "description": "AAA",
+        "genre"      : "aaa",
+        "planetId"   : 1
+    },
+    { 
+        "id"         : 2,
+        "name"       : "レア惑星を探せ",
+        "description": "AAA",
+        "genre"      : "aaa",
+        "planetId"   : 1
+    },
+    { 
+        "id"         : 3,
+        "name"       : "レア惑星を探せ",
+        "description": "AAA",
+        "genre"      : "aaa",
+        "planetId"   : 1
+    },
+    { 
+        "id"         : 4,
+        "name"       : "レア惑星を探せ",
+        "description": "AAA",
+        "genre"      : "aaa",
+        "planetId"   : 1
+    },
+    { 
+        "id"         : 5,
+        "name"       : "レア惑星を探せ",
+        "description": "AAA",
+        "genre"      : "aaa",
+        "planetId"   : 1
+    },
+];
 
 CONFIG.PLANET = [
     { 
@@ -112,7 +151,7 @@ CONFIG.PLANET = [
         "description": "AAA",
         "genre"      : "aaa",
         "image"      : "res/planet_w350_001.png",
-        "type"       : [1]
+        "route"       : [1,2,3]
     },
     { 
         "id"         : 2,
@@ -120,7 +159,7 @@ CONFIG.PLANET = [
         "description": "BBB",
         "genre"      : "bbb",
         "image"      : "res/planet_w350_002.png",
-        "type"       : [1]
+        "route"       : [1,2,3]
     },
     { 
         "id"         : 3,
@@ -128,7 +167,7 @@ CONFIG.PLANET = [
         "description": "CCC",
         "genre"      : "ccc",
         "image"      : "res/planet_w350_003.png",
-        "type"       : [1]
+        "route"       : [1,2,3]
     },
     { 
         "id"         : 4,
@@ -136,7 +175,7 @@ CONFIG.PLANET = [
         "description": "DDD",
         "genre"      : "ddd",
         "image"      : "res/planet_w350_004.png",
-        "type"       : [1]
+        "route"       : [1,2,3]
     },
     { 
         "id"         : 5,
@@ -144,7 +183,7 @@ CONFIG.PLANET = [
         "description": "EEE",
         "genre"      : "eee",
         "image"      : "res/planet_w350_005.png",
-        "type"       : [1]
+        "route"       : [1,2,3]
     },
     { 
         "id"         : 6,
@@ -152,7 +191,7 @@ CONFIG.PLANET = [
         "description": "EEE",
         "genre"      : "eee",
         "image"      : "res/planet_w350_005.png",
-        "type"       : [1]
+        "route"       : [1,2,3]
     },
     { 
         "id"         : 7,
@@ -160,7 +199,7 @@ CONFIG.PLANET = [
         "description": "EEE",
         "genre"      : "eee",
         "image"      : "res/planet_w350_005.png",
-        "type"       : [1]
+        "route"       : [1,2,3]
     },
     { 
         "id"         : 8,
@@ -168,7 +207,7 @@ CONFIG.PLANET = [
         "description": "EEE",
         "genre"      : "eee",
         "image"      : "res/planet_w350_005.png",
-        "type"       : [1]
+        "route"       : [1]
     },
     { 
         "id"         : 9,
@@ -176,7 +215,7 @@ CONFIG.PLANET = [
         "description": "EEE",
         "genre"      : "eee",
         "image"      : "res/planet_w350_005.png",
-        "type"       : [1]
+        "route"       : [1]
     },
     { 
         "id"         : 10,
@@ -184,6 +223,6 @@ CONFIG.PLANET = [
         "description": "EEE",
         "genre"      : "eee",
         "image"      : "res/planet_w350_005.png",
-        "type"       : [1]
+        "route"       : [1]
     }
 ];

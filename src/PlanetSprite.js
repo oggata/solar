@@ -37,12 +37,12 @@ var PlanetSprite = cc.Node.extend({
         this.planetName = cc.LabelTTF.create(_planetName, "Arial", 38);
         this.planetName.setPosition(351 / 2, 351 / 2);
         this.planetName.setOpacity(255 * 0.7);
-        this.planetSprite.addChild(this.planetName);
+        //this.planetSprite.addChild(this.planetName);
         var _distance = this.getRandNumberFromRange(10000, 99999999);
         this.planetDistance = cc.LabelTTF.create(_distance + "km", "Arial", 22);
         this.planetDistance.setPosition(351 / 2, 351 / 2 - 50);
         this.planetDistance.setOpacity(255 * 0.7);
-        this.planetSprite.addChild(this.planetDistance);
+        //this.planetSprite.addChild(this.planetDistance);
         this.degree = 0;
     },
     shuffle: function () {

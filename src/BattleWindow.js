@@ -20,7 +20,6 @@ var BattleWindow = cc.Node.extend({
         //最大値を設定する
         this.maxCoinCnt = 5;
         this.orderCnt = 0;
-        this.orderCnt2 = 0;
         this.orderMaxCnt = 1;
         this.gameLevel = 1;
         this.gameNextLevelScore = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3];
@@ -67,12 +66,6 @@ var BattleWindow = cc.Node.extend({
         this.shipPosY = 800;
         this.shipLandingCnt = 0;
         this.shipLandDirection = -10;
-
-
-
-
-
-
         this.scheduleUpdate();
         //materialを足す
         for (var i = 0; i < this.maxCoinCnt; i++) {
@@ -330,7 +323,6 @@ var BattleWindow = cc.Node.extend({
         var _chipW = 32 * 3;
         var _chipH = 20 * 3;
         var _incrementNum = 0;
-
         var _dirPath = "004";
         for (var row = 0; row < 28; row++) {
             for (var col = 0; col < 28; col++) {
@@ -338,7 +330,7 @@ var BattleWindow = cc.Node.extend({
                 var _rand = CONFIG.MAP[_incrementNum];
                 //this.chip = cc.Sprite.create("res/map-chip-3-001-a.png");
                 //if (_rand == 1) {
-                    this.chip = cc.Sprite.create("res/planets/" + _dirPath + "/map-chip-a.png");
+                this.chip = cc.Sprite.create("res/planets/" + _dirPath + "/map-chip-a.png");
                 //}
                 if (_rand == 2) {
                     this.chip = cc.Sprite.create("res/planets/" + _dirPath + "/map-chip-b.png");
@@ -354,38 +346,32 @@ var BattleWindow = cc.Node.extend({
                 this.chip.setAnchorPoint(0.5, 0.5);
                 this.chip.colorId = "WHITE";
                 this.chip.baseMapType = _rand;
-
                 this.chip.setPosition(
                     (col + row) * _chipW / 2 * -1 + _chipW * col + 624, _chipH / 2 * (col + row) - _chipH);
-
                 this.field.addChild(this.chip, 1 - (col + row));
                 this.marker = new Marker(this, col, row, _rand, null, this.game.colorName);
                 this.marker.setPosition(
                     (col + row) * _chipW / 2 * -1 + _chipW * col + 624, _chipH / 2 * (col + row) - _chipH);
                 this.field.addChild(this.marker);
                 _incrementNum++;
-
                 if (_rand == 2) {
-                    var _rand3 = this.getRandNumberFromRange(1,5);
-                    if(_rand3 == 1){
+                    var _rand3 = this.getRandNumberFromRange(1, 5);
+                    if (_rand3 == 1) {
                         this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-a.png");
-                    }else if(_rand3 == 2){
+                    } else if (_rand3 == 2) {
                         this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-a.png");
-                    }else if(_rand3 == 3){
+                    } else if (_rand3 == 3) {
                         this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-a.png");
-                    }else{
+                    } else {
                         this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-a.png");
                     }
-                    this.tree.setAnchorPoint(0,0);
-                    this.chip.addChild(this.tree);      
+                    this.tree.setAnchorPoint(0, 0);
+                    this.chip.addChild(this.tree);
                 }
-
                 if (_rand == 3) {
-                    
                     this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-b.png");
-                    this.tree.setAnchorPoint(0,0);
-                    this.chip.addChild(this.tree);  
-                    
+                    this.tree.setAnchorPoint(0, 0);
+                    this.chip.addChild(this.tree);
                 }
             }
         }

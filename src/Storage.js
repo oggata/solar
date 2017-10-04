@@ -3,18 +3,9 @@ var Storage = cc.Class.extend(
     ctor : function () 
     {
         this.creatureData = new Object();
-
         this.planetData = new Object();
-
         this.shipData = new Object();
-        //this.deckData = new Object();
-        //this.enemyDeckData = new Object();
 
-        //this.eventData = new Object();
-        //this.enemyEventData = new Object();
-        
-        //this.startPositionData = [];
-       // this.enemyStartPositionData = [];
         this.playerName = this.getRandNumberFromRange(1,9999999999);
         this.totalGameScore = 0;
         this.totalCoinAmount = 1;
@@ -25,33 +16,6 @@ var Storage = cc.Class.extend(
         this.targetTime = parseInt( new Date() /1000 );
         this.lastUpdatedTime = parseInt( new Date() /1000 );
         this.battleTargetUserId = 0;
-
-
-/*
-this.shipDx = 0;
-this.shipDy = 0;
-this.shipTargetSecond = 0;
-this.shipTargetPlanetId = 0;
-this.shipStatus = null;
-*/
-        /*
-        this.enemyUserId = 0;
-        this.enemyColorName = "";
-        this.enemyTouchPosX = 0;
-        this.enemyTouchPosY = 0;
-        this.enemyTreasureAmount = 0;
-        this.enemyTurnNum = 0;
-        this.enemyUsedCardId = 0;
-        this.enemyUsedCardTurn = 0;
-        this.enemyUsedCardMsg = "";
-        this.enemyBattleStatus = "";
-        //this.webSocketHelper = new WebSocketHelper(this);
-        this.users = [];
-        this.userId = 0;
-        */
-
-        //this.isSteal = false;
-        //this.isConnectionError = false;
     },
 
     init : function () { },
@@ -228,6 +192,27 @@ this.shipStatus = null;
         }
         var _getData = this.getDataFromStorage();
         cc.sys.localStorage.setItem("gameStorage",_getData);
+    },
+
+    isOwnPlanetData:function(card){
+        var savedData = this.planetData;
+        var _updateCnt = 0;
+        for (var savedDataKey in savedData) {
+            if (savedData.hasOwnProperty(savedDataKey)) {
+                var savedDataValue = savedData[savedDataKey];
+                var inputCreatureId= "ID_" + card["id"];
+                if(savedDataKey == inputCreatureId)
+                {
+                    _updateCnt+=1;
+                }
+            }
+
+            if(_updateCnt == 0){
+                return false;
+            }else{
+                return true;
+            }
+        }
     },
 
     savePlanetDataToStorage : function(card,addCount) 

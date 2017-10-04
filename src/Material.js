@@ -6,7 +6,6 @@ var Material = cc.Node.extend({
         this.materialCode = mCode;
         this.orderCnt = orderCnt;
         this.image = "res/sozai001.png";
-
         if (mCode == 1) {
             this.image = "res/sozai001.png";
         }
@@ -20,7 +19,7 @@ var Material = cc.Node.extend({
             this.image = "res/sozai004.png";
         }
         this.sprite = cc.Sprite.create(this.image);
-//this.addChild(this.sprite);
+        //this.addChild(this.sprite);
         //this.sprite.setScale(0.2,0.2);
         this.amountLabel = new cc.LabelTTF("x" + this.amount, "Arial", 24);
         this.amountLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
@@ -32,7 +31,6 @@ var Material = cc.Node.extend({
         this.maxSpriteScale = 0.8;
         this.spriteScale = 0.8;
         this.scaleAdd = 0.1;
-
         //this.initializeWalkAnimation();
     },
     init: function () {},
@@ -51,22 +49,20 @@ var Material = cc.Node.extend({
     setAmount: function () {
         this.scaleAdd = 0.2;
         this.amountLabel.setString("x" + this.amount);
-        if(this.amount == 0){
+        if (this.amount == 0) {
             this.amountLabel.setVisible(false);
         }
     },
     initializeWalkAnimation: function () {
-
-
-            this.imgWidth = 1280 / 8;
-            this.imgHeight = 1280 / 8;
-            this.widthCnt = 6;
-            this.setScale(0.6, 0.6);
-            this.span = 0.1;
-
+        this.imgWidth = 1280 / 8;
+        this.imgHeight = 1280 / 8;
+        this.widthCnt = 6;
+        this.setScale(0.6, 0.6);
+        this.span = 0.1;
         var frameSeq = [];
         for (var i = 0; i < this.widthCnt; i++) {
-            var frame = cc.SpriteFrame.create("res/datapost.png", cc.rect(this.imgWidth * i, this.imgHeight * 0, this.imgWidth, this.imgHeight));
+            var frame = cc.SpriteFrame.create("res/datapost.png", cc.rect(this.imgWidth * i, this.imgHeight * 0, this.imgWidth,
+                this.imgHeight));
             frameSeq.push(frame);
         }
         this.wa = cc.Animation.create(frameSeq, this.span);
