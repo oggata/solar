@@ -34,7 +34,7 @@ var BattleResult = cc.Node.extend({
         this.messageLabel2.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         //this.resultSprite.addChild(this.messageLabel2);
         var retryButton = new cc.MenuItemImage("res/button_retry.png", "res/button_retry.png", function () {
-            this.goToCardLayer();
+            this.goToListLayer();
         }, this);
         retryButton.setPosition(320, 50);
         var menu002 = new cc.Menu(retryButton);

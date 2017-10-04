@@ -9,6 +9,7 @@ var PlanetsLayer = cc.Layer.extend({
         this._super();
         //画面サイズの取得
         this.storage = storage;
+        this.windowName = "PlanetsLayer";
         this.addAlpha = 0.05;
         this.storage = new Storage();
         try {

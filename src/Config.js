@@ -73,15 +73,16 @@ CONFIG.MAP = [
     2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
 ];
 
+
 CONFIG.CARD = [
     { 
     },
     { 
         "id"         : 1,
-        "name"       : "AAA",
-        "description": "AAA",
-        "genre"      : "village",
-        "useTxt"     : "新しい地点を攻略開始",
+        "name"       : "バッテリーモジュール",
+        "description": "より多くの電気を貯めることができる",
+        "genre"      : "test",
+        "useTxt"     : "",
         "image"      : "res/sozai001.png",
         "weak"       : [],
         "strong"     : [1,0,0,0],
@@ -90,16 +91,52 @@ CONFIG.CARD = [
     },
     { 
         "id"         : 2,
-        "name"       : "BBB",
-        "description": "",
-        "genre"      : "castle",
-        "useTxt"     : "新しい地点を攻略開始",
+        "name"       : "ソーラーモジュール",
+        "description": "単位時間あたりの充電量が増加する",
+        "genre"      : "test",
+        "useTxt"     : "",
         "image"      : "res/sozai002.png",
         "weak"       : [],
         "strong"     : [0,1,0,0],
         "isOwnTerritory" : false,
         "maxPopulation" : 0,
-    }
+    },
+    { 
+        "id"         : 2,
+        "name"       : "燃焼モジュール",
+        "description": "より遠くまで飛ぶことができる",
+        "genre"      : "test",
+        "useTxt"     : "",
+        "image"      : "res/sozai002.png",
+        "weak"       : [],
+        "strong"     : [0,1,0,0],
+        "isOwnTerritory" : false,
+        "maxPopulation" : 0,
+    },
+    { 
+        "id"         : 2,
+        "name"       : "エンジンモジュール",
+        "description": "探索スピードが増加する",
+        "genre"      : "test",
+        "useTxt"     : "",
+        "image"      : "res/sozai002.png",
+        "weak"       : [],
+        "strong"     : [0,1,0,0],
+        "isOwnTerritory" : false,
+        "maxPopulation" : 0,
+    },
+    { 
+        "id"         : 2,
+        "name"       : "アンテナモジュール",
+        "description": "Sランク惑星の発見率が増加する",
+        "genre"      : "test",
+        "useTxt"     : "",
+        "image"      : "res/sozai002.png",
+        "weak"       : [],
+        "strong"     : [0,1,0,0],
+        "isOwnTerritory" : false,
+        "maxPopulation" : 0,
+    },
 ];
 
 CONFIG.MISSION = [
@@ -110,35 +147,35 @@ CONFIG.MISSION = [
         "name"       : "レア惑星を探せ",
         "description": "AAA",
         "genre"      : "aaa",
-        "planetId"   : 1
+        "planetId"   : 5
     },
     { 
         "id"         : 2,
         "name"       : "レア惑星を探せ",
         "description": "AAA",
         "genre"      : "aaa",
-        "planetId"   : 1
+        "planetId"   : 5
     },
     { 
         "id"         : 3,
         "name"       : "レア惑星を探せ",
         "description": "AAA",
         "genre"      : "aaa",
-        "planetId"   : 1
+        "planetId"   : 5
     },
     { 
         "id"         : 4,
         "name"       : "レア惑星を探せ",
         "description": "AAA",
         "genre"      : "aaa",
-        "planetId"   : 1
+        "planetId"   : 5
     },
     { 
         "id"         : 5,
         "name"       : "レア惑星を探せ",
         "description": "AAA",
         "genre"      : "aaa",
-        "planetId"   : 1
+        "planetId"   : 5
     },
 ];
 
@@ -151,6 +188,8 @@ CONFIG.PLANET = [
         "description": "AAA",
         "genre"      : "aaa",
         "image"      : "res/planet_w350_001.png",
+        "fuel"       : 2,
+        "time"       : 100,
         "route"       : [1,2,3]
     },
     { 
@@ -159,6 +198,8 @@ CONFIG.PLANET = [
         "description": "BBB",
         "genre"      : "bbb",
         "image"      : "res/planet_w350_002.png",
+        "fuel"       : 2,
+        "time"       : 100,
         "route"       : [1,2,3]
     },
     { 
@@ -167,6 +208,8 @@ CONFIG.PLANET = [
         "description": "CCC",
         "genre"      : "ccc",
         "image"      : "res/planet_w350_003.png",
+        "fuel"       : 2,
+        "time"       : 100,
         "route"       : [1,2,3]
     },
     { 
@@ -175,6 +218,8 @@ CONFIG.PLANET = [
         "description": "DDD",
         "genre"      : "ddd",
         "image"      : "res/planet_w350_004.png",
+        "fuel"       : 2,
+        "time"       : 100,
         "route"       : [1,2,3]
     },
     { 
@@ -183,6 +228,8 @@ CONFIG.PLANET = [
         "description": "EEE",
         "genre"      : "eee",
         "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 100,
         "route"       : [1,2,3]
     },
     { 
@@ -191,6 +238,8 @@ CONFIG.PLANET = [
         "description": "EEE",
         "genre"      : "eee",
         "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 100,
         "route"       : [1,2,3]
     },
     { 
@@ -199,6 +248,8 @@ CONFIG.PLANET = [
         "description": "EEE",
         "genre"      : "eee",
         "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 100,
         "route"       : [1,2,3]
     },
     { 
@@ -207,6 +258,8 @@ CONFIG.PLANET = [
         "description": "EEE",
         "genre"      : "eee",
         "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 100,
         "route"       : [1]
     },
     { 
@@ -215,6 +268,8 @@ CONFIG.PLANET = [
         "description": "EEE",
         "genre"      : "eee",
         "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 100,
         "route"       : [1]
     },
     { 
@@ -223,6 +278,8 @@ CONFIG.PLANET = [
         "description": "EEE",
         "genre"      : "eee",
         "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 100,
         "route"       : [1]
     }
 ];

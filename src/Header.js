@@ -22,6 +22,9 @@ this.fuelLabel = new cc.LabelTTF("11", "Meiryo", 26);
 
 
 
+this.levelGauge = new Gauge(120,25,"");
+this.header.addChild(this.levelGauge);
+this.levelGauge.setPosition(24,92);
 
         this.timeLabel = new cc.LabelTTF("00:00:00", "Arial", 18);
         this.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));

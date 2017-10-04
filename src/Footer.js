@@ -31,19 +31,21 @@ var Footer = cc.Node.extend({
     goToDiscoveryLayer: function (cardId) {
         var scene = cc.Scene.create();
         //次のステージへいくためにstorageは必ず受けた渡す
+        //windowName
         scene.addChild(DiscoveryLayer2.create(this.storage, cardId));
-        cc.director.runScene(cc.TransitionFadeTR.create(1.0, scene));
+        //cc.director.runScene(cc.TransitionSlideInR.create(1.5, scene));
+        cc.director.runScene(cc.TransitionFadeDown.create(0.4, scene));
     },
     goToItemLayer: function (cardId) {
         var scene = cc.Scene.create();
         //次のステージへいくためにstorageは必ず受けた渡す
         scene.addChild(MissionsLayer.create(this.storage, cardId));
-        cc.director.runScene(cc.TransitionFadeTR.create(1.0, scene));
+        cc.director.runScene(cc.TransitionFadeDown.create(0.4, scene));
     },
     goToPlanetsLayer: function (cardId) {
         var scene = cc.Scene.create();
         //次のステージへいくためにstorageは必ず受けた渡す
         scene.addChild(PlanetsLayer.create(this.storage, cardId));
-        cc.director.runScene(cc.TransitionFadeTR.create(1.0, scene));
+        cc.director.runScene(cc.TransitionFadeDown.create(0.4, scene));
     },
 });

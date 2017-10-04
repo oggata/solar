@@ -73,6 +73,12 @@ var GameLayer = cc.Layer.extend({
                 event.getCurrentTarget().touchFinish(touches[0].getLocation());
             }
         }), this);
+
+        this.header1 = new Header(this);
+        this.addChild(this.header1, 999999);
+        this.header1.setAnchorPoint(0.5, 0);
+        this.header1.setPosition(320, 1136 - 72);
+        
         this.baseNode = cc.Sprite.create("res/back_top.png");
         this.baseNode.setAnchorPoint(0, 0);
         this.baseNode.setPosition(0, 0);
@@ -337,25 +343,6 @@ this.resultSprite.setVisible(false);
         var rand = min + Math.floor(Math.random() * (max - min));
         return rand;
     },
-    /*
-    touchStart: function (location) {
-        this.firstTouchX = location.x;
-        this.firstTouchY = location.y;
-        var marker = this.battleWindow.getMarker(location.x - this.battleWindow.getPosition().x, location.y - this.battleWindow
-            .getPosition().y);
-        this.battleWindow.selectedMarker.setPosition(marker.getPosition().x, marker.getPosition().y);
-        this.battleWindow.selectedMarker.col = marker.col;
-        this.battleWindow.selectedMarker.row = marker.row;
-        //this.battleWindow.selectedMarkerCol = marker.col;
-        //this.battleWindow.selectedMarkerRow = marker.row;
-    },
-    touchMove: function (location) {
-        var marker = this.battleWindow.getMarker(location.x - this.battleWindow.getPosition().x, location.y - this.battleWindow
-            .getPosition().y);
-        this.battleWindow.selectedMarker.setPosition(marker.getPosition().x, marker.getPosition().y);
-    },
-    touchFinish: function (location) {},
-    */
     touchStart: function (location) {
         this.firstTouchX = location.x;
         this.firstTouchY = location.y;

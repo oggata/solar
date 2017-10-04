@@ -1,8 +1,7 @@
 var CardLayer = cc.Layer.extend({
     sprite: null,
-    ctor: function (storage,cardId) {
+    ctor: function (storage, cardId) {
         this._super();
-
         //画面サイズの取得
         this.viewSize = cc.director.getVisibleSize();
         var size = cc.winSize;
@@ -10,10 +9,8 @@ var CardLayer = cc.Layer.extend({
         this.baseNode = cc.LayerColor.create(new cc.Color(17, 31, 62, 255), 640, 1136);
         this.baseNode.setPosition(0, 0);
         this.addChild(this.baseNode);
-
         //var _rand = this.getRandNumberFromRange(1, 13);
         var _card = CONFIG.PLANET[1];
-
         this.cardPosY = 1500;
         this.card = cc.Sprite.create("res/planet_milk.png");
         this.baseNode.addChild(this.card);
@@ -21,26 +18,20 @@ var CardLayer = cc.Layer.extend({
         this.labelSprite = cc.Sprite.create("res/label_get_a_normal_card.png");
         this.labelSprite.setPosition(320, 400);
         this.labelSprite.setOpacity(0);
-        
         this.cardGetTime = 1;
         this.backCardActionOpacity = 0;
         this.cardWaitTime = 0;
-
         this.initializeWalkAnimation();
-
         this.timeCnt = 0;
-
         this.scheduleUpdate();
         return true;
     },
     update: function (dt) {
-
         this.timeCnt++;
-        if(this.timeCnt >= 30 * 4.2){
+        if (this.timeCnt >= 30 * 4.2) {
             this.timeCnt = 0;
             this.goToStageLayer();
         }
-
         if (1 <= this.cardGetTime && this.cardGetTime < 30 * 5) {
             this.cardGetTime++;
             this.backCardActionOpacity += 0.05;
@@ -50,9 +41,7 @@ var CardLayer = cc.Layer.extend({
             this.setCardMotion();
         }
     },
-
     initializeWalkAnimation: function () {
-
         this.image = "res/starburst.png";
         this.itemWidth = 640;
         this.itemHeight = 480;
@@ -60,7 +49,6 @@ var CardLayer = cc.Layer.extend({
         this.heightCount = 5;
         this.effectInterval = 0.1;
         this.effectTime = 0;
-
         var frameSeq = [];
         for (var i = 0; i < this.heightCount; i++) {
             for (var j = 0; j < this.widthCount; j++) {
@@ -74,11 +62,10 @@ var CardLayer = cc.Layer.extend({
         this.ra = cc.RepeatForever.create(cc.Animate.create(this.wa));
         this.sprite = cc.Sprite.create(this.image, cc.rect(0, 0, this.itemWidth, this.itemHeight));
         this.sprite.runAction(this.ra);
-        this.sprite.setPosition(320,1136/2);
-        this.sprite.setScale(2.5,2.5);
+        this.sprite.setPosition(320, 1136 / 2);
+        this.sprite.setScale(2.5, 2.5);
         this.baseNode.addChild(this.sprite);
     },
-
     setCardMotion: function () {
         this.card.setOpacity(1 * 255);
         if (this.card.getPosition().y > 1200) {
@@ -102,7 +89,6 @@ var CardLayer = cc.Layer.extend({
         this.cardPosY = 1500;
         this.card.setPosition(320, this.cardPosY);
     },
-
     getRandNumberFromRange: function (min, max) {
         var rand = min + Math.floor(Math.random() * (max - min));
         return rand;
@@ -141,13 +127,13 @@ var CardLayer = cc.Layer.extend({
         cc.director.runScene(cc.TransitionFlipY.create(0.5, scene));
     }
 });
-CardLayer.create = function (storage,cardId) {
-    return new CardLayer(storage,cardId);
+CardLayer.create = function (storage, cardId) {
+    return new CardLayer(storage, cardId);
 };
 var CardLayerScene = cc.Scene.extend({
-    onEnter: function (storage,cardId) {
+    onEnter: function (storage, cardId) {
         this._super();
-        var layer = new CardLayer(storage,cardId);
+        var layer = new CardLayer(storage, cardId);
         this.addChild(layer);
     }
 });

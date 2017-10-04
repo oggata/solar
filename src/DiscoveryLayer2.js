@@ -5,6 +5,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         //cc.sys.localStorage.clear();
         //画面サイズの取得
         this.storage = storage;
+        this.windowName = "DiscoveryLayer2";
         this.addAlpha = 0.05;
         this.storage = new Storage();
         try {
@@ -35,23 +36,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
             cc.log("例外..");
             cc.sys.localStorage.clear();
         }
-        /*
-        var keyCnt = Object.keys(this.storage.planetData).length;
-        if (keyCnt == 0) {
-            //this.storage.saveShipDataToStorage(CONFIG.CARD[1], 0, 0, 0, 1, "NO_DIST", 1);
-        }
-        for (var key in this.storage.planetData) {
-            if (this.storage.planetData.hasOwnProperty(key)) {
-                if (key == 'ID_1') {
-                    var value = this.storage.planetData[key];
-                    //this.masterShip = JSON.parse(value);
-                    cc.log(JSON.parse(value));
-                }
-            }
-        }
-        */
-this.storage.savePlanetDataToStorage(CONFIG.PLANET[1], 1);
-
+        this.storage.savePlanetDataToStorage(CONFIG.PLANET[1], 1);
         this.distanceNum = 143230;
         this.viewSize = cc.director.getVisibleSize();
         var size = cc.winSize;
@@ -59,45 +44,15 @@ this.storage.savePlanetDataToStorage(CONFIG.PLANET[1], 1);
         this.backNode.setAnchorPoint(0, 0);
         this.backNode.setPosition(0, 0);
         this.addChild(this.backNode);
-
-
-this.header1 = new Header(this);
-this.addChild(this.header1,999999);
-this.header1.setAnchorPoint(0.5,0);
-this.header1.setPosition(320, 1136 - 72);
-
-/*
-        this.header = cc.Sprite.create("res/header_owned_top.png");
-        this.header.setAnchorPoint(0, 0);
-        this.header.setPosition(0, 1136 - 136);
-        this.addChild(this.header);
-
-
-        this.buttonShipStatus = new cc.MenuItemImage("res/button_ship_status.png", "res/button_ship_status.png", function () {
-            cc.log("aa");
-            this.goToDevelopLayer();
-        }, this);
-        this.buttonShipStatus.setPosition(40, 70);
-        var menu005 = new cc.Menu(this.buttonShipStatus);
-        menu005.setPosition(0, 0);
-        //this.header.addChild(menu005);
-*/
-/*
-        this.fuelLabel = new cc.LabelTTF("11", "Meiryo", 26);
-        this.fuelLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
-        this.header.addChild(this.fuelLabel);
-        this.fuelLabel.setPosition(370, 105);
-        this.fuelLabel.setAnchorPoint(1, 0.5);
-        this.fuelLabel.textAlign = cc.TEXT_ALIGNMENT_RIGHT;
-        this.coinLabel = new cc.LabelTTF("11", "Meiryo", 26);
-        this.coinLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
-        this.header.addChild(this.coinLabel);
-        this.coinLabel.setAnchorPoint(1, 0.5);
-        this.coinLabel.setPosition(590, 105);
-*/
+        this.header1 = new Header(this);
+        this.addChild(this.header1, 999999);
+        this.header1.setAnchorPoint(0.5, 0);
+        this.header1.setPosition(320, 1136 - 72);
         this.maxChargeTime = 60 * 3;
+        /*
         this.labelTitle = cc.Sprite.create("res/label_title.png");
         this.labelTitle.setPosition(320, 600);
+        */
         this.timeCnt = 0;
         this.labelOpacity = 1;
         this.planets = [];
@@ -113,11 +68,20 @@ this.header1.setPosition(320, 1136 - 72);
         this.basePlanet.setPosition(5000, 5000);
         this.basePlanet.setScale(0.35, 0.35);
         this.planets.push(this.basePlanet);
+
+        //救出メッセージ用
+        this.rescureWindow = cc.Sprite.create("res/rescue.png");
+        //this.rescureWindow.setAnchorPoint(0, 0);
+        this.rescureWindow.setPosition(320, 700);
+        this.addChild(this.rescureWindow);
+        this.rescureWindow.setVisible(false);
+
         //探索船を作る
         this.rocketSprite = new Ship(this);
         this.baseNode.addChild(this.rocketSprite, 999999999);
         this.rocketSprite.setPosition(5000, 5000);
         this.rocketSprite.basePlanet = this.basePlanet;
+
         //this.rocketSprite.setScale(0.4, 0.4);
         this.rocketSprite.rocketId = 1;
         this.rocketSprite.dx = 0;
@@ -190,12 +154,6 @@ this.header1.setPosition(320, 1136 - 72);
         this.cameraSpeed = 1;
         this.fromP = cc.p(1, 1);
         this.toP = cc.p(1, 1);
-/*
-this.header = cc.Sprite.create("res/header002.png");
-this.header.setPosition(320, 1136 - 150);
-this.header.setAnchorPoint(0.5, 0);
-this.addChild(this.header, 999999999999);
-*/
         this.footer = new Footer(this);
         this.addChild(this.footer);
         this.explorationArrow = cc.Sprite.create("res/marker_search.png");
@@ -245,10 +203,16 @@ this.addChild(this.header, 999999999999);
         } else {
             this.basePlanet.setVisible(true);
         }
-        //this.setInfoWindow();
         return true;
     },
     update: function (dt) {
+
+if(this.rescureWindow.isVisible()){
+    this.rocketSprite.setVisible(false);
+}else{
+    this.rocketSprite.setVisible(true);
+}
+
         this.header1.fuelLabel.setString("" + this.storage.totalCoinAmount);
         if (this.InfoMenu.infoNode.isVisible()) {
             this.uiShipMonitor.setVisible(false);
@@ -272,15 +236,6 @@ this.addChild(this.header, 999999999999);
             this.header1.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         }
         this.header1.timeLabel.setString("残り" + this.fuelPastSecond + "秒");
-        /*
-        if (this.dx != 0 || this.dy != 0) {
-            this.labelOpacity -= 0.05;
-            if (this.labelOpacity <= 0) {
-                this.labelOpacity = 0;
-                this.labelTitle.setOpacity(this.labelOpacity * 255);
-            }
-        }
-        */
         this.InfoMenu.update();
         if (this.masterShip.status == "MOVING") {
             this.addInsekiCnt++;
@@ -324,7 +279,7 @@ this.addChild(this.header, 999999999999);
         }
         this.timeCnt++;
         if (this.timeCnt >= 30 * 3) {
-            this.labelTitle.setVisible(false);
+            //this.labelTitle.setVisible(false);
         }
         //this.uiShipMonitor.setPosition(this.rocketSprite.getPosition().x, this.rocketSprite.getPosition().y - 140);
         if (this.rocketSprite.basePlanet != null) {
@@ -361,7 +316,7 @@ this.addChild(this.header, 999999999999);
             this.labelOpacity -= 0.05;
             if (this.labelOpacity <= 0) {
                 this.labelOpacity = 0;
-                this.labelTitle.setOpacity(this.labelOpacity * 255);
+                //this.labelTitle.setOpacity(this.labelOpacity * 255);
             }
         }
         this.rocketSprite.setPosition(this.rocketSprite.getPosition().x + this.masterShip.dx, this.rocketSprite.getPosition()
@@ -423,6 +378,7 @@ this.addChild(this.header, 999999999999);
         this.uiShipMonitor.addChild(this.uiShipMonitor001);
         this.buttonLanding = new cc.MenuItemImage("res/button_ship_landing.png", "res/button_ship_landing.png", function () {
             //cc.log("xxx");
+            this.InfoMenu.setCost(10, 10);
             this.InfoMenu.uiWindowLanding.setVisible(true);
             this.InfoMenu.infoNode.setVisible(true);
         }, this);
@@ -436,6 +392,7 @@ this.addChild(this.header, 999999999999);
         this.uiShipMonitor002.setPosition(0, 0);
         this.uiShipMonitor.addChild(this.uiShipMonitor002);
         this.buttonLaunch = new cc.MenuItemImage("res/button_ship_launch.png", "res/button_ship_launch.png", function () {
+            this.InfoMenu.setCost(10, 10);
             this.InfoMenu.uiWindowLaunch.setVisible(true);
             this.InfoMenu.infoNode.setVisible(true);
             this.masterShip.targetTime = Math.ceil(this.pulledDist) + parseInt(new Date() / 1000);
@@ -487,7 +444,7 @@ this.addChild(this.header, 999999999999);
             this.explorationDistLabel.setVisible(false);
             this.explorationRarityLabel.setVisible(false);
             //this.basePlanet.setVisible(true);
-            this.goToDiscoveryLayer2();
+            this.footer.goToDiscoveryLayer();
         }, this);
         this.buttonCancel.setPosition(320, 60);
         var menu001 = new cc.Menu(this.buttonCancel);
@@ -591,6 +548,12 @@ this.addChild(this.header, 999999999999);
         var diffSecond = this.storage.targetTime - parseInt(new Date() / 1000);
         return diffSecond;
     },
+
+    getPastRescueSecond: function () {
+        var diffSecond = this.masterShip.rescureTime - parseInt(new Date() / 1000);
+        return diffSecond;
+    },
+
     getPastSecond2: function () {
         var diffSecond = this.masterShip.targetTime - parseInt(new Date() / 1000);
         return diffSecond;
@@ -703,37 +666,6 @@ this.addChild(this.header, 999999999999);
     },
     shuffle: function () {
         return Math.random() - .5;
-    },
-    goToDiscoveryLayer: function (cardId) {
-        var scene = cc.Scene.create();
-        //次のステージへいくためにstorageは必ず受けた渡す
-        scene.addChild(DiscoveryLayer2.create(this.storage, cardId));
-        cc.director.runScene(cc.TransitionFadeTR.create(1.0, scene));
-    },
-    goToDiscoveryLayer2: function (cardId) {
-        var scene = cc.Scene.create();
-        //次のステージへいくためにstorageは必ず受けた渡す
-        scene.addChild(DiscoveryLayer2.create(this.storage, cardId));
-        cc.director.runScene(cc.TransitionFadeTR.create(2.0, scene));
-    },
-    goToItemLayer: function (cardId) {
-        var scene = cc.Scene.create();
-        //次のステージへいくためにstorageは必ず受けた渡す
-        scene.addChild(MissionsLayer.create(this.storage, cardId));
-        cc.director.runScene(cc.TransitionFadeTR.create(1.0, scene));
-    },
-    goToPlanetsLayer: function (cardId) {
-        var scene = cc.Scene.create();
-        //次のステージへいくためにstorageは必ず受けた渡す
-        scene.addChild(PlanetsLayer.create(this.storage, cardId));
-        cc.director.runScene(cc.TransitionFadeTR.create(1.0, scene));
-    },
-    goToDevelopLayer: function () {
-        var scene = cc.Scene.create();
-        //次のステージへいくためにstorageは必ず受けた渡す
-        var cardId = 1;
-        scene.addChild(DevelopLayer.create(this.storage, cardId));
-        cc.director.runScene(cc.TransitionFadeTR.create(1.0, scene));
     },
     initializeWarpAnimation: function () {
         this.image = "res/starburst.png";

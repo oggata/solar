@@ -15,7 +15,10 @@ var Storage = cc.Class.extend(
         this.seVolume = 10;
         this.targetTime = parseInt( new Date() /1000 );
         this.lastUpdatedTime = parseInt( new Date() /1000 );
-        this.battleTargetUserId = 0;
+
+        this.basePlanetId = 0;
+        this.targetPlanetId = 0;
+        this.rescureTime = 0;
     },
 
     init : function () { },
@@ -25,84 +28,7 @@ var Storage = cc.Class.extend(
         var _getData = this.getDataFromStorage();
         cc.sys.localStorage.setItem("gameStorage",_getData);
     },
-/*
-    saveDeckDataToStorage : function(deckNum,card) 
-    {
-        //すでにある場合は、設定値の変更
-        var _updateCnt = 0;
-        for (var deckDataKey in this.deckData) {
-            if (this.deckData.hasOwnProperty(deckDataKey)) {
-                //var deckDataValue = savedData[deckDataKey];
-                if(deckDataKey == "DECK_" + deckNum)
-                {
-                    //var savedDataObj = JSON.parse(deckDataValue);
-                    var _txt = 
-                        '{"id":' + Math.floor(card["id"]) + 
-                        ',"image":"' + card["image"] + '"' + 
-                        ',"lastUpdatedTime":' + 0 + 
-                        '}'
-                    ;
-                    this.deckData["DECK_" + deckNum] = _txt;
-                    _updateCnt+=1;
-                }
-            }
-        }
-        if(_updateCnt == 0)
-        {
-            var _txt = 
-                '{"id":' + Math.floor(card["id"]) + 
-                ',"image":"' + card["image"] + '"' + 
-                ',"lastUpdatedTime":' + 0 + 
-                '}'
-            ;
-            this.deckData["DECK_" + deckNum] = _txt;
-        }
-        var _getData = this.getDataFromStorage();
-        var _acceptData = cc.sys.localStorage.getItem("gameStorage");
-        cc.sys.localStorage.setItem("gameStorage",_getData);
-    },
-*/
-/*
-    saveEventDataToStorage : function(tickNum,card,col,row) 
-    {
-        //すでにある場合は、設定値の変更
-        var _updateCnt = 0;
-        for (var eventDataKey in this.eventData) {
-            if (this.eventData.hasOwnProperty(eventDataKey)) {
-                var eventDataValue = this.eventData[eventDataKey];
-                if(eventDataKey == "EVENT_" + tickNum)
-                {
-                    //var savedDataObj = JSON.parse(eventDataValue);
-                    var _txt = 
-                        '{"id":' + Math.floor(card["id"]) + 
-                        ',"image":"' + card["image"] + '"' + 
-                        ',"tickNum":' + tickNum + 
-                        ',"col":' + col + 
-                        ',"row":' + row + 
-                        '}'
-                    ;
-                    this.eventData["EVENT_" + tickNum] = _txt;
-                    _updateCnt+=1;
-                }
-            }
-        }
-        if(_updateCnt == 0)
-        {
-            var _txt = 
-                '{"id":' + Math.floor(card["id"]) + 
-                ',"image":"' + card["image"] + '"' + 
-                ',"tickNum":' + tickNum + 
-                ',"col":' + col + 
-                ',"row":' + row + 
-                '}'
-            ;
-            this.eventData["EVENT_" + tickNum] = _txt;
-        }
-        var _getData = this.getDataFromStorage();
-        var _acceptData = cc.sys.localStorage.getItem("gameStorage");
-        cc.sys.localStorage.setItem("gameStorage",_getData);
-    },
-*/
+
     saveCreatureDataToStorage : function(card,addCount) 
     {
         //すでにある場合は、設定値の変更
@@ -295,37 +221,7 @@ var Storage = cc.Class.extend(
                 incKeyCnt++;
             }
         }
-/*
-        var _deckData = '';
-        var keyCnt = Object.keys(this.deckData).length;
-        var incKeyCnt = 1;
-        for (var key in this.deckData) {
-            if (this.deckData.hasOwnProperty(key)) {
-                var value = this.deckData[key];
-                _deckData += '"' + key + '":' + JSON.stringify(value);
-                if(incKeyCnt != keyCnt)
-                {
-                    _deckData += ',';
-                }
-                incKeyCnt++;
-            }
-        }
 
-        var _eventData = '';
-        var keyCnt = Object.keys(this.eventData).length;
-        var incKeyCnt = 1;
-        for (var key in this.eventData) {
-            if (this.eventData.hasOwnProperty(key)) {
-                var value = this.eventData[key];
-                _eventData += '"' + key + '":' + JSON.stringify(value);
-                if(incKeyCnt != keyCnt)
-                {
-                    _eventData += ',';
-                }
-                incKeyCnt++;
-            }
-        }
-*/
         var _shipData = '';
         var keyCnt = Object.keys(this.shipData).length;
         var incKeyCnt = 1;
@@ -371,23 +267,17 @@ var Storage = cc.Class.extend(
         rtn += '"seVolume" :' + this.seVolume + ',';
         rtn += '"totalCoinAmount" :' + this.totalCoinAmount + ',';
         rtn += '"treasureAmount" :' + this.treasureAmount + ',';
+
+        rtn += '"basePlanetId" :' + this.basePlanetId + ',';
+        rtn += '"targetPlanetId" :' + this.targetPlanetId + ',';
+        rtn += '"rescureTime" :' + this.rescureTime + ',';
+
         rtn += '"lastUpdatedTime" :' + this.lastUpdatedTime + '';
         rtn += '}';
         
 
-/*
-this.shipDx = 0;
-this.shipDy = 0;
-this.shipTargetSecond = 0;
-this.shipTargetPlanetId = 0;
-this.shipStatus = null;
-*/
-        /*
-        cc.log("------------------------>");
-        cc.log(rtn);
-        cc.log('{"saveData" : true, "creatureData":{"111":{"id":1,"score":123},"222":{"id":1,"score":123},"333":{"id":1,"score":123}}}');
-        cc.log("------------------------>");
-        */
+
+
         return rtn;
     },
 
@@ -430,6 +320,11 @@ this.shipStatus = null;
         this.bgmVolume        = getData["bgmVolume"];
         this.seVolume         = getData["seVolume"];
         this.lastUpdatedTime  = getData["lastUpdatedTime"];
+
+this.basePlanetId  = getData["basePlanetId"];
+this.targetPlanetId  = getData["targetPlanetId"];
+this.rescureTime  = getData["rescureTime"];
+
     },
 
     initSDK : function() 

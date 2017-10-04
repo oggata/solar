@@ -34,11 +34,11 @@ var PlanetDetail = cc.Node.extend({
             this.game.infoNode.setVisible(false);
         }, this);
         buttonClose.setPosition(55, 710);
-        var buttonCancel = new cc.MenuItemImage("res/button_window_cancel.png", "res/button_window_cancel.png", function () {
+        var buttonCancel = new cc.MenuItemImage("res/button_window_event.png", "res/button_window_event.png", function () {
             this.game.infoNode.setVisible(false);
         }, this);
         buttonCancel.setPosition(170, -40);
-        var buttonSearch = new cc.MenuItemImage("res/button_window_search.png", "res/button_window_search.png", function () {
+        var buttonSearch = new cc.MenuItemImage("res/button_window_goto.png", "res/button_window_goto.png", function () {
             this.game.goToDiscoveryLayer();
         }, this);
         buttonSearch.setPosition(470, -40);
@@ -67,20 +67,26 @@ var PlanetDetail = cc.Node.extend({
 
         this.nameLabel.setString(_name);
         this.detail.removeChild(this.routeAllow);
-        this.routeAllow = cc.Sprite.create("res/route_allow.png");
-        this.routeAllow.setPosition(320, 310);
-        this.detail.addChild(this.routeAllow);
-        for (var i = 0; i < _route.length; i++) {
-            var _routePlanetName = CONFIG.PLANET[_route[i]].name;
-            var _routePlanetImage = CONFIG.PLANET[_route[i]].image;
-            var _isOwnPlanet = this.game.storage.isOwnPlanetData(CONFIG.PLANET[_route[i]]);
-            cc.log(_isOwnPlanet);
-            this.routePlanet002Sprite = cc.Sprite.create(_routePlanetImage);
-            this.routePlanet002Sprite.setPosition(70 + 170 * i, 20);
-            this.routePlanet002Sprite.setScale(0.3);
-            this.routeAllow.addChild(this.routePlanet002Sprite);
-            if (_isOwnPlanet == false) {
-                this.routePlanet002Sprite.setOpacity(255 * 0.5);
+
+
+        //自分がこの惑星のトークンを所有していれば表示しない
+
+        if(_isOwnPlanet == false){
+            this.routeAllow = cc.Sprite.create("res/route_allow.png");
+            this.routeAllow.setPosition(320, 310);
+            this.detail.addChild(this.routeAllow);
+            for (var i = 0; i < _route.length; i++) {
+                var _routePlanetName = CONFIG.PLANET[_route[i]].name;
+                var _routePlanetImage = CONFIG.PLANET[_route[i]].image;
+                var _isOwnPlanet = this.game.storage.isOwnPlanetData(CONFIG.PLANET[_route[i]]);
+                cc.log(_isOwnPlanet);
+                this.routePlanet002Sprite = cc.Sprite.create(_routePlanetImage);
+                this.routePlanet002Sprite.setPosition(70 + 170 * i, 20);
+                this.routePlanet002Sprite.setScale(0.3);
+                this.routeAllow.addChild(this.routePlanet002Sprite);
+                if (_isOwnPlanet == false) {
+                    this.routePlanet002Sprite.setOpacity(255 * 0.5);
+                }
             }
         }
     },

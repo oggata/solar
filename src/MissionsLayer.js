@@ -9,6 +9,7 @@ var MissionsLayer = cc.Layer.extend({
         this._super();
         //画面サイズの取得
         this.storage = storage;
+        this.windowName = "MissionsLayer";
         this.addAlpha = 0.05;
         this.storage = new Storage();
         try {
@@ -106,7 +107,7 @@ var MissionsLayer = cc.Layer.extend({
             cell.addChild(this.spriteCell, 9999999);
             var button = new cc.MenuItemImage("res/button_get_coin.png", "res/button_get_coin_on.png", function () {
                 this.infoNode.setVisible(true);
-                var _planetId = this.planets[strValue].id;
+                var _planetId = this.planets[strValue].planetId;
                 this.detail.setPlanet(_planetId);
             }, this);
             button.setPosition(600, 50);

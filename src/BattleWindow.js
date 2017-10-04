@@ -18,7 +18,7 @@ var BattleWindow = cc.Node.extend({
         this.coins = [];
         this.escapes = [];
         //最大値を設定する
-        this.maxCoinCnt = 5;
+        this.maxCoinCnt = 100;
         this.orderCnt = 0;
         this.orderMaxCnt = 1;
         this.gameLevel = 1;
@@ -142,7 +142,7 @@ var BattleWindow = cc.Node.extend({
             this.gameTimeCnt = 0;
             this.gameTime++;
         }
-        this.setDifficulty();
+//this.setDifficulty();
         if (this.humans.length < this.enemyCnt) {
             this.positionalChips.sort(this.shuffle);
             this.addHuman(this.positionalChips[0].col, this.positionalChips[0].row, "RED", 1, 1);
@@ -179,10 +179,11 @@ var BattleWindow = cc.Node.extend({
                 this.field.reorderChild(this.escapes[j], Math.floor(99999999 - (this.escapes[j].col + this.escapes[j].row) +
                     _ajust));
             }
+            /*
             if (this.coins.length <= this.maxCoinCnt) {
                 this.positionalChips.sort(this.shuffle);
                 this.addCoin(this.positionalChips[0].col, this.positionalChips[0].row);
-            }
+            }*/
         }
         //ローバーをupdateする
         for (var j = 0; j < this.humans.length; j++) {

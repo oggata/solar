@@ -29,6 +29,7 @@ var InfoMenu = cc.Node.extend({
         this.uiWindowLanding.setPosition(320, 0);
         this.uiWindowLanding.setVisible(false);
         this.infoNode.addChild(this.uiWindowLanding);
+
         this.shipFuelLabel = cc.LabelTTF.create("100", "Arial", 38);
         this.shipFuelLabel.setPosition(420, 92);
         this.shipFuelLabel.setAnchorPoint(1,0.5);
@@ -42,17 +43,16 @@ var InfoMenu = cc.Node.extend({
         this.infoNode.addChild(this.uiWindowLaunch);
 
         this.shipTargetTimeLabel = cc.LabelTTF.create("332", "Arial", 38);
-        this.shipTargetTimeLabel.setPosition(290, 92);
+        this.shipTargetTimeLabel.setPosition(510, 92);
         this.shipTargetTimeLabel.setAnchorPoint(1,0.5);
         this.shipTargetTimeLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.uiWindowLaunch.addChild(this.shipTargetTimeLabel);
 
         this.shipFuel2Label = cc.LabelTTF.create("100", "Arial", 38);
-        this.shipFuel2Label.setPosition(510, 92);
+        this.shipFuel2Label.setPosition(290, 92);
         this.shipFuel2Label.setAnchorPoint(1,0.5);
         this.shipFuel2Label.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.uiWindowLaunch.addChild(this.shipFuel2Label);
-
 
         this.buttonCancel = new cc.MenuItemImage("res/button_window_cancel.png", "res/button_window_cancel.png", function () {
             this.uiWindowLanding.setVisible(false);
@@ -96,6 +96,22 @@ var InfoMenu = cc.Node.extend({
         this.infoNode.addChild(menu001, 99999999999);
     },
     init: function () {},
+
+    setCost:function(fuelCnt,timeCnt){
+        this.shipFuelLabel.setString(fuelCnt);
+        this.shipFuel2Label.setString(fuelCnt);
+        this.shipTargetTimeLabel.setString(timeCnt);
+
+        if(this.game.storage.totalCoinAmount < fuelCnt){
+            cc.log("xxxxxx");
+            this.shipFuelLabel.setFontFillColor(new cc.Color(255, 0, 0, 255));
+            this.shipFuel2Label.setFontFillColor(new cc.Color(255, 0, 0, 255));
+        }else{
+            this.shipFuelLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+            this.shipFuel2Label.setFontFillColor(new cc.Color(255, 255, 255, 255));
+        }
+    },
+
     update: function () {
         if (this.uiWindowAccount.isVisible()) {
             this.buttonCancel.setVisible(false);
@@ -117,6 +133,10 @@ var InfoMenu = cc.Node.extend({
             this.buttonSearch.setVisible(true);
             this.buttonOk.setVisible(false);
         }
+
+        //storageが不足しているかチェックする
+
+        //this.game.storage.totalCoinAmount
     },
     goToGameLayer: function (cardId) {
         var scene = cc.Scene.create();
