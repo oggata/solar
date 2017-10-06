@@ -18,7 +18,7 @@ var BattleWindow = cc.Node.extend({
         this.coins = [];
         this.escapes = [];
         //最大値を設定する
-        this.maxCoinCnt = 100;
+        this.maxCoinCnt = 12;
         this.orderCnt = 0;
         this.orderMaxCnt = 1;
         this.gameLevel = 1;
@@ -27,7 +27,8 @@ var BattleWindow = cc.Node.extend({
         this.gameOccupyRate = 0;
         this.gameTimeCnt = 0;
         this.gameTime = 0;
-        this.enemyCnt = 0;
+        this.enemyCnt = 3;
+        this.escapeCnt = 0;
         //this.enemies = [];
         this.enemySpeed = 1;
         this.materials = [];
@@ -73,66 +74,11 @@ var BattleWindow = cc.Node.extend({
             this.addCoin(this.positionalChips[0].col, this.positionalChips[0].row);
         }
         //escape
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i < this.escapeCnt; i++) {
             this.positionalChips.sort(this.shuffle);
             this.positionalChips.sort(this.shuffle);
             this.addEscape(this.positionalChips[0].col, this.positionalChips[0].row);
         }
-    },
-    getCurrentLevel: function () {
-        var _level = 0;
-        var _sumScore = 0;
-        var _rate = 0;
-        for (var i = 0; i < this.gameNextLevelScore.length; i++) {
-            _sumScore += this.gameNextLevelScore[i];
-            if (this.gameScore >= _sumScore) {
-                _level += 1;
-            } else {
-                _level += 1;
-                _rate = (_sumScore - this.gameScore) / this.gameNextLevelScore[i];
-                break;
-            }
-        }
-        if (this.gameLevel != _level) {
-            this.game.labelStartCnt007.setVisible(true);
-        }
-        this.gameLevel = _level;
-        this.gameOccupyRate = (1 - _rate);
-        return null;
-    },
-    getCurrentMarker: function (x, y) {
-        var posX = (x - this.game.lastTouchGameLayerX);
-        var posY = (y - this.game.lastTouchGameLayerY);
-        var marker = this.getMarker(posX, posY);
-        return marker;
-    },
-    //status : send get
-    setShipLand: function (status) {
-        this.ship.setVisible(true);
-        this.shipPosY += this.shipLandDirection;
-        if (this.player.getPosition().y + 50 >= this.shipPosY) {
-            this.shipLandDirection = 0;
-            this.shipLandingCnt += 1;
-        }
-        if (this.shipLandingCnt >= 20) {
-            this.shipLandDirection = 30;
-            if (status == "send") {
-                this.player.setVisible(true);
-            } else if (status == "get") {
-                this.player.setVisible(false);
-            }
-        }
-        this.ship.setPosition(this.player.getPosition().x, this.shipPosY);
-    },
-    setShipHidden: function () {
-        this.shipLandingCnt = 0;
-        this.shipLandDirection = -10;
-        this.ship.setVisible(false);
-        this.shipPosY = this.player.getPosition().y + 800;
-    },
-    setDifficulty: function () {
-        this.enemyCnt = this.gameLevel + 2;
-        this.enemySpeed = 1.2 * 2 + this.gameLevel * 0.1;
     },
     update: function (dt) {
         var _test = this.getCurrentLevel();
@@ -210,6 +156,7 @@ var BattleWindow = cc.Node.extend({
             }
         }
         */
+        /*
         //humanとescapeのcollision判定
         for (var h = 0; h < this.humans.length; h++) {
             for (var e = 0; e < this.escapes.length; e++) {
@@ -219,7 +166,13 @@ var BattleWindow = cc.Node.extend({
                     this.result = "success";
                 }
             }
+        }*/
+        if(this.coins.length == 0){
+            //cc.log(this.coins.length);
+            this.mode = "result";
+            this.result = "success";
         }
+
         //humanとcoinのcollision判定
         for (var h = 0; h < this.humans.length; h++) {
             for (var c = 0; c < this.coins.length; c++) {
@@ -229,6 +182,8 @@ var BattleWindow = cc.Node.extend({
                     //this.addDeburis(this.coins[c].getPosition().x + 20, this.coins[c].getPosition().y + 20, 1);
                     //}
                     if (this.humans[h].colorName == "GREEN") {
+                        //cc.log(this.game.storage.totalCoinAmount);
+                        this.game.storage.addCoin(1);
                         //ランダムで素材をaddする
                         //var _rand = this.getRandNumberFromRange(1, 5);
                         if (this.coins[c].typeNum) {
@@ -237,6 +192,9 @@ var BattleWindow = cc.Node.extend({
                             //this.gameScore += 1;
                             this.addMaterial(_typeNum);
                             //this.addDestroy(this.coins[c].getPosition().x,this.coins[c].getPosition().y);
+                            //this.game.storage.addCoin(1);
+
+                            //cc.log(this.game.storage.totalCoinAmount);
                         }
                     }
                 }
@@ -281,6 +239,61 @@ var BattleWindow = cc.Node.extend({
             this.mode = "result";
             this.result = "failed";
         }
+    },
+    getCurrentLevel: function () {
+        var _level = 0;
+        var _sumScore = 0;
+        var _rate = 0;
+        for (var i = 0; i < this.gameNextLevelScore.length; i++) {
+            _sumScore += this.gameNextLevelScore[i];
+            if (this.gameScore >= _sumScore) {
+                _level += 1;
+            } else {
+                _level += 1;
+                _rate = (_sumScore - this.gameScore) / this.gameNextLevelScore[i];
+                break;
+            }
+        }
+        if (this.gameLevel != _level) {
+            //this.game.labelStartCnt007.setVisible(true);
+        }
+        this.gameLevel = _level;
+        this.gameOccupyRate = (1 - _rate);
+        return null;
+    },
+    getCurrentMarker: function (x, y) {
+        var posX = (x - this.game.lastTouchGameLayerX);
+        var posY = (y - this.game.lastTouchGameLayerY);
+        var marker = this.getMarker(posX, posY);
+        return marker;
+    },
+    //status : send get
+    setShipLand: function (status) {
+        this.ship.setVisible(true);
+        this.shipPosY += this.shipLandDirection;
+        if (this.player.getPosition().y + 50 >= this.shipPosY) {
+            this.shipLandDirection = 0;
+            this.shipLandingCnt += 1;
+        }
+        if (this.shipLandingCnt >= 20) {
+            this.shipLandDirection = 30;
+            if (status == "send") {
+                this.player.setVisible(true);
+            } else if (status == "get") {
+                this.player.setVisible(false);
+            }
+        }
+        this.ship.setPosition(this.player.getPosition().x, this.shipPosY);
+    },
+    setShipHidden: function () {
+        this.shipLandingCnt = 0;
+        this.shipLandDirection = -10;
+        this.ship.setVisible(false);
+        this.shipPosY = this.player.getPosition().y + 800;
+    },
+    setDifficulty: function () {
+        this.enemyCnt = this.gameLevel + 2;
+        this.enemySpeed = 1.2 * 2 + this.gameLevel * 0.1;
     },
     addDestroy: function (x, y) {
         this.destroyEffect = new Destroy2Effect(this);

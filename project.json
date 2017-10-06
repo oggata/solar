@@ -41,13 +41,10 @@
   "src/Ship.js",
         "src/Deburis.js",
         "src/DevelopLayer.js",
-
 "src/Destroy2Effect.js",
 "src/DestroyEffect.js",
 "src/SpaceListLayer.js",
-
 "src/Footer.js",
-        "src/DiscoveryLayer.js",
         "src/DiscoveryLayer2.js",
         "src/PlanetSprite.js"
     ]

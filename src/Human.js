@@ -12,8 +12,6 @@ var Human = cc.Node.extend({
             this.imgWidth = 1280 / 8;
             this.imgHeight = 1280 / 8;
             this.widthCnt = 4;
-            //this.setScale(1.3, 1.3);
-            //this.setScale(0.8, 0.8);
             this.span = 0.08;
         } else {
             this.image = "res/utyu.png";
@@ -35,7 +33,6 @@ var Human = cc.Node.extend({
         var marker = this.getMarker(col, row);
         this.setPosition(marker.getPosition().x, marker.getPosition().y);
         this.timeCnt = 0;
-        //this.setScale(0.6, 0.6);
         this.tmpTargetDist = null;
         this.baseMarker = null;
         this.targetMarkers = [];
@@ -54,6 +51,10 @@ var Human = cc.Node.extend({
         } else {
             this.setRouteType033();
         }
+        this.isAuto = true;
+        if (this.isAuto == true && this.colorName == "GREEN") {
+            this.setRouteType002();
+        }
         this.walkSpeed = 2.5;
         this.maxDistance = 5;
         this.deadCnt = 0;
@@ -62,43 +63,45 @@ var Human = cc.Node.extend({
         this.isSpriteVisible = true;
     },
     update: function () {
-        if (this.game.game.gameDirection == "right_up") {
-            var _marker = this.getMarker(this.col + 1, this.row);
-            if (_marker) {
-                this.game.selectedMarker.col = this.col + 1;
-                this.game.selectedMarker.row = this.row;
-                if (this.colorName == "GREEN") {
-                    this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
+        if (this.isAuto != true) {
+            if (this.game.game.gameDirection == "right_up") {
+                var _marker = this.getMarker(this.col + 1, this.row);
+                if (_marker) {
+                    this.game.selectedMarker.col = this.col + 1;
+                    this.game.selectedMarker.row = this.row;
+                    if (this.colorName == "GREEN") {
+                        this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
+                    }
                 }
             }
-        }
-        if (this.game.game.gameDirection == "right_down") {
-            var _marker = this.getMarker(this.col, this.row - 1);
-            if (_marker) {
-                this.game.selectedMarker.col = this.col;
-                this.game.selectedMarker.row = this.row - 1;
-                if (this.colorName == "GREEN") {
-                    this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
+            if (this.game.game.gameDirection == "right_down") {
+                var _marker = this.getMarker(this.col, this.row - 1);
+                if (_marker) {
+                    this.game.selectedMarker.col = this.col;
+                    this.game.selectedMarker.row = this.row - 1;
+                    if (this.colorName == "GREEN") {
+                        this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
+                    }
                 }
             }
-        }
-        if (this.game.game.gameDirection == "left_up") {
-            var _marker = this.getMarker(this.col, this.row + 1);
-            if (_marker) {
-                this.game.selectedMarker.col = this.col;
-                this.game.selectedMarker.row = this.row + 1;
-                if (this.colorName == "GREEN") {
-                    this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
+            if (this.game.game.gameDirection == "left_up") {
+                var _marker = this.getMarker(this.col, this.row + 1);
+                if (_marker) {
+                    this.game.selectedMarker.col = this.col;
+                    this.game.selectedMarker.row = this.row + 1;
+                    if (this.colorName == "GREEN") {
+                        this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
+                    }
                 }
             }
-        }
-        if (this.game.game.gameDirection == "left_down") {
-            var _marker = this.getMarker(this.col - 1, this.row);
-            if (_marker) {
-                this.game.selectedMarker.col = this.col - 1;
-                this.game.selectedMarker.row = this.row;
-                if (this.colorName == "GREEN") {
-                    this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
+            if (this.game.game.gameDirection == "left_down") {
+                var _marker = this.getMarker(this.col - 1, this.row);
+                if (_marker) {
+                    this.game.selectedMarker.col = this.col - 1;
+                    this.game.selectedMarker.row = this.row;
+                    if (this.colorName == "GREEN") {
+                        this.game.selectedMarker.setPosition(_marker.getPosition().x, _marker.getPosition().y);
+                    }
                 }
             }
         }
@@ -164,6 +167,9 @@ var Human = cc.Node.extend({
                     this.setRouteType033();
                 } else {
                     this.setRouteType033();
+                }
+                if (this.isAuto == true && this.colorName == "GREEN") {
+                    this.setRouteType002();
                 }
             }
         }
@@ -349,7 +355,8 @@ var Human = cc.Node.extend({
     },
     //(コイナーtype)コインを取得する
     setRouteType002: function () {
-        this.walkSpeed = 2.5 * 3;
+        this.maxDistance = 40;
+        this.walkSpeed = 2.5 * 5;
         //coinの存在するマーカーを全部取得する
         for (var c = 0; c < this.game.coins.length; c++) {
             for (var i = 0; i < this.distances.length; i++) {

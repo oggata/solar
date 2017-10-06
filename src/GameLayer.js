@@ -78,7 +78,7 @@ var GameLayer = cc.Layer.extend({
         this.addChild(this.header1, 999999);
         this.header1.setAnchorPoint(0.5, 0);
         this.header1.setPosition(320, 1136 - 72);
-        
+
         this.baseNode = cc.Sprite.create("res/back_top.png");
         this.baseNode.setAnchorPoint(0, 0);
         this.baseNode.setPosition(0, 0);
@@ -93,7 +93,7 @@ var GameLayer = cc.Layer.extend({
         this.setStartLabel();
         this.resultSprite = new BattleResult(this);
         this.addChild(this.resultSprite, 9999);
-this.resultSprite.setVisible(false);
+        this.resultSprite.setVisible(false);
         this.scheduleUpdate();
         this.firstTouchX = 0;
         this.firstTouchY = 0;
@@ -107,6 +107,9 @@ this.resultSprite.setVisible(false);
         return true;
     },
     update: function (dt) {
+
+        this.header1.update();
+
         if (this.gameStatus == "gaming") {
             this.battleWindow.setShipHidden();
         }
@@ -139,12 +142,13 @@ this.resultSprite.setVisible(false);
         this.setResultStatus();
     },
     setScroll: function () {
+        this.cameraSpeed = 5 * 2.2;
         if (Math.abs(this.targetBaseNodePosX - this.baseNodePosX) >= 2.5 * 3) {
             //差分が5以上の時
             if (this.targetBaseNodePosX > this.baseNodePosX) {
-                this.baseNodePosX += 2.5 * 2.2;
+                this.baseNodePosX += this.cameraSpeed;
             } else if (this.targetBaseNodePosX < this.baseNodePosX) {
-                this.baseNodePosX -= 2.5 * 2.2;
+                this.baseNodePosX -= this.cameraSpeed;
             }
         } else {
             //差分が5以下の時
@@ -157,9 +161,9 @@ this.resultSprite.setVisible(false);
         if (Math.abs(this.targetBaseNodePosY - this.baseNodePosY) >= 5) {
             //差分が5以上の時
             if (this.targetBaseNodePosY > this.baseNodePosY) {
-                this.baseNodePosY += 2.5 * 2.2;
+                this.baseNodePosY += this.cameraSpeed;
             } else if (this.targetBaseNodePosY < this.baseNodePosY) {
-                this.baseNodePosY -= 2.5 * 2.2;
+                this.baseNodePosY -= this.cameraSpeed;
             }
         } else {
             //差分が5以下の時
@@ -193,20 +197,20 @@ this.resultSprite.setVisible(false);
         this.header = cc.Sprite.create("res/header001.png");
         this.header.setPosition(320, 1136 - 150);
         this.header.setAnchorPoint(0.5, 0);
-        this.addChild(this.header, 999999999999);
+        //this.addChild(this.header, 999999999999);
         this.scoreLabel = new cc.LabelTTF(this.greenScore, "Arial", 20);
         this.scoreLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         this.scoreLabel.setAnchorPoint(1, 0);
         this.scoreLabel.setPosition(340, 105);
-        this.header.addChild(this.scoreLabel, 999999);
+        //this.header.addChild(this.scoreLabel, 999999);
         this.gauge = new Gauge(256, 10, "white");
-        this.header.addChild(this.gauge);
+        //this.header.addChild(this.gauge);
         this.gauge.setPosition(87, 87);
         this.alertLevelLabel = new cc.LabelTTF("LV:1", "Arial", 42);
         this.alertLevelLabel.setFontFillColor(new cc.Color(0, 0, 0, 255));
         this.alertLevelLabel.setAnchorPoint(0.5, 0);
         this.alertLevelLabel.setPosition(45, 80);
-        this.header.addChild(this.alertLevelLabel, 999999);
+        //this.header.addChild(this.alertLevelLabel, 999999);
     },
     updateLabel: function () {
         //this.timeLabel.setString(this.battleWindow.gameTime + "");

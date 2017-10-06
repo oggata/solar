@@ -84,6 +84,7 @@ this.levelGauge.setPosition(24,92);
     },
     init: function () {},
     update: function () {
+        this.fuelLabel.setString(this.game.storage.totalCoinAmount);
         return true;
     },
 });
