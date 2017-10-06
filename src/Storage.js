@@ -16,7 +16,7 @@ var Storage = cc.Class.extend(
         this.targetTime = parseInt( new Date() /1000 );
         this.lastUpdatedTime = parseInt( new Date() /1000 );
 
-        this.basePlanetId = 0;
+        this.basePlanetId = 1;
         this.targetPlanetId = 0;
         this.rescureTime = 0;
     },
@@ -120,24 +120,26 @@ var Storage = cc.Class.extend(
         cc.sys.localStorage.setItem("gameStorage",_getData);
     },
 
-    isOwnPlanetData:function(card){
+    isOwnPlanetData:function(planet){
         var savedData = this.planetData;
+        var _planetData = '';
+        var keyCnt = Object.keys(this.planetData).length;
+        var incKeyCnt = 1;
         var _updateCnt = 0;
-        for (var savedDataKey in savedData) {
-            if (savedData.hasOwnProperty(savedDataKey)) {
-                var savedDataValue = savedData[savedDataKey];
-                var inputCreatureId= "ID_" + card["id"];
-                if(savedDataKey == inputCreatureId)
+        for (var key in this.planetData) {
+            if (this.planetData.hasOwnProperty(key)) {
+                var savedDataValue = this.planetData[key];
+                var inputCreatureId= "ID_" + planet["id"];
+                if(key == inputCreatureId)
                 {
                     _updateCnt+=1;
                 }
             }
-
-            if(_updateCnt == 0){
-                return false;
-            }else{
-                return true;
-            }
+        }
+        if(_updateCnt == 0){
+            return false;
+        }else{
+            return true;
         }
     },
 

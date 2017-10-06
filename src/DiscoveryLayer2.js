@@ -203,6 +203,31 @@ var DiscoveryLayer2 = cc.Layer.extend({
         } else {
             this.basePlanet.setVisible(true);
         }
+
+
+        this.debugButton = new cc.MenuItemImage("res/button_debug.png", "res/button_debug.png", function () {
+            this.masterShip.targetTime = parseInt(new Date() / 1000);
+            //this.storage.saveCurrentData();
+            //this.setMasterShipStatus(0, 0, 0, 0, "NO_DIST");
+/*
+            this.masterShip.status = "NO_DIST";
+            this.masterShip.dx = 0;
+            this.masterShip.dy = 0;
+            this.baseNode.removeChild(this.drawNode2);
+            this.explorationArrow.setVisible(false);
+            this.explorationDistLabel.setVisible(false);
+            this.explorationRarityLabel.setVisible(false);
+*/
+        }, this);
+        this.debugButton.setPosition(80, 1000);
+        var menu001 = new cc.Menu(this.debugButton);
+        menu001.setPosition(0,0);
+        this.addChild(menu001,99999999999999);
+
+
+
+
+
         return true;
     },
     update: function (dt) {
@@ -246,7 +271,7 @@ if(this.rescureWindow.isVisible()){
         }
         for (var i = 0; i < this.meteorites.length; i++) {
             this.meteorites[i].setPosition(this.meteorites[i].getPosition().x + this.meteorites[i].dx, this.meteorites[i].getPosition()
-                .y + this.meteorites[i].dy, );
+                .y + this.meteorites[i].dy );
             var _dist = cc.pDistance(this.rocketSprite.getPosition(), this.meteorites[i].getPosition());
             if (_dist >= 800) {
                 this.baseNode.removeChild(this.meteorites[i]);
@@ -458,8 +483,8 @@ if(this.rescureWindow.isVisible()){
             this.pastSecond = 0;
             //経過した秒数が0秒 + 既存のステータスがmovigの場合は到着処理を行う
             if (this.masterShip.status == "MOVING") {
-                var _rand = this.getRandNumberFromRange(1, 7);
-                this.storage.savePlanetDataToStorage(CONFIG.PLANET[_rand], 1);
+                //var _rand = this.getRandNumberFromRange(1, 7);
+                //this.storage.savePlanetDataToStorage(CONFIG.PLANET[_rand], 1);
                 this.masterShip.status = "FINISH";
                 this.masterShip.dx = 0;
                 this.masterShip.dy = 0;

@@ -5,7 +5,35 @@ var CardLayer = cc.Layer.extend({
         //画面サイズの取得
         this.viewSize = cc.director.getVisibleSize();
         var size = cc.winSize;
-        this.storage = storage;
+        this.storage = new Storage();
+        try {
+            var _data = cc.sys.localStorage.getItem("gameStorage");
+            if (_data == null) {
+                cc.log("dataはnullなので新たに作成します.");
+                var _getData = this.storage.getDataFromStorage();
+                cc.sys.localStorage.setItem("gameStorage", _getData);
+                var _acceptData = cc.sys.localStorage.getItem("gameStorage");
+                this.storage.setDataToStorage(JSON.parse(_acceptData));
+            }
+            if (_data != null) {
+                var storageData = JSON.parse(cc.sys.localStorage.getItem("gameStorage"));
+                if (storageData["saveData"] == true) {
+                    cc.log("保存されたデータがあります");
+                    var _acceptData = cc.sys.localStorage.getItem("gameStorage");
+                    cc.log(_acceptData);
+                    this.storage.setDataToStorage(JSON.parse(_acceptData));
+                } else {
+                    cc.log("保存されたデータはありません");
+                    var _getData = this.storage.getDataFromStorage();
+                    cc.sys.localStorage.setItem("gameStorage", _getData);
+                    var _acceptData = cc.sys.localStorage.getItem("gameStorage");
+                    this.storage.setDataToStorage(JSON.parse(_acceptData));
+                }
+            }
+        } catch (e) {
+            cc.log("例外..");
+            cc.sys.localStorage.clear();
+        }
         this.baseNode = cc.LayerColor.create(new cc.Color(17, 31, 62, 255), 640, 1136);
         this.baseNode.setPosition(0, 0);
         this.addChild(this.baseNode);
@@ -24,6 +52,10 @@ var CardLayer = cc.Layer.extend({
         this.initializeWalkAnimation();
         this.timeCnt = 0;
         this.scheduleUpdate();
+
+                var _rand = this.getRandNumberFromRange(1, 7);
+                this.storage.savePlanetDataToStorage(CONFIG.PLANET[_rand], 1);
+
         return true;
     },
     update: function (dt) {

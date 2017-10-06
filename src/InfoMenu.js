@@ -86,8 +86,11 @@ var InfoMenu = cc.Node.extend({
         this.buttonOk = new cc.MenuItemImage("res/button_window_search.png", "res/button_window_search.png", function () {
             cc.log("xx");
             this.game.masterShip.status = "NO_DIST";
-            this.infoNode.setVisible(false);
-            this.uiWindowResult.setVisible(false);
+            //this.infoNode.setVisible(false);
+            //this.uiWindowResult.setVisible(false);
+
+            this.goToCardLayer();
+
         }, this);
         this.buttonOk.setPosition(320, 40);
         this.buttonOk.setVisible(false);
@@ -96,6 +99,14 @@ var InfoMenu = cc.Node.extend({
         this.infoNode.addChild(menu001, 99999999999);
     },
     init: function () {},
+
+
+    goToCardLayer: function (pSender) {
+        var scene = cc.Scene.create();
+        //次のステージへいくためにstorageは必ず受けた渡す
+        scene.addChild(CardLayer.create(this.storage, [], 0));
+        cc.director.runScene(cc.TransitionFade.create(0.3, scene));
+    },
 
     setCost:function(fuelCnt,timeCnt){
         this.shipFuelLabel.setString(fuelCnt);
