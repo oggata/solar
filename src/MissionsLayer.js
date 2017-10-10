@@ -44,7 +44,7 @@ var MissionsLayer = cc.Layer.extend({
         this.viewSize = cc.director.getVisibleSize();
         var size = cc.winSize;
         //this.storage = storage;
-        this.backNode = cc.Sprite.create("res/back_top2.png");
+        this.backNode = cc.Sprite.create("res/back_top4.png");
         this.backNode.setAnchorPoint(0, 0);
         this.backNode.setPosition(0, 0);
         this.addChild(this.backNode);
@@ -53,7 +53,14 @@ var MissionsLayer = cc.Layer.extend({
         this.addChild(this.treeNode);
         this.drawNode2 = cc.DrawNode.create();
         this.treeNode.addChild(this.drawNode2);
-
+        /*
+                //拠点の惑星を取得する
+                //cc.log(this.storage.getTargetPlanetId(CONFIG.CARD[1]));
+                var _rootPlanetNum = this.storage.getTargetPlanetId(CONFIG.CARD[1]);
+                //_rootPlanetNum = 2;
+                var _planet = CONFIG.PLANET[_rootPlanetNum];
+        */
+        var _rootPlanetNum = this.storage.getTargetPlanetId(CONFIG.CARD[1]);
         this.treeNode.setScale(0.5);
         this.planets = CONFIG.PLANET;
         for (var j = 0; j < this.planets.length; j++) {
@@ -62,18 +69,15 @@ var MissionsLayer = cc.Layer.extend({
                 var _position = this.planets[j].position;
                 var _lv = this.planets[j].lv;
                 var _planetId = this.planets[j].id;
-
-//cc.log(_planetId);
-//cc.log(this.storage.isOwnPlanetData(CONFIG.PLANET[_planetId]));
+                //cc.log(_planetId);
+                //cc.log(this.storage.isOwnPlanetData(CONFIG.PLANET[_planetId]));
                 //cc.log(this.planets[j].position);
                 if (this.storage.isOwnPlanetData(CONFIG.PLANET[_planetId])) {
-
                     //this.planet_marker = cc.Sprite.create(_image);
                 } else {
                     //this.planet_marker = cc.Sprite.create("res/planet_w350_notfound.png");
                     _image = "res/planet_w350_notfound.png";
                 }
-
                 this.planet_marker = new cc.MenuItemImage(_image, _image, function (sender) {
                     cc.log(sender);
                     this.infoNode.setVisible(true);
@@ -84,7 +88,6 @@ var MissionsLayer = cc.Layer.extend({
                 var menu001 = new cc.Menu(this.planet_marker);
                 menu001.setPosition(0, 0);
                 this.treeNode.addChild(menu001);
-
                 this.planet_marker.setScale(0.35);
                 this.planet_marker.setPosition(_position[0], _position[1]);
                 //this.treeNode.addChild(this.planet_marker);
@@ -105,11 +108,16 @@ var MissionsLayer = cc.Layer.extend({
                         this.drawNode2.drawSegment(this.fromP, this.toP, this.lineWidth, cc.color(69, 162, 211, 255 * 0.3));
                     }
                 }
+                //自分のbasePlanetの場合は、マーカーをおく
+                if (_rootPlanetNum == _planetId) {
+                    this.iconHere = cc.Sprite.create("res/icon_here.png");
+                    //this.iconHere.setAnchorPoint(0, 0);
+                    this.iconHere.setPosition(_position[0], _position[1]);
+                    this.treeNode.addChild(this.iconHere);
+                }
             }
         }
-
         this.treeNode.setPosition(this.planets[1].position[0] + 320, this.planets[1].position[1] - 300);
-
         this.firstTouchX = 0;
         this.firstTouchY = 0;
         this.lastTouchGameLayerX = this.treeNode.getPosition().x;
@@ -130,7 +138,6 @@ var MissionsLayer = cc.Layer.extend({
         this.detail.setPosition(320, 600);
         this.infoNode.addChild(this.detail);
         this.planets = [];
-
         for (var i = 1; i < CONFIG.MISSION.length; i++) {
             cc.log(CONFIG.MISSION[i]);
             //var _hoge = JSON.parse(CONFIG.MISSION[i]);

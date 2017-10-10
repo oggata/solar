@@ -2,7 +2,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
     sprite: null,
     ctor: function (storage, cardId) {
         this._super();
-        //cc.sys.localStorage.clear();
+//cc.sys.localStorage.clear();
         //画面サイズの取得
         this.storage = storage;
         this.windowName = "DiscoveryLayer2";
@@ -62,26 +62,31 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.isSetPlanet = false;
         this.battleWindowScale = 1;
         this.baseNode.setScale(this.battleWindowScale, this.battleWindowScale);
+
+
+        //拠点の惑星を取得する
+        //cc.log(this.storage.getTargetPlanetId(CONFIG.CARD[1]));
+        var _rootPlanetNum = this.storage.getTargetPlanetId(CONFIG.CARD[1]);
+        //_rootPlanetNum = 2;
+        var _planet = CONFIG.PLANET[_rootPlanetNum];
+//cc.log(_planet);
         //地球を作成する
-        this.basePlanet = new PlanetSprite(this);
+        this.basePlanet = new PlanetSprite(this,_planet);
         this.baseNode.addChild(this.basePlanet);
         this.basePlanet.setPosition(5000, 5000);
         this.basePlanet.setScale(0.35, 0.35);
         this.planets.push(this.basePlanet);
-
         //救出メッセージ用
         this.rescureWindow = cc.Sprite.create("res/rescue.png");
         //this.rescureWindow.setAnchorPoint(0, 0);
         this.rescureWindow.setPosition(320, 700);
         this.addChild(this.rescureWindow);
         this.rescureWindow.setVisible(false);
-
         //探索船を作る
         this.rocketSprite = new Ship(this);
         this.baseNode.addChild(this.rocketSprite, 999999999);
         this.rocketSprite.setPosition(5000, 5000);
         this.rocketSprite.basePlanet = this.basePlanet;
-
         //this.rocketSprite.setScale(0.4, 0.4);
         this.rocketSprite.rocketId = 1;
         this.rocketSprite.dx = 0;
@@ -171,9 +176,15 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.masterShip = null;
         var keyCnt = Object.keys(this.storage.shipData).length;
         if (keyCnt == 0) {
+            //初回のアカウント作成
             this.InfoMenu.uiWindowAccount.setVisible(true);
             this.InfoMenu.infoNode.setVisible(true);
-            this.storage.saveShipDataToStorage(CONFIG.CARD[1], 0, 0, 0, 1, "NO_DIST", 1);
+            var _dx = 0;
+            var _dy = 0;
+            var _time = 0;
+            var _basePlanetId = 1;
+            var _destinationPlanetId = 0;
+            this.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId, "NO_DIST", 1);
         }
         for (var key in this.storage.shipData) {
             if (this.storage.shipData.hasOwnProperty(key)) {
@@ -203,41 +214,36 @@ var DiscoveryLayer2 = cc.Layer.extend({
         } else {
             this.basePlanet.setVisible(true);
         }
-
-
         this.debugButton = new cc.MenuItemImage("res/button_debug.png", "res/button_debug.png", function () {
             this.masterShip.targetTime = parseInt(new Date() / 1000);
             //this.storage.saveCurrentData();
             //this.setMasterShipStatus(0, 0, 0, 0, "NO_DIST");
-/*
-            this.masterShip.status = "NO_DIST";
-            this.masterShip.dx = 0;
-            this.masterShip.dy = 0;
-            this.baseNode.removeChild(this.drawNode2);
-            this.explorationArrow.setVisible(false);
-            this.explorationDistLabel.setVisible(false);
-            this.explorationRarityLabel.setVisible(false);
-*/
+            /*
+                        this.masterShip.status = "NO_DIST";
+                        this.masterShip.dx = 0;
+                        this.masterShip.dy = 0;
+                        this.baseNode.removeChild(this.drawNode2);
+                        this.explorationArrow.setVisible(false);
+                        this.explorationDistLabel.setVisible(false);
+                        this.explorationRarityLabel.setVisible(false);
+            */
         }, this);
         this.debugButton.setPosition(80, 1000);
         var menu001 = new cc.Menu(this.debugButton);
-        menu001.setPosition(0,0);
-        this.addChild(menu001,99999999999999);
-
-
-
-
-
+        menu001.setPosition(0, 0);
+        this.addChild(menu001, 99999999999999);
         return true;
     },
     update: function (dt) {
 
-if(this.rescureWindow.isVisible()){
-    this.rocketSprite.setVisible(false);
-}else{
-    this.rocketSprite.setVisible(true);
-}
 
+//cc.log(this.storage.getTargetPlanetId(CONFIG.CARD[1]));
+
+        if (this.rescureWindow.isVisible()) {
+            this.rocketSprite.setVisible(false);
+        } else {
+            this.rocketSprite.setVisible(true);
+        }
         this.header1.fuelLabel.setString("" + this.storage.totalCoinAmount);
         if (this.InfoMenu.infoNode.isVisible()) {
             this.uiShipMonitor.setVisible(false);
@@ -271,7 +277,7 @@ if(this.rescureWindow.isVisible()){
         }
         for (var i = 0; i < this.meteorites.length; i++) {
             this.meteorites[i].setPosition(this.meteorites[i].getPosition().x + this.meteorites[i].dx, this.meteorites[i].getPosition()
-                .y + this.meteorites[i].dy );
+                .y + this.meteorites[i].dy);
             var _dist = cc.pDistance(this.rocketSprite.getPosition(), this.meteorites[i].getPosition());
             if (_dist >= 800) {
                 this.baseNode.removeChild(this.meteorites[i]);
@@ -388,10 +394,7 @@ if(this.rescureWindow.isVisible()){
         }
         this.meteorites.push(this.hoge);
     },
-    setMasterShipStatus: function (dx, dy, targetTime, planetId, status) {
-        this.storage.saveShipDataToStorage(CONFIG.CARD[1], dx, dy, parseInt(new Date() / 1000) + targetTime, planetId,
-            status, 1);
-    },
+
     setUiShipMonitor: function () {
         //ランディング 001
         this.uiShipMonitor = cc.Sprite.create("res/menu_ship.png");
@@ -429,7 +432,8 @@ if(this.rescureWindow.isVisible()){
         }, this);
         this.buttonLaunch.setPosition(460, 60);
         this.buttonCancel = new cc.MenuItemImage("res/button_ship_cancel.png", "res/button_ship_cancel.png", function () {
-            this.setMasterShipStatus(0, 0, 0, 0, "NO_DIST");
+            //this.setMasterShipStatus(0, 0, 0, 0, "NO_DIST");
+            //this.storage.saveShipDataToStorage(CONFIG.CARD[1], dx, dy, parseInt(new Date() / 1000) + targetTime, basePlanetId, destinationPlanetId,
             this.masterShip.status = "NO_DIST";
             this.masterShip.dx = 0;
             this.masterShip.dy = 0;
@@ -437,6 +441,15 @@ if(this.rescureWindow.isVisible()){
             this.explorationArrow.setVisible(false);
             this.explorationDistLabel.setVisible(false);
             this.explorationRarityLabel.setVisible(false);
+
+            var _dx = 0;
+            var _dy = 0;
+            var _time = 0;
+            var _basePlanetId = this.storage.getTargetPlanetId(CONFIG.CARD[1]);;
+            var _destinationPlanetId = 0;
+            this.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId, "NO_DIST", 1);
+            
+
         }, this);
         this.buttonCancel.setPosition(180, 60);
         var menu001 = new cc.Menu(this.buttonLaunch, this.buttonCancel);
@@ -459,8 +472,12 @@ if(this.rescureWindow.isVisible()){
         this.targetTimeLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.uiShipMonitor004.addChild(this.targetTimeLabel);
         this.buttonCancel = new cc.MenuItemImage("res/button_ship_cancel.png", "res/button_ship_cancel.png", function () {
-            //this.shipDistType = "NO_DIST";
-            this.setMasterShipStatus(0, 0, 0, 0, "NO_DIST");
+            var _dx = 0;
+            var _dy = 0;
+            var _time = 0;
+            var _basePlanetId = this.storage.getTargetPlanetId(CONFIG.CARD[1]);;
+            var _destinationPlanetId = 0;
+            this.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId, "NO_DIST", 1);
             this.masterShip.status = "NO_DIST";
             this.masterShip.dx = 0;
             this.masterShip.dy = 0;
@@ -573,12 +590,10 @@ if(this.rescureWindow.isVisible()){
         var diffSecond = this.storage.targetTime - parseInt(new Date() / 1000);
         return diffSecond;
     },
-
     getPastRescueSecond: function () {
         var diffSecond = this.masterShip.rescureTime - parseInt(new Date() / 1000);
         return diffSecond;
     },
-
     getPastSecond2: function () {
         var diffSecond = this.masterShip.targetTime - parseInt(new Date() / 1000);
         return diffSecond;

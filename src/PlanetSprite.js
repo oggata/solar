@@ -1,27 +1,11 @@
 var PlanetSprite = cc.Node.extend({
-    ctor: function (game) {
+    ctor: function (game,planetData) {
         this._super();
         this.game = game;
-        var _rand = this.getRandNumberFromRange(1, 4);
-        _rand = 1;
-        this.planetSprite = cc.Sprite.create("res/planet_w350_001.png");
-        //this.addChild(this.planetSprite);
-        if (_rand == 1) {
-            this.planetSprite = cc.Sprite.create("res/planet_w350_001.png");
-            //this.addChild(this.planetSprite);
-        }
-        if (_rand == 2) {
-            this.planetSprite = cc.Sprite.create("res/planet_w350_002.png");
-            //this.addChild(this.planetSprite);
-        }
-        if (_rand == 3) {
-            this.planetSprite = cc.Sprite.create("res/planet_w350_003.png");
-            //this.addChild(this.planetSprite);
-        }
-        if (_rand == 4) {
-            this.planetSprite = cc.Sprite.create("res/planet_w350_004.png");
-            //this.addChild(this.planetSprite);
-        }
+        //var _rand = this.getRandNumberFromRange(1, 4);
+        //_rand = 1;
+        cc.log(planetData);
+        this.planetSprite = cc.Sprite.create(planetData.image);
         this.addChild(this.planetSprite);
         this.planetSpriteW = 120;
         this.satelliteSprite = cc.Sprite.create("res/start.png");

@@ -40,7 +40,7 @@ var CardLayer = cc.Layer.extend({
         //var _rand = this.getRandNumberFromRange(1, 13);
         var _card = CONFIG.PLANET[1];
         this.cardPosY = 1500;
-        this.card = cc.Sprite.create("res/planet_milk.png");
+        this.card = cc.Sprite.create("res/card_location_001.png");
         this.baseNode.addChild(this.card);
         this.card.setPosition(320, this.cardPosY);
         this.labelSprite = cc.Sprite.create("res/label_get_a_normal_card.png");
@@ -52,10 +52,19 @@ var CardLayer = cc.Layer.extend({
         this.initializeWalkAnimation();
         this.timeCnt = 0;
         this.scheduleUpdate();
-
-                var _rand = this.getRandNumberFromRange(1, 7);
-                this.storage.savePlanetDataToStorage(CONFIG.PLANET[_rand], 1);
-
+        var _rand = this.getRandNumberFromRange(1, 15);
+        this.storage.savePlanetDataToStorage(CONFIG.PLANET[_rand], 1);
+        this.planetSprite = cc.Sprite.create(CONFIG.PLANET[_rand].image);
+        this.card.addChild(this.planetSprite);
+        this.planetSprite.setPosition(180, 270);
+        //var _planetId = 1;
+        var _dx = 0;
+        var _dy = 0;
+        var _time = 0;
+        var _basePlanetId = _rand;
+        var _destinationPlanetId = 0;
+        this.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId, "NO_DIST",
+            1);
         return true;
     },
     update: function (dt) {

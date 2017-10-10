@@ -69,8 +69,45 @@ var Storage = cc.Class.extend(
         cc.sys.localStorage.setItem("gameStorage",_getData);
     },
 
+    getTargetPlanetId : function(ship){
+        /*
+        //すでにある場合は、設定値の変更
+        var savedData = this.shipData;
+        var _updateCnt = 0;
+        for (var savedDataKey in savedData) {
+            if (savedData.hasOwnProperty(savedDataKey)) {
+                var savedDataValue = savedData[savedDataKey];
+                var inputCreatureId= "ID_" + card["id"];
+                if(savedDataKey == inputCreatureId){
+                    var savedDataObj = JSON.parse(savedDataValue);
+                    return savedDataObj.targetPlanetId;
+                }
+            }
+        }
+        */
 
-    saveShipDataToStorage : function(card,dx,dy,targetTime,targetPlanetId,status,addCount) 
+        var savedData = this.shipData;
+        var _planetData = '';
+        var keyCnt = Object.keys(this.shipData).length;
+        for (var key in this.shipData) {
+            if (this.shipData.hasOwnProperty(key)) {
+                var savedDataValue = this.shipData[key];
+                var inputCreatureId= "ID_" + ship.id;
+                if(key == inputCreatureId)
+                {
+                    var savedDataObj = JSON.parse(savedDataValue);
+                    //cc.log(savedDataObj);
+                    return savedDataObj.basePlanetId;
+                }
+            }
+        }
+
+
+        return null;
+    },
+
+
+    saveShipDataToStorage : function(card,dx,dy,targetTime,basePlanetId,destinationPlanetId,status,addCount) 
     {
         //すでにある場合は、設定値の変更
         var savedData = this.shipData;
@@ -89,7 +126,8 @@ var Storage = cc.Class.extend(
                         ',"dx":' + dx + 
                         ',"dy":' + dy + 
                         ',"targetTime":' + targetTime + 
-                        ',"targetPlanetId":' + targetPlanetId + 
+                        ',"basePlanetId":' + basePlanetId + 
+                        ',"destinationPlanetId":' + destinationPlanetId + 
                         ',"status":' + '"' + status  + '"' +
                         ',"lastUpdatedTime":' + 0 + 
                         '}'
@@ -109,7 +147,8 @@ var Storage = cc.Class.extend(
                 ',"dx":' + dx + 
                 ',"dy":' + dy + 
                 ',"targetTime":' + targetTime + 
-                ',"targetPlanetId":' + targetPlanetId + 
+                ',"basePlanetId":' + basePlanetId + 
+                ',"destinationPlanetId":' + destinationPlanetId + 
                 ',"status":' + '"' + status  + '"' +
                 ',"lastUpdatedTime":' + 0 + 
                 '}'
