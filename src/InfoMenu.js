@@ -55,15 +55,23 @@ var InfoMenu = cc.Node.extend({
             this.game.masterShip.dx = 0;
             this.game.masterShip.dy = 0;
             this.game.baseNode.removeChild(this.drawNode2);
-            this.game.explorationArrow.setVisible(false);
+            this.game.arrow.setVisible(false);
             this.game.masterShip.dx = 0;
             this.game.masterShip.dy = 0;
         }, this);
         this.buttonCancel.setPosition(180, 40);
         this.buttonSearch = new cc.MenuItemImage("res/button_window_search.png", "res/button_window_search.png", function () {
+            //燃料が足りない場合はreturnする
+            if(this.game.storage.getCoinAmount() < this.fuelCnt){
+                return;
+            }
+            //landingの場合はゲーム画面に行く
             if (this.uiWindowLanding.isVisible() == true) {
+                //ここで燃料を減らす
+                this.game.storage.useCoin(this.fuelCnt);
                 this.goToGameLayer();
             }
+            //launchの場合は、shipの状態を遷移させる
             if (this.uiWindowLaunch.isVisible() == true) {
                 this.uiWindowLanding.setVisible(false);
                 this.uiWindowLaunch.setVisible(false);
@@ -71,24 +79,24 @@ var InfoMenu = cc.Node.extend({
                 this.game.masterShip.dx = this.game.tmpDx2 / 80;
                 this.game.masterShip.dy = this.game.tmpDy2 / 80;
                 this.game.masterShip.status = "MOVING";
-                //this.game.setMasterShipStatus(this.game.masterShip.dx, this.game.masterShip.dy, Math.ceil(this.game.pulledDist), 0, "MOVING");
                 this.game.storage.saveCurrentData();
                 var _dx = this.game.masterShip.dx;
                 var _dy = this.game.masterShip.dy;
                 var _time = Math.ceil(this.game.pulledDist) + parseInt(new Date() / 1000);
-                var _basePlanetId = this.game.storage.getTargetPlanetId(CONFIG.CARD[1]);;
+                var _basePlanetId = this.game.storage.getBasePlanetId(CONFIG.CARD[1]);;
                 var _destinationPlanetId = 0;
                 this.game.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId,
                     "MOVING", 1);
+                //ここで燃料を減らす
+                this.game.storage.useCoin(this.fuelCnt);
             }
         }, this);
         this.buttonSearch.setPosition(460, 40);
-        this.buttonOk = new cc.MenuItemImage("res/button_window_search.png", "res/button_window_search.png", function () {
+        this.buttonOk = new cc.MenuItemImage("res/button_window_landing.png", "res/button_window_landing.png", function () {
             cc.log("xx");
             this.game.masterShip.status = "NO_DIST";
             this.infoNode.setVisible(false);
             this.uiWindowResult.setVisible(false);
-            //this.goToCardLayer();
         }, this);
         this.buttonOk.setPosition(320, 40);
         this.buttonOk.setVisible(false);
@@ -96,15 +104,27 @@ var InfoMenu = cc.Node.extend({
             function () {
                 cc.log("xx");
                 this.game.masterShip.status = "NO_DIST";
-                //this.infoNode.setVisible(false);
-                //this.uiWindowResult.setVisible(false);
-                this.goToCardLayer();
+                //探索の場合はカードを引く、移動の場合はカードは引かない
+                var _dest = this.game.storage.getDestinationPlanetId(CONFIG.CARD[1]);
+                if (_dest == 0) {
+                    this.goToCardLayer();
+                } else {
+                    var _dx = 0;
+                    var _dy = 0;
+                    var _time = 0;
+                    var _basePlanetId = _dest;
+                    var _destinationPlanetId = 0;
+                    this.game.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId,
+                        "NO_DIST", 1);
+                    this.goToDiscoveryLayer();
+                }
             }, this);
         this.buttonGetPlanet.setPosition(320, 40);
         this.buttonGetPlanet.setVisible(false);
         var menu001 = new cc.Menu(this.buttonCancel, this.buttonSearch, this.buttonOk, this.buttonGetPlanet);
         menu001.setPosition(0, -130);
         this.infoNode.addChild(menu001, 99999999999);
+        this.isAbleToLaunch = false;
     },
     init: function () {},
     goToCardLayer: function (pSender) {
@@ -113,20 +133,41 @@ var InfoMenu = cc.Node.extend({
         scene.addChild(CardLayer.create(this.storage, [], 0));
         cc.director.runScene(cc.TransitionFade.create(0.3, scene));
     },
+    goToDiscoveryLayer: function (cardId) {
+        var scene = cc.Scene.create();
+        //次のステージへいくためにstorageは必ず受けた渡す
+        //windowName
+        scene.addChild(DiscoveryLayer2.create(this.storage, cardId));
+        //cc.director.runScene(cc.TransitionSlideInR.create(1.5, scene));
+        cc.director.runScene(cc.TransitionFadeDown.create(0.4, scene));
+    },
     setCost: function (fuelCnt, timeCnt) {
+        
+
+        this.fuelCnt = fuelCnt;
+        this.timeCnt = timeCnt;
         this.shipFuelLabel.setString(fuelCnt);
         this.shipFuel2Label.setString(fuelCnt);
         this.shipTargetTimeLabel.setString(timeCnt);
         if (this.game.storage.totalCoinAmount < fuelCnt) {
             cc.log("xxxxxx");
+            this.isAbleToLaunch = false;
             this.shipFuelLabel.setFontFillColor(new cc.Color(255, 0, 0, 255));
             this.shipFuel2Label.setFontFillColor(new cc.Color(255, 0, 0, 255));
         } else {
+            this.isAbleToLaunch = true;
             this.shipFuelLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
             this.shipFuel2Label.setFontFillColor(new cc.Color(255, 255, 255, 255));
         }
     },
     update: function () {
+        if(this.isAbleToLaunch == true){
+            this.buttonSearch.setOpacity(255*1);
+        }else{
+            this.buttonSearch.setOpacity(255*0.3);
+        }
+
+
         if (this.uiWindowAccount.isVisible()) {
             this.buttonCancel.setVisible(false);
             this.buttonSearch.setVisible(false);

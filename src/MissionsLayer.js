@@ -48,78 +48,92 @@ var MissionsLayer = cc.Layer.extend({
         this.backNode.setAnchorPoint(0, 0);
         this.backNode.setPosition(0, 0);
         this.addChild(this.backNode);
+        //treeNode
         this.treeNode = cc.Node.create();;
         this.treeNode.setPosition(0, 0);
         this.addChild(this.treeNode);
         this.drawNode2 = cc.DrawNode.create();
         this.treeNode.addChild(this.drawNode2);
-        var _rootPlanetNum = this.storage.getTargetPlanetId(CONFIG.CARD[1]);
-this.treeNode.setScale(0.5);
+        var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
+        this.treeNode.setScale(0.5);
+        this.connectedPlanets = new Array();
+        //masterの惑星をループさせて配置する
         this.planets = CONFIG.PLANET;
-
-
-
-
-
-        for (var j = 0; j < this.planets.length; j++) {
-            if (this.planets[j].position) {
-                var _image = this.planets[j].image;
-                var _position = this.planets[j].position;
-                var _lv = this.planets[j].lv;
-                var _planetId = this.planets[j].id;
-                if (this.storage.isOwnPlanetData(CONFIG.PLANET[_planetId])) {
-                } else {
+        for (var masterCnt = 0; masterCnt < this.planets.length; masterCnt++) {
+            if (this.planets[masterCnt].position) {
+                var _image = this.planets[masterCnt].image;
+                var _planetId = this.planets[masterCnt].id;
+                if (this.storage.isOwnPlanetData(CONFIG.PLANET[_planetId])) {} else {
                     _image = "res/planet_w350_notfound.png";
                 }
-                this.planet_marker = new cc.MenuItemImage(_image, _image, function (sender) {
-                    cc.log(sender);
+                this.buttonPlanet = new cc.MenuItemImage(_image, _image, function (sender) {
                     this.infoNode.setVisible(true);
                     this.detail.setPlanet(sender.planetId);
                 }, this);
-                this.planet_marker.planetId = _planetId;
-                var menu001 = new cc.Menu(this.planet_marker);
+                /*
+                for debug
+                this.planetIdLabel = new cc.LabelTTF(_planetId, "Arial", 99);
+                this.planetIdLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+                this.buttonPlanet.addChild(this.planetIdLabel);
+                this.planetIdLabel.setPosition(20, 20);
+                */
+                this.buttonPlanet.planetId = _planetId;
+                var menu001 = new cc.Menu(this.buttonPlanet);
                 menu001.setPosition(0, 0);
                 this.treeNode.addChild(menu001);
-                this.planet_marker.setScale(0.35);
-                this.planet_marker.setPosition(_position[0], _position[1]);
-                /*次のレベルの1個以上と線を引く*/
-                var _linePlanets = [];
-                for (var h = 0; h < this.planets.length; h++) {
-                    if (this.planets[h].lv == _lv - 1) {
-                        _linePlanets.push(this.planets[h]);
+                this.buttonPlanet.setScale(0.35);
+                this.buttonPlanet.setPosition(this.planets[masterCnt].position[0], this.planets[masterCnt].position[1]);
+                //枝になる可能性のある惑星を全て_branchPlanetsに入れてシャッフルする
+                var _branchPlanets = [];
+                for (var branchCnt = 0; branchCnt < this.planets.length; branchCnt++) {
+                    if (this.planets[branchCnt].lv == this.planets[masterCnt].lv - 1) {
+                        _branchPlanets.push(this.planets[branchCnt]);
                     }
                 }
+                _branchPlanets.sort(this.shuffle2);
+                //1つの惑星から最大何本枝が生えるかを決定する
                 var _maxLineCnt = this.getRandNumberFromRange(1, 2);
                 _maxLineCnt = 1;
                 for (var lineCnt = 0; lineCnt < _maxLineCnt; lineCnt++) {
-                    if (_linePlanets[lineCnt]) {
-                        this.fromP = cc.p(_linePlanets[lineCnt].position[0], _linePlanets[lineCnt].position[1]);
-                        this.toP = cc.p(_position[0], _position[1]);
+                    if (_branchPlanets[lineCnt]) {
+                        //masterからbranchに線を引く
+                        this.fromP = cc.p(_branchPlanets[lineCnt].position[0], _branchPlanets[lineCnt].position[1]);
+                        this.toP = cc.p(this.planets[masterCnt].position[0], this.planets[masterCnt].position[1]);
                         this.lineWidth = 9;
                         this.drawNode2.drawSegment(this.fromP, this.toP, this.lineWidth, cc.color(69, 162, 211, 255 * 0.3));
+                        //接続している惑星のmasterデータを作る。master->branchとbranch->masterの両方必要。
+                        if (this.connectedPlanets[this.planets[masterCnt].id]) {
+                            this.connectedPlanets[this.planets[masterCnt].id].push(_branchPlanets[lineCnt].id);
+                        } else {
+                            this.connectedPlanets[this.planets[masterCnt].id] = [_branchPlanets[lineCnt].id];
+                        }
+                        if (this.connectedPlanets[_branchPlanets[lineCnt].id]) {
+                            this.connectedPlanets[_branchPlanets[lineCnt].id].push(this.planets[masterCnt].id);
+                        } else {
+                            this.connectedPlanets[_branchPlanets[lineCnt].id] = [this.planets[masterCnt].id];
+                        }
                     }
                 }
                 //自分のbasePlanetの場合は、マーカーをおく
                 if (_rootPlanetNum == _planetId) {
                     this.iconHere = cc.Sprite.create("res/icon_here.png");
-                    this.iconHere.setPosition(_position[0], _position[1]);
+                    this.iconHere.setPosition(this.planets[masterCnt].position[0], this.planets[masterCnt].position[1]);
                     this.treeNode.addChild(this.iconHere);
                 }
-
                 //イベントマーカーを設置する
+                /*
                 var _eventId = this.getRandNumberFromRange(1, 5);
                 if (_eventId == 3) {
                     this.eventMarker = cc.Sprite.create("res/sprite_weekly_event.png");
-                    //this.iconHere.setPosition(_position[0], _position[1]);
-                    this.eventMarker.setPosition(351/2,351/2);
-                    this.planet_marker.addChild(this.eventMarker);
+                    //this.iconHere.setPosition(this.planets[masterCnt].position[0], this.planets[masterCnt].position[1]);
+                    this.eventMarker.setPosition(351 / 2, 351 / 2);
+                    this.buttonPlanet.addChild(this.eventMarker);
                 }
-
+                */
             }
         }
-
-        //this.treeNode.setPosition(this.planets[1].position[0] + 320, this.planets[1].position[1] - 300);
-        this.treeNode.setPosition((this.planets[_rootPlanetNum].position[0] - 600) * -1/2,(this.planets[_rootPlanetNum].position[1] - 900) * -1/2);
+        this.treeNode.setPosition((this.planets[_rootPlanetNum].position[0] - 600) * -1 / 2, (this.planets[_rootPlanetNum]
+            .position[1] - 900) * -1 / 2);
         this.firstTouchX = 0;
         this.firstTouchY = 0;
         this.lastTouchGameLayerX = this.treeNode.getPosition().x;
@@ -128,6 +142,13 @@ this.treeNode.setScale(0.5);
         this.header.setAnchorPoint(0, 0);
         this.header.setPosition(0, 1136 - 136);
         this.addChild(this.header);
+        this.scaleButton001 = new cc.MenuItemImage("res/button_scale_001.png", "res/button_scale_001.png", function (
+            sender) {}, this);
+        this.scaleButton002 = new cc.MenuItemImage("res/button_scale_002.png", "res/button_scale_002.png", function (
+            sender) {}, this);
+        var scaleMenu = new cc.Menu(this.scaleButton001, this.scaleButton002);
+        scaleMenu.setPosition(0, 0);
+        this.header.addChild(scaleMenu);
         this.footer = new Footer(this);
         this.addChild(this.footer);
         this.infoNode = cc.LayerColor.create(new cc.Color(0, 0, 0, 255), 640, 1136);
@@ -163,29 +184,19 @@ this.treeNode.setScale(0.5);
         return true;
     },
     touchStart: function (location) {
-        //this.fromP = cc.p(location.x, location.y);
         this.firstTouchX = location.x;
         this.firstTouchY = location.y;
         var touchX = location.x - this.lastTouchGameLayerX;
         var touchY = location.y - this.lastTouchGameLayerY;
-        //this.targetSprite.setPosition(touchX, touchY);
-        //this.targetSprite2.setPosition(touchX, touchY);
     },
     touchMove: function (location) {
-        //this.targetSprite.setPosition(location.x, location.y);
         var scrollX = this.firstTouchX - location.x;
         var scrollY = this.firstTouchY - location.y;
         var x = this.lastTouchGameLayerX - scrollX;
         var y = this.lastTouchGameLayerY - scrollY;
         var _limitX = (CONFIG.MAP_WIDTH - this.viewSize.width) * -1;
         var _limitY = (CONFIG.MAP_HEIGHT - this.viewSize.height) * -1;
-        //if (_limitX <= x && x <= 0 && _limitY <= y && y <= 0) {
         this.treeNode.setPosition(x, y);
-        
-//cc.log("x:" + x + "/y:" + y);
-//1 : 316 : 328
-//2 : 0 : 121
-        //}
         var touchX = location.x - this.lastTouchGameLayerX;
         var touchY = location.y - this.lastTouchGameLayerY;
     },
@@ -246,6 +257,22 @@ this.treeNode.setScale(0.5);
     },
     shuffle: function () {
         return Math.random() - .5;
+    },
+    shuffle2: function () {
+        Math.seed = 6666;
+        max = 1;
+        min = 9999;
+        Math.seed = (Math.seed * 9301 + 49297) % 233280;
+        var rnd = Math.seed / 233280;
+        return rnd - .5;
+    },
+    getSeededRandom: function (max, min, seed) {
+        Math.seed = seed;
+        max = max || 1;
+        min = min || 0;
+        Math.seed = (Math.seed * 9301 + 49297) % 233280;
+        var rnd = Math.seed / 233280;
+        return min + rnd * (max - min);
     },
     goToDiscoveryLayer1: function (cardId) {
         var scene = cc.Scene.create();

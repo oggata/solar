@@ -37,6 +37,7 @@
         "src/Gauge.js",
         "src/Material.js",
  "src/InfoMenu.js",
+  "src/ShipControlMenu.js",
  "src/PlanetDetail.js",
   "src/Ship.js",
         "src/Deburis.js",

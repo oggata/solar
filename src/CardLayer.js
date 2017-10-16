@@ -37,6 +37,14 @@ var CardLayer = cc.Layer.extend({
         this.baseNode = cc.LayerColor.create(new cc.Color(17, 31, 62, 255), 640, 1136);
         this.baseNode.setPosition(0, 0);
         this.addChild(this.baseNode);
+
+
+/*
+        var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
+        var _planet = CONFIG.PLANET[_rootPlanetNum];
+*/
+
+
         //var _rand = this.getRandNumberFromRange(1, 13);
         var _card = CONFIG.PLANET[1];
         this.cardPosY = 1500;
@@ -52,16 +60,40 @@ var CardLayer = cc.Layer.extend({
         this.initializeWalkAnimation();
         this.timeCnt = 0;
         this.scheduleUpdate();
-        var _rand = this.getRandNumberFromRange(1, 15);
-        this.storage.savePlanetDataToStorage(CONFIG.PLANET[_rand], 1);
-        this.planetSprite = cc.Sprite.create(CONFIG.PLANET[_rand].image);
+
+
+
+        var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
+        var _rootPlanet = CONFIG.PLANET[_rootPlanetNum];
+        //到着する惑星をsetする
+        cc.log("-------------->");
+        //cc.log(_planet);
+        this.nextPlanetId = 1;
+        if(_rootPlanet){
+            cc.log(_rootPlanet.id);
+            _planetBranchList = this.storage.getConnectedPlanets();
+            cc.log(_planetBranchList);
+            var _branchList = _planetBranchList[_rootPlanet.id];
+            _branchList.sort(this.shuffle);
+            /*
+            for (var i = 0; i < _branchList.length; i++) {
+                cc.log( _branchList[i]);
+            }*/
+            this.nextPlanetId = _branchList[0];
+        }
+
+
+
+        //var _rand = this.getRandNumberFromRange(1, 15);
+        this.storage.savePlanetDataToStorage(CONFIG.PLANET[this.nextPlanetId], 1);
+        this.planetSprite = cc.Sprite.create(CONFIG.PLANET[this.nextPlanetId].image);
         this.card.addChild(this.planetSprite);
         this.planetSprite.setPosition(180, 270);
         //var _planetId = 1;
         var _dx = 0;
         var _dy = 0;
         var _time = 0;
-        var _basePlanetId = _rand;
+        var _basePlanetId = this.nextPlanetId;
         var _destinationPlanetId = 0;
         this.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId, "NO_DIST",
             1);

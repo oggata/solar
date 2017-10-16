@@ -21,12 +21,74 @@ var Storage = cc.Class.extend(
         this.rescureTime = 0;
     },
 
+    getConnectedPlanets:function(){
+        this.connectedPlanets = new Array();
+
+        //{id:1,difficulty:10},{id:1,difficulty:10}
+
+        this.planets = CONFIG.PLANET;
+        for (var masterCnt = 0; masterCnt < this.planets.length; masterCnt++) {
+            if (this.planets[masterCnt].position) {
+
+                //枝になる可能性のある惑星を全て_branchPlanetsに入れてシャッフルする
+                var _branchPlanets = [];
+                for (var branchCnt = 0; branchCnt < this.planets.length; branchCnt++) {
+                    if (this.planets[branchCnt].lv == this.planets[masterCnt].lv - 1) {
+                        _branchPlanets.push(this.planets[branchCnt]);
+                    }
+                }
+                _branchPlanets.sort(this.shuffle2);
+
+                //1つの惑星から最大何本枝が生えるかを決定する
+                var _maxLineCnt = this.getRandNumberFromRange(1, 2);
+                _maxLineCnt = 1;
+                for (var lineCnt = 0; lineCnt < _maxLineCnt; lineCnt++) {
+                    if (_branchPlanets[lineCnt]) {
+                        //接続している惑星のmasterデータを作る。master->branchとbranch->masterの両方必要。
+                        if(this.connectedPlanets[this.planets[masterCnt].id]){
+                            this.connectedPlanets[this.planets[masterCnt].id].push(_branchPlanets[lineCnt].id);
+                        }else{
+                            this.connectedPlanets[this.planets[masterCnt].id] = [_branchPlanets[lineCnt].id];
+                        }
+                        if(this.connectedPlanets[_branchPlanets[lineCnt].id]){
+                            this.connectedPlanets[_branchPlanets[lineCnt].id].push(this.planets[masterCnt].id);
+                        }else{
+                            this.connectedPlanets[_branchPlanets[lineCnt].id] = [this.planets[masterCnt].id];
+                        }
+                    }
+                }
+            }
+        }
+        return this.connectedPlanets;
+    },
+
+    getSeededRandom:function(max,min,seed){
+        Math.seed = seed;
+        max = max || 1;
+        min = min || 0;
+
+        Math.seed = (Math.seed * 9301 + 49297) % 233280;
+        var rnd = Math.seed / 233280;
+
+        return min + rnd * (max - min);
+    },
+
     init : function () { },
 
     addCoin:function(amount){
         this.totalCoinAmount+=amount;
         var _getData = this.getDataFromStorage();
         cc.sys.localStorage.setItem("gameStorage",_getData);
+    },
+
+    useCoin:function(amount){
+        this.totalCoinAmount-=amount;
+        var _getData = this.getDataFromStorage();
+        cc.sys.localStorage.setItem("gameStorage",_getData);
+    },
+
+    getCoinAmount:function(){
+        return this.totalCoinAmount;
     },
 
     saveCreatureDataToStorage : function(card,addCount) 
@@ -69,23 +131,7 @@ var Storage = cc.Class.extend(
         cc.sys.localStorage.setItem("gameStorage",_getData);
     },
 
-    getTargetPlanetId : function(ship){
-        /*
-        //すでにある場合は、設定値の変更
-        var savedData = this.shipData;
-        var _updateCnt = 0;
-        for (var savedDataKey in savedData) {
-            if (savedData.hasOwnProperty(savedDataKey)) {
-                var savedDataValue = savedData[savedDataKey];
-                var inputCreatureId= "ID_" + card["id"];
-                if(savedDataKey == inputCreatureId){
-                    var savedDataObj = JSON.parse(savedDataValue);
-                    return savedDataObj.targetPlanetId;
-                }
-            }
-        }
-        */
-
+    getBasePlanetId : function(ship){
         var savedData = this.shipData;
         var _planetData = '';
         var keyCnt = Object.keys(this.shipData).length;
@@ -101,11 +147,26 @@ var Storage = cc.Class.extend(
                 }
             }
         }
-
-
         return null;
     },
 
+    getDestinationPlanetId : function(ship){
+        var savedData = this.shipData;
+        var _planetData = '';
+        var keyCnt = Object.keys(this.shipData).length;
+        for (var key in this.shipData) {
+            if (this.shipData.hasOwnProperty(key)) {
+                var savedDataValue = this.shipData[key];
+                var inputCreatureId= "ID_" + ship.id;
+                if(key == inputCreatureId)
+                {
+                    var savedDataObj = JSON.parse(savedDataValue);
+                    return savedDataObj.destinationPlanetId;
+                }
+            }
+        }
+        return null;
+    },
 
     saveShipDataToStorage : function(card,dx,dy,targetTime,basePlanetId,destinationPlanetId,status,addCount) 
     {

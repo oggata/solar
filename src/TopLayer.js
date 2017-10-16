@@ -58,6 +58,10 @@ var TopLayer = cc.Layer.extend({
         this.addChild(menu001, 999);
         this.scheduleUpdate();
         //this.initializeWalkAnimation();
+
+cc.log("----->");
+        var _hoge = this.storage.getConnectedPlanets();
+        cc.log(_hoge);
         return true;
     },
     getRandNumberFromRange: function (min, max) {
