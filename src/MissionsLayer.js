@@ -53,29 +53,22 @@ var MissionsLayer = cc.Layer.extend({
         this.addChild(this.treeNode);
         this.drawNode2 = cc.DrawNode.create();
         this.treeNode.addChild(this.drawNode2);
-        /*
-                //拠点の惑星を取得する
-                //cc.log(this.storage.getTargetPlanetId(CONFIG.CARD[1]));
-                var _rootPlanetNum = this.storage.getTargetPlanetId(CONFIG.CARD[1]);
-                //_rootPlanetNum = 2;
-                var _planet = CONFIG.PLANET[_rootPlanetNum];
-        */
         var _rootPlanetNum = this.storage.getTargetPlanetId(CONFIG.CARD[1]);
-        this.treeNode.setScale(0.5);
+this.treeNode.setScale(0.5);
         this.planets = CONFIG.PLANET;
+
+
+
+
+
         for (var j = 0; j < this.planets.length; j++) {
             if (this.planets[j].position) {
                 var _image = this.planets[j].image;
                 var _position = this.planets[j].position;
                 var _lv = this.planets[j].lv;
                 var _planetId = this.planets[j].id;
-                //cc.log(_planetId);
-                //cc.log(this.storage.isOwnPlanetData(CONFIG.PLANET[_planetId]));
-                //cc.log(this.planets[j].position);
                 if (this.storage.isOwnPlanetData(CONFIG.PLANET[_planetId])) {
-                    //this.planet_marker = cc.Sprite.create(_image);
                 } else {
-                    //this.planet_marker = cc.Sprite.create("res/planet_w350_notfound.png");
                     _image = "res/planet_w350_notfound.png";
                 }
                 this.planet_marker = new cc.MenuItemImage(_image, _image, function (sender) {
@@ -84,13 +77,11 @@ var MissionsLayer = cc.Layer.extend({
                     this.detail.setPlanet(sender.planetId);
                 }, this);
                 this.planet_marker.planetId = _planetId;
-                //this.planet_marker.setPosition(320, 60);
                 var menu001 = new cc.Menu(this.planet_marker);
                 menu001.setPosition(0, 0);
                 this.treeNode.addChild(menu001);
                 this.planet_marker.setScale(0.35);
                 this.planet_marker.setPosition(_position[0], _position[1]);
-                //this.treeNode.addChild(this.planet_marker);
                 /*次のレベルの1個以上と線を引く*/
                 var _linePlanets = [];
                 for (var h = 0; h < this.planets.length; h++) {
@@ -99,7 +90,7 @@ var MissionsLayer = cc.Layer.extend({
                     }
                 }
                 var _maxLineCnt = this.getRandNumberFromRange(1, 2);
-                //_maxLineCnt = 1;
+                _maxLineCnt = 1;
                 for (var lineCnt = 0; lineCnt < _maxLineCnt; lineCnt++) {
                     if (_linePlanets[lineCnt]) {
                         this.fromP = cc.p(_linePlanets[lineCnt].position[0], _linePlanets[lineCnt].position[1]);
@@ -111,13 +102,24 @@ var MissionsLayer = cc.Layer.extend({
                 //自分のbasePlanetの場合は、マーカーをおく
                 if (_rootPlanetNum == _planetId) {
                     this.iconHere = cc.Sprite.create("res/icon_here.png");
-                    //this.iconHere.setAnchorPoint(0, 0);
                     this.iconHere.setPosition(_position[0], _position[1]);
                     this.treeNode.addChild(this.iconHere);
                 }
+
+                //イベントマーカーを設置する
+                var _eventId = this.getRandNumberFromRange(1, 5);
+                if (_eventId == 3) {
+                    this.eventMarker = cc.Sprite.create("res/sprite_weekly_event.png");
+                    //this.iconHere.setPosition(_position[0], _position[1]);
+                    this.eventMarker.setPosition(351/2,351/2);
+                    this.planet_marker.addChild(this.eventMarker);
+                }
+
             }
         }
-        this.treeNode.setPosition(this.planets[1].position[0] + 320, this.planets[1].position[1] - 300);
+
+        //this.treeNode.setPosition(this.planets[1].position[0] + 320, this.planets[1].position[1] - 300);
+        this.treeNode.setPosition((this.planets[_rootPlanetNum].position[0] - 600) * -1/2,(this.planets[_rootPlanetNum].position[1] - 900) * -1/2);
         this.firstTouchX = 0;
         this.firstTouchY = 0;
         this.lastTouchGameLayerX = this.treeNode.getPosition().x;
@@ -179,6 +181,10 @@ var MissionsLayer = cc.Layer.extend({
         var _limitY = (CONFIG.MAP_HEIGHT - this.viewSize.height) * -1;
         //if (_limitX <= x && x <= 0 && _limitY <= y && y <= 0) {
         this.treeNode.setPosition(x, y);
+        
+//cc.log("x:" + x + "/y:" + y);
+//1 : 316 : 328
+//2 : 0 : 121
         //}
         var touchX = location.x - this.lastTouchGameLayerX;
         var touchY = location.y - this.lastTouchGameLayerY;

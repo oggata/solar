@@ -2,7 +2,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
     sprite: null,
     ctor: function (storage, cardId) {
         this._super();
-//cc.sys.localStorage.clear();
+        //cc.sys.localStorage.clear();
         //画面サイズの取得
         this.storage = storage;
         this.windowName = "DiscoveryLayer2";
@@ -64,40 +64,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.baseNode.setScale(this.battleWindowScale, this.battleWindowScale);
 
 
-        //拠点の惑星を取得する
-        //cc.log(this.storage.getTargetPlanetId(CONFIG.CARD[1]));
-        var _rootPlanetNum = this.storage.getTargetPlanetId(CONFIG.CARD[1]);
-        //_rootPlanetNum = 2;
-        var _planet = CONFIG.PLANET[_rootPlanetNum];
-//cc.log(_planet);
-        //地球を作成する
-        this.basePlanet = new PlanetSprite(this,_planet);
-        this.baseNode.addChild(this.basePlanet);
-        this.basePlanet.setPosition(5000, 5000);
-        this.basePlanet.setScale(0.35, 0.35);
-        this.planets.push(this.basePlanet);
-        //救出メッセージ用
-        this.rescureWindow = cc.Sprite.create("res/rescue.png");
-        //this.rescureWindow.setAnchorPoint(0, 0);
-        this.rescureWindow.setPosition(320, 700);
-        this.addChild(this.rescureWindow);
-        this.rescureWindow.setVisible(false);
-        //探索船を作る
-        this.rocketSprite = new Ship(this);
-        this.baseNode.addChild(this.rocketSprite, 999999999);
-        this.rocketSprite.setPosition(5000, 5000);
-        this.rocketSprite.basePlanet = this.basePlanet;
-        //this.rocketSprite.setScale(0.4, 0.4);
-        this.rocketSprite.rocketId = 1;
-        this.rocketSprite.dx = 0;
-        this.rocketSprite.dy = 0;
-        this.rocketSprite.targetTime = 0;
-        this.rocketSprite.targetPlanetId = "xxx";
-        this.rocketSprite.status = "xxx";
-        this.rockets = [];
-        this.rockets.push(this.rocketSprite);
-        this.dx = 0;
-        this.dy = 0;
+
         cc.eventManager.addListener(cc.EventListener.create({
             event: cc.EventListener.TOUCH_ALL_AT_ONCE,
             onTouchesBegan: function (touches, event) {
@@ -123,19 +90,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.errorLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         this.error.addChild(this.errorLabel);
         this.errorLabel.setPosition(320, 120);
-        this.cameraTargetPosX = 0;
-        this.cameraTargetPosY = 0;
-        //カメラの設定
-        if (this.rocketSprite.basePlanet == null) {
-            this.cameraTargetPosX = 320 - this.rocketSprite.getPosition().x;
-            this.cameraTargetPosY = 480 - this.rocketSprite.getPosition().y;
-        } else {
-            this.cameraTargetPosX = 320 - this.rocketSprite.basePlanet.getPosition().x;
-            this.cameraTargetPosY = 480 - this.rocketSprite.basePlanet.getPosition().y;
-        }
-        this.cameraPosX = this.cameraTargetPosX;
-        this.cameraPosY = this.cameraTargetPosY;
-        this.baseNode.setPosition(this.cameraTargetPosX, this.cameraTargetPosY);
+
         //メッセージの制御
         this.messageLabel = cc.LabelTTF.create("", "Arial", 18);
         this.messageLabel.setPosition(160, 240);
@@ -198,6 +153,66 @@ var DiscoveryLayer2 = cc.Layer.extend({
             this.dx = this.masterShip.dx;
             this.dy = this.masterShip.dy;
         }
+
+
+
+
+
+
+
+
+        //拠点の惑星を取得する
+        //cc.log(this.storage.getTargetPlanetId(CONFIG.CARD[1]));
+        var _rootPlanetNum = this.storage.getTargetPlanetId(CONFIG.CARD[1]);
+        //_rootPlanetNum = 2;
+        var _planet = CONFIG.PLANET[_rootPlanetNum];
+//cc.log(_planet);
+        //地球を作成する
+        this.basePlanet = new PlanetSprite(this,_planet);
+        this.baseNode.addChild(this.basePlanet);
+        this.basePlanet.setPosition(5000, 5000);
+        this.basePlanet.setScale(0.35, 0.35);
+        this.planets.push(this.basePlanet);
+        //救出メッセージ用
+        this.rescureWindow = cc.Sprite.create("res/rescue.png");
+        //this.rescureWindow.setAnchorPoint(0, 0);
+        this.rescureWindow.setPosition(320, 700);
+        this.addChild(this.rescureWindow);
+        this.rescureWindow.setVisible(false);
+        //探索船を作る
+        this.rocketSprite = new Ship(this);
+        this.baseNode.addChild(this.rocketSprite, 999999999);
+        this.rocketSprite.setPosition(5000, 5000);
+        this.rocketSprite.basePlanet = this.basePlanet;
+        //this.rocketSprite.setScale(0.4, 0.4);
+        this.rocketSprite.rocketId = 1;
+        this.rocketSprite.dx = 0;
+        this.rocketSprite.dy = 0;
+        this.rocketSprite.targetTime = 0;
+        this.rocketSprite.targetPlanetId = "xxx";
+        this.rocketSprite.status = "xxx";
+        this.rockets = [];
+        this.rockets.push(this.rocketSprite);
+        this.dx = 0;
+        this.dy = 0;
+
+
+        this.cameraTargetPosX = 0;
+        this.cameraTargetPosY = 0;
+        //カメラの設定
+        if (this.rocketSprite.basePlanet == null) {
+            this.cameraTargetPosX = 320 - this.rocketSprite.getPosition().x;
+            this.cameraTargetPosY = 480 - this.rocketSprite.getPosition().y;
+        } else {
+            this.cameraTargetPosX = 320 - this.rocketSprite.basePlanet.getPosition().x;
+            this.cameraTargetPosY = 480 - this.rocketSprite.basePlanet.getPosition().y;
+        }
+        this.cameraPosX = this.cameraTargetPosX;
+        this.cameraPosY = this.cameraTargetPosY;
+        this.baseNode.setPosition(this.cameraTargetPosX, this.cameraTargetPosY);
+
+
+
         //shipの終了判定
         this.addInsekiCnt = 0;
         this.meteorites = [];

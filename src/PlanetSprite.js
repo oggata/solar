@@ -5,7 +5,15 @@ var PlanetSprite = cc.Node.extend({
         //var _rand = this.getRandNumberFromRange(1, 4);
         //_rand = 1;
         cc.log(planetData);
-        this.planetSprite = cc.Sprite.create(planetData.image);
+
+
+
+if(planetData){
+    this.planetSprite = cc.Sprite.create(planetData.image);
+}else{
+    this.planetSprite = cc.Sprite.create("res/planet_w350_001.png");
+}
+        //this.planetSprite = cc.Sprite.create(planetData.image);
         this.addChild(this.planetSprite);
         this.planetSpriteW = 120;
         this.satelliteSprite = cc.Sprite.create("res/start.png");

@@ -178,7 +178,7 @@ CONFIG.MISSION = [
         "planetId"   : 5
     },
 ];
-
+//323 520 = 200
 CONFIG.PLANET = [
     { 
     },

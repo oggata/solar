@@ -87,7 +87,7 @@ var GameLayer = cc.Layer.extend({
         this.addChild(this.battleWindow);
         this.battleWindow.setPosition(0, 0);
         this.battleWindowScale = 0.1;
-        this.maxBattleWindowScale = 0.85;
+        this.maxBattleWindowScale = 0.4;
         this.battleWindow.setScale(this.battleWindowScale);
         this.setHeaderLabel();
         this.setStartLabel();
