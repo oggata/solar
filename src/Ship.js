@@ -1,15 +1,24 @@
 var Ship = cc.Node.extend({
-    ctor: function (game) {
+    ctor: function (game,basePlanet) {
         this._super();
         this.game = game;
+        this.basePlanet = basePlanet;
         this.rocketSprite = cc.Sprite.create("res/ship_search.png");
         this.addChild(this.rocketSprite);
         this.radars = [];
         this.radarTime = 0;
         this.setScale(0.5, 0.5);
+        this.rocketId = 1;
+        this.dx = 0;
+        this.dy = 0;
+        this.targetTime = 0;
+        this.targetPlanetId = "xxx";
+        this.status = "xxx";
+        this.addDebrisCnt = 0;
     },
     init: function () {},
     update: function () {
+
         this.radarTime += 1;
         if (this.radarTime >= 30 * 2) {
             this.radarTime = 0;

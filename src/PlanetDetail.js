@@ -53,6 +53,7 @@ var PlanetDetail = cc.Node.extend({
                     //this.game.masterShip.dy = this.game.tmpDy2 / 80;
                     //this.game.masterShip.status = "MOVING";
                     //this.game.storage.saveCurrentData();
+                    /*
                     var _dx = 1;
                     var _dy = 1;
                     var _time = 60 * 10 + parseInt(new Date() / 1000);
@@ -60,6 +61,14 @@ var PlanetDetail = cc.Node.extend({
                     var _destinationPlanetId = this.planetId;
                     this.game.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId,
                         "MOVING", 1);
+                    */
+
+
+
+this.game.storage.targetMovePlanetId = this.planetId;
+this.game.storage.targetMovePlanetId = this.planetId;
+this.game.storage.saveCurrentData();
+
 
 
             this.game.goToDiscoveryLayer();

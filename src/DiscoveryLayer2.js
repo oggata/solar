@@ -2,7 +2,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
     sprite: null,
     ctor: function (storage, cardId) {
         this._super();
-        //cc.sys.localStorage.clear();
+//cc.sys.localStorage.clear();
         //画面サイズの取得
         this.storage = storage;
         this.windowName = "DiscoveryLayer2";
@@ -140,49 +140,24 @@ var DiscoveryLayer2 = cc.Layer.extend({
                 }
             }
         }
-        if (this.masterShip.status == "MOVING") {
-            this.dx = this.masterShip.dx;
-            this.dy = this.masterShip.dy;
-        }
         //拠点の惑星を取得する
-        //cc.log(this.storage.getBasePlanetId(CONFIG.CARD[1]));
         var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
-        //_rootPlanetNum = 2;
         var _planet = CONFIG.PLANET[_rootPlanetNum];
-        //cc.log(_planet);
         //地球を作成する
         this.basePlanet = new PlanetSprite(this, _planet);
         this.baseNode.addChild(this.basePlanet);
         this.basePlanet.setPosition(5000, 5000);
         this.basePlanet.setScale(0.35, 0.35);
         this.planets.push(this.basePlanet);
-        /*
-        //救出メッセージ用
-        this.rescureWindow = cc.Sprite.create("res/rescue.png");
-        //this.rescureWindow.setAnchorPoint(0, 0);
-        this.rescureWindow.setPosition(320, 700);
-        this.addChild(this.rescureWindow);
-        this.rescureWindow.setVisible(false);
-        */
+
         //探索船を作る
-        this.ship = new Ship(this);
+        this.ship = new Ship(this,this.basePlanet);
         this.baseNode.addChild(this.ship, 999999999);
         this.ship.setPosition(5000, 5000);
-        this.ship.basePlanet = this.basePlanet;
-        //this.ship.setScale(0.4, 0.4);
-        this.ship.rocketId = 1;
-        this.ship.dx = 0;
-        this.ship.dy = 0;
-        this.ship.targetTime = 0;
-        this.ship.targetPlanetId = "xxx";
-        this.ship.status = "xxx";
-        this.rockets = [];
-        this.rockets.push(this.ship);
-        this.dx = 0;
-        this.dy = 0;
+
+        //カメラの設定
         this.cameraTargetPosX = 0;
         this.cameraTargetPosY = 0;
-        //カメラの設定
         if (this.ship.basePlanet == null) {
             this.cameraTargetPosX = 320 - this.ship.getPosition().x;
             this.cameraTargetPosY = 480 - this.ship.getPosition().y;
@@ -193,16 +168,16 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.cameraPosX = this.cameraTargetPosX;
         this.cameraPosY = this.cameraTargetPosY;
         this.baseNode.setPosition(this.cameraTargetPosX, this.cameraTargetPosY);
+
         //shipの終了判定
-        this.addInsekiCnt = 0;
+        this.addDebrisCnt = 0;
         this.meteorites = [];
         for (var i = 0; i <= 20; i++) {
-            //this.planets[i].update();
             var _x = this.getRandNumberFromRange(this.ship.getPosition().x - 360, this.ship.getPosition().x +
                 360);
             var _y = this.getRandNumberFromRange(this.ship.getPosition().y - 1136 / 2, this.ship.getPosition()
                 .y + 1136 / 2);
-            this.addInseki2(_x, _y);
+            this.addDebrisByPos(_x, _y);
         }
         if (this.masterShip.status == "MOVING") {
             this.basePlanet.setVisible(false);
@@ -213,9 +188,32 @@ var DiscoveryLayer2 = cc.Layer.extend({
             this.masterShip.targetTime = parseInt(new Date() / 1000);
         }, this);
         this.debugButton.setPosition(80, 1000);
-        var menu001 = new cc.Menu(this.debugButton);
+
+        this.debug2Button = new cc.MenuItemImage("res/button_debug.png", "res/button_debug.png", function () {
+            this.storage.addCoin(10000);
+        }, this);
+        this.debug2Button.setPosition(80, 950);
+        var menu001 = new cc.Menu(this.debugButton,this.debug2Button);
         menu001.setPosition(0, 0);
         this.addChild(menu001, 99999999999999);
+
+
+
+        if(this.storage.targetMovePlanetId != 0){
+            //this.storage.targetMovePlanetId = 0;
+            //this.storage.saveCurrentData();
+            _fuelCost = 100;
+            this.InfoMenu.setCost(_fuelCost, 10);
+            this.InfoMenu.uiWindowLaunch.setVisible(true);
+            this.InfoMenu.infoNode.setVisible(true);
+            this.masterShip.targetTime = 100 + parseInt(new Date() / 1000);
+            this.masterShip.status = "SET_FREE_DIST";
+            this.tmpDx2 = 20;
+            this.tmpDy2 = 20;
+            this.pulledDist = 80;
+        }
+
+
 
         return true;
     },
@@ -239,13 +237,15 @@ var DiscoveryLayer2 = cc.Layer.extend({
         }
         this.header1.timeLabel.setString("残り" + this.fuelPastSecond + "秒");
         this.InfoMenu.update();
+
         if (this.masterShip.status == "MOVING") {
-            this.addInsekiCnt++;
-            if (this.addInsekiCnt >= 5) {
-                this.addInsekiCnt = 0;
-                this.addRotateInseki();
+            this.addDebrisCnt++;
+            if (this.addDebrisCnt >= 5) {
+                this.addDebrisCnt = 0;
+                this.addDebris();
             }
         }
+
         for (var i = 0; i < this.meteorites.length; i++) {
             this.meteorites[i].setPosition(this.meteorites[i].getPosition().x + this.meteorites[i].dx, this.meteorites[i].getPosition()
                 .y + this.meteorites[i].dy);
@@ -296,7 +296,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.setCameraSpeed();
         this.baseNode.setPosition(this.cameraPosX, this.cameraPosY);
     },
-    addRotateInseki: function () {
+    addDebris: function () {
         this.degree = this.getRandNumberFromRange(1, 360);
         var centerX = this.ship.getPosition().x;
         var centerY = this.ship.getPosition().y;
@@ -306,9 +306,9 @@ var DiscoveryLayer2 = cc.Layer.extend({
         var x = centerX + radius * Math.cos(rad);
         //Y座標 = 円の中心の中心Y座標 + 半径 × Sin(ラジアン)を出す
         var y = centerY + radius * Math.sin(rad);
-        this.addInseki2(x, y);
+        this.addDebrisByPos(x, y);
     },
-    addInseki2: function (x, y) {
+    addDebrisByPos: function (x, y) {
         var _rand = this.getRandNumberFromRange(1, 5);
         this.starImage = "res/sprite_star001.png";
         if (_rand == 1) {

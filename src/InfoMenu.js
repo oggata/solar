@@ -83,8 +83,13 @@ var InfoMenu = cc.Node.extend({
                 var _dx = this.game.masterShip.dx;
                 var _dy = this.game.masterShip.dy;
                 var _time = Math.ceil(this.game.pulledDist) + parseInt(new Date() / 1000);
-                var _basePlanetId = this.game.storage.getBasePlanetId(CONFIG.CARD[1]);;
+                var _basePlanetId = this.game.storage.getBasePlanetId(CONFIG.CARD[1]);
                 var _destinationPlanetId = 0;
+                //探索か移動かのチェック。移動の場合は、_destinationPlanetIdを入れる。
+                if(this.game.storage.targetMovePlanetId != 0){
+                    _destinationPlanetId = this.game.storage.targetMovePlanetId;
+                    this.game.storage.targetMovePlanetId = 0;
+                }
                 this.game.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId,
                     "MOVING", 1);
                 //ここで燃料を減らす
@@ -138,19 +143,15 @@ var InfoMenu = cc.Node.extend({
         //次のステージへいくためにstorageは必ず受けた渡す
         //windowName
         scene.addChild(DiscoveryLayer2.create(this.storage, cardId));
-        //cc.director.runScene(cc.TransitionSlideInR.create(1.5, scene));
         cc.director.runScene(cc.TransitionFadeDown.create(0.4, scene));
     },
     setCost: function (fuelCnt, timeCnt) {
-        
-
         this.fuelCnt = fuelCnt;
         this.timeCnt = timeCnt;
         this.shipFuelLabel.setString(fuelCnt);
         this.shipFuel2Label.setString(fuelCnt);
         this.shipTargetTimeLabel.setString(timeCnt);
         if (this.game.storage.totalCoinAmount < fuelCnt) {
-            cc.log("xxxxxx");
             this.isAbleToLaunch = false;
             this.shipFuelLabel.setFontFillColor(new cc.Color(255, 0, 0, 255));
             this.shipFuel2Label.setFontFillColor(new cc.Color(255, 0, 0, 255));

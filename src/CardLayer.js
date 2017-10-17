@@ -37,14 +37,6 @@ var CardLayer = cc.Layer.extend({
         this.baseNode = cc.LayerColor.create(new cc.Color(17, 31, 62, 255), 640, 1136);
         this.baseNode.setPosition(0, 0);
         this.addChild(this.baseNode);
-
-
-/*
-        var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
-        var _planet = CONFIG.PLANET[_rootPlanetNum];
-*/
-
-
         //var _rand = this.getRandNumberFromRange(1, 13);
         var _card = CONFIG.PLANET[1];
         this.cardPosY = 1500;
@@ -60,29 +52,22 @@ var CardLayer = cc.Layer.extend({
         this.initializeWalkAnimation();
         this.timeCnt = 0;
         this.scheduleUpdate();
-
-
-
         var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
         var _rootPlanet = CONFIG.PLANET[_rootPlanetNum];
         //到着する惑星をsetする
-        cc.log("-------------->");
+        //cc.log("-------------->");
         //cc.log(_planet);
         this.nextPlanetId = 1;
         if(_rootPlanet){
-            cc.log(_rootPlanet.id);
+            //cc.log(_rootPlanet.id);
             _planetBranchList = this.storage.getConnectedPlanets();
-            cc.log(_planetBranchList);
+            //cc.log(_planetBranchList);
             var _branchList = _planetBranchList[_rootPlanet.id];
             _branchList.sort(this.shuffle);
-            /*
-            for (var i = 0; i < _branchList.length; i++) {
-                cc.log( _branchList[i]);
-            }*/
             this.nextPlanetId = _branchList[0];
         }
 
-
+        //このカードを持っているか調べる
 
         //var _rand = this.getRandNumberFromRange(1, 15);
         this.storage.savePlanetDataToStorage(CONFIG.PLANET[this.nextPlanetId], 1);
@@ -103,7 +88,7 @@ var CardLayer = cc.Layer.extend({
         this.timeCnt++;
         if (this.timeCnt >= 30 * 4.2) {
             this.timeCnt = 0;
-            this.goToStageLayer();
+            this.goToItemLayer();
         }
         if (1 <= this.cardGetTime && this.cardGetTime < 30 * 5) {
             this.cardGetTime++;
@@ -169,36 +154,12 @@ var CardLayer = cc.Layer.extend({
     shuffle: function () {
         return Math.random() - .5;
     },
-    goToTopLayer: function (pSender) {
+    goToItemLayer: function (cardId) {
         var scene = cc.Scene.create();
         //次のステージへいくためにstorageは必ず受けた渡す
-        scene.addChild(TopLayer.create(this.storage));
-        cc.director.runScene(cc.TransitionFade.create(1.5, scene));
+        scene.addChild(MissionsLayer.create(this.storage, cardId));
+        cc.director.runScene(cc.TransitionFadeDown.create(0.4, scene));
     },
-    //シーンの切り替え----->
-    goToStageLayer: function (pSender) {
-        var scene = cc.Scene.create();
-        //次のステージへいくためにstorageは必ず受けた渡す
-        scene.addChild(DiscoveryLayer2.create(this.storage, [], 0));
-        cc.director.runScene(cc.TransitionFade.create(1.5, scene));
-    },
-    goToCardLayer: function (pSender) {
-        var scene = cc.Scene.create();
-        //次のステージへいくためにstorageは必ず受けた渡す
-        scene.addChild(CardLayer.create(this.storage, [], 0));
-        cc.director.runScene(cc.TransitionFade.create(0.3, scene));
-    },
-    goToBattleLayer: function (pSender) {
-        var scene = cc.Scene.create();
-        //次のステージへいくためにstorageは必ず受けた渡す
-        scene.addChild(BattleLayer.create(this.storage, [], 0));
-        cc.director.runScene(cc.TransitionSlideInR.create(1, scene));
-    },
-    goToFieldLayer: function (hackingType) {
-        var scene = cc.Scene.create();
-        scene.addChild(FieldLayer.create(this.storage, hackingType));
-        cc.director.runScene(cc.TransitionFlipY.create(0.5, scene));
-    }
 });
 CardLayer.create = function (storage, cardId) {
     return new CardLayer(storage, cardId);

@@ -10,7 +10,7 @@ var MissionsLayer = cc.Layer.extend({
         //画面サイズの取得
         this.storage = storage;
         this.windowName = "MissionsLayer";
-        this.addAlpha = 0.05;
+        //this.addAlpha = 0.05;
         this.storage = new Storage();
         try {
             var _data = cc.sys.localStorage.getItem("gameStorage");
@@ -54,9 +54,12 @@ var MissionsLayer = cc.Layer.extend({
         this.addChild(this.treeNode);
         this.drawNode2 = cc.DrawNode.create();
         this.treeNode.addChild(this.drawNode2);
-        var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
-        this.treeNode.setScale(0.5);
+        //var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
+        this.basePlanetId = this.storage.getBasePlanetId(CONFIG.CARD[1]);
+        this.treeNodeScale = 0.5;
+        this.treeNode.setScale(this.treeNodeScale);
         this.connectedPlanets = new Array();
+        this.planetButtons = [];
         //masterの惑星をループさせて配置する
         this.planets = CONFIG.PLANET;
         for (var masterCnt = 0; masterCnt < this.planets.length; masterCnt++) {
@@ -70,6 +73,8 @@ var MissionsLayer = cc.Layer.extend({
                     this.infoNode.setVisible(true);
                     this.detail.setPlanet(sender.planetId);
                 }, this);
+                this.buttonPlanet.planetId = _planetId;
+                this.planetButtons.push(this.buttonPlanet);
                 /*
                 for debug
                 this.planetIdLabel = new cc.LabelTTF(_planetId, "Arial", 99);
@@ -114,12 +119,14 @@ var MissionsLayer = cc.Layer.extend({
                         }
                     }
                 }
+                /*
                 //自分のbasePlanetの場合は、マーカーをおく
-                if (_rootPlanetNum == _planetId) {
+                if (this.basePlanetId == _planetId) {
                     this.iconHere = cc.Sprite.create("res/icon_here.png");
                     this.iconHere.setPosition(this.planets[masterCnt].position[0], this.planets[masterCnt].position[1]);
                     this.treeNode.addChild(this.iconHere);
                 }
+                */
                 //イベントマーカーを設置する
                 /*
                 var _eventId = this.getRandNumberFromRange(1, 5);
@@ -132,7 +139,7 @@ var MissionsLayer = cc.Layer.extend({
                 */
             }
         }
-        this.treeNode.setPosition((this.planets[_rootPlanetNum].position[0] - 600) * -1 / 2, (this.planets[_rootPlanetNum]
+        this.treeNode.setPosition((this.planets[this.basePlanetId].position[0] - 600) * -1 / 2, (this.planets[this.basePlanetId]
             .position[1] - 900) * -1 / 2);
         this.firstTouchX = 0;
         this.firstTouchY = 0;
@@ -143,9 +150,17 @@ var MissionsLayer = cc.Layer.extend({
         this.header.setPosition(0, 1136 - 136);
         this.addChild(this.header);
         this.scaleButton001 = new cc.MenuItemImage("res/button_scale_001.png", "res/button_scale_001.png", function (
-            sender) {}, this);
+            sender) {
+
+            this.treeNodeScale += 0.2;
+
+        }, this);
         this.scaleButton002 = new cc.MenuItemImage("res/button_scale_002.png", "res/button_scale_002.png", function (
-            sender) {}, this);
+            sender) {
+            this.treeNodeScale -= 0.2;
+        }, this);
+        this.scaleButton001.setPosition(100,100);
+        this.scaleButton001.setPosition(100,-100);
         var scaleMenu = new cc.Menu(this.scaleButton001, this.scaleButton002);
         scaleMenu.setPosition(0, 0);
         this.header.addChild(scaleMenu);
@@ -154,7 +169,7 @@ var MissionsLayer = cc.Layer.extend({
         this.infoNode = cc.LayerColor.create(new cc.Color(0, 0, 0, 255), 640, 1136);
         this.infoNode.setAnchorPoint(0.5, 0.5);
         this.infoNode.setPosition(0, 0);
-        this.infoNode.setOpacity(255 * 0.8);
+        //this.infoNode.setOpacity(255 * 0.8);
         this.infoNode.setVisible(false);
         this.addChild(this.infoNode, 999999999);
         this.detail = new PlanetDetail(this);
@@ -162,7 +177,7 @@ var MissionsLayer = cc.Layer.extend({
         this.infoNode.addChild(this.detail);
         this.planets = [];
         for (var i = 1; i < CONFIG.MISSION.length; i++) {
-            cc.log(CONFIG.MISSION[i]);
+            //cc.log(CONFIG.MISSION[i]);
             //var _hoge = JSON.parse(CONFIG.MISSION[i]);
             this.planets.push(CONFIG.MISSION[i]);
         }
@@ -181,7 +196,32 @@ var MissionsLayer = cc.Layer.extend({
                 event.getCurrentTarget().touchFinish(touches[0].getLocation());
             }
         }), this);
+
+        this.basePlanetOpacity = 1;
+        this.addPlanetOpacity = 0.05;
+
+        cc.log("bb");
+        this.scheduleUpdate();
+        cc.log("bb");
         return true;
+    },
+
+    update: function (dt) {
+
+        this.treeNode.setScale(this.treeNodeScale);
+
+
+        if(this.basePlanetOpacity <= 0.2){
+            this.addPlanetOpacity = 0.05;
+        }else if(this.basePlanetOpacity >= 1){
+            this.addPlanetOpacity = -0.05;
+        }
+        this.basePlanetOpacity+=this.addPlanetOpacity;
+        for (var i = 0; i < this.planetButtons.length; i++) {
+            if(this.basePlanetId == this.planetButtons[i].planetId){
+                this.planetButtons[i].setOpacity(this.basePlanetOpacity * 255);
+            }
+        }
     },
     touchStart: function (location) {
         this.firstTouchX = location.x;
@@ -206,6 +246,8 @@ var MissionsLayer = cc.Layer.extend({
         var touchX = location.x - this.lastTouchGameLayerX;
         var touchY = location.y - this.lastTouchGameLayerY;
     },
+
+/*
     createTable: function () {
         var tableView = cc.TableView.create(this, cc.size(640, 1136 - 136 - 136));
         tableView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
@@ -250,7 +292,8 @@ var MissionsLayer = cc.Layer.extend({
     numberOfCellsInTableView: function (table) {
         return this.planets.length;
     },
-    update: function (dt) {},
+*/
+
     getRandNumberFromRange: function (min, max) {
         var rand = min + Math.floor(Math.random() * (max - min));
         return rand;

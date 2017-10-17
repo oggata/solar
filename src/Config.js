@@ -73,6 +73,19 @@ CONFIG.MAP = [
     2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
 ];
 
+CONFIG.SHIP = [
+    { 
+    },
+    { 
+        "id"         : 1,
+        "name"       : "1",
+        "description": "1",
+        "genre"      : "1",
+        "useTxt"     : "",
+        "image"      : "res/sozai001.png",
+    },
+];
+
 
 CONFIG.CARD = [
     { 
@@ -281,6 +294,42 @@ CONFIG.PLANET = [
     { 
         "id"         : 9,
         "name"       : "EEE",
+        "lv"         : 3,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 100,
+        "position"   : [800,400*3],
+        "route"       : [1,2,3]
+    },
+    { 
+        "id"         : 10,
+        "name"       : "EEE",
+        "lv"         : 3,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 100,
+        "position"   : [-800,400*3],
+        "route"       : [1,2,3]
+    },
+    { 
+        "id"         : 11,
+        "name"       : "EEE",
+        "lv"         : 3,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 100,
+        "position"   : [600,400*3],
+        "route"       : [1,2,3]
+    },
+    { 
+        "id"         : 12,
+        "name"       : "EEE",
         "lv"         : 4,
         "description": "EEE",
         "genre"      : "eee",
@@ -291,7 +340,7 @@ CONFIG.PLANET = [
         "route"       : [1,2,3]
     },
     { 
-        "id"         : 10,
+        "id"         : 13,
         "name"       : "EEE",
         "lv"         : 4,
         "description": "EEE",
@@ -303,7 +352,7 @@ CONFIG.PLANET = [
         "route"       : [1]
     },
     { 
-        "id"         : 11,
+        "id"         : 14,
         "name"       : "EEE",
         "lv"         : 5,
         "description": "EEE",
@@ -315,7 +364,7 @@ CONFIG.PLANET = [
         "route"       : [1]
     },
     { 
-        "id"         : 12,
+        "id"         : 15,
         "name"       : "EEE",
         "lv"         : 5,
         "description": "EEE",
@@ -327,7 +376,7 @@ CONFIG.PLANET = [
         "route"       : [1]
     },
     { 
-        "id"         : 13,
+        "id"         : 16,
         "name"       : "EEE",
         "lv"         : 6,
         "description": "EEE",
@@ -339,7 +388,7 @@ CONFIG.PLANET = [
         "route"       : [1]
     },
     { 
-        "id"         : 14,
+        "id"         : 17,
         "name"       : "EEE",
         "lv"         : 6,
         "description": "EEE",
@@ -351,7 +400,7 @@ CONFIG.PLANET = [
         "route"       : [1]
     },
     { 
-        "id"         : 15,
+        "id"         : 18,
         "name"       : "EEE",
         "lv"         : 7,
         "description": "EEE",
@@ -363,7 +412,7 @@ CONFIG.PLANET = [
         "route"       : [1]
     },
     { 
-        "id"         : 16,
+        "id"         : 19,
         "name"       : "EEE",
         "lv"         : 7,
         "description": "EEE",
@@ -375,7 +424,7 @@ CONFIG.PLANET = [
         "route"       : [1]
     },
     { 
-        "id"         : 17,
+        "id"         : 20,
         "name"       : "EEE",
         "lv"         : 7,
         "description": "EEE",
@@ -387,7 +436,7 @@ CONFIG.PLANET = [
         "route"       : [1]
     },
     { 
-        "id"         : 18,
+        "id"         : 21,
         "name"       : "EEE",
         "lv"         : 7,
         "description": "EEE",
@@ -399,7 +448,7 @@ CONFIG.PLANET = [
         "route"       : [1]
     },
     { 
-        "id"         : 19,
+        "id"         : 22,
         "name"       : "EEE",
         "lv"         : 8,
         "description": "EEE",
@@ -411,7 +460,7 @@ CONFIG.PLANET = [
         "route"       : [1]
     },
     { 
-        "id"         : 20,
+        "id"         : 23,
         "name"       : "EEE",
         "lv"         : 8,
         "description": "EEE",
@@ -419,7 +468,127 @@ CONFIG.PLANET = [
         "image"      : "res/planet_w350_005.png",
         "fuel"       : 2,
         "time"       : 0,
-        "position"   : [0,400*8],
+        "position"   : [200,400*8],
         "route"       : [1]
-    }
+    },
+    { 
+        "id"         : 24,
+        "name"       : "EEE",
+        "lv"         : 8,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 0,
+        "position"   : [400,400*8],
+        "route"       : [1]
+    },
+    { 
+        "id"         : 25,
+        "name"       : "EEE",
+        "lv"         : 8,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 0,
+        "position"   : [-400,400*8],
+        "route"       : [1]
+    },
+    { 
+        "id"         : 26,
+        "name"       : "EEE",
+        "lv"         : 9,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 0,
+        "position"   : [0,400*9],
+        "route"       : [1]
+    },
+    { 
+        "id"         : 27,
+        "name"       : "EEE",
+        "lv"         : 9,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 0,
+        "position"   : [-800,400*9],
+        "route"       : [1]
+    },
+    { 
+        "id"         : 28,
+        "name"       : "EEE",
+        "lv"         : 9,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 0,
+        "position"   : [800,400*9],
+        "route"       : [1]
+    },
+    { 
+        "id"         : 29,
+        "name"       : "EEE",
+        "lv"         : 9,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 0,
+        "position"   : [200,400*9],
+        "route"       : [1]
+    },
+    { 
+        "id"         : 30,
+        "name"       : "EEE",
+        "lv"         : 10,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 0,
+        "position"   : [1000,400*10],
+        "route"       : [1]
+    },
+    { 
+        "id"         : 31,
+        "name"       : "EEE",
+        "lv"         : 10,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 0,
+        "position"   : [500,400*10],
+        "route"       : [1]
+    },
+    { 
+        "id"         : 32,
+        "name"       : "EEE",
+        "lv"         : 10,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 0,
+        "position"   : [100,400*10],
+        "route"       : [1]
+    },
+    { 
+        "id"         : 33,
+        "name"       : "EEE",
+        "lv"         : 10,
+        "description": "EEE",
+        "genre"      : "eee",
+        "image"      : "res/planet_w350_005.png",
+        "fuel"       : 2,
+        "time"       : 0,
+        "position"   : [-1000,400*10],
+        "route"       : [1]
+    },
 ];

@@ -18,7 +18,9 @@ var Storage = cc.Class.extend(
 
         this.basePlanetId = 1;
         this.targetPlanetId = 0;
+        this.targetMovePlanetId = 0;
         this.rescureTime = 0;
+        this.targetMovePlanetId = 0;
     },
 
     getConnectedPlanets:function(){
@@ -372,6 +374,7 @@ var Storage = cc.Class.extend(
 
         rtn += '"basePlanetId" :' + this.basePlanetId + ',';
         rtn += '"targetPlanetId" :' + this.targetPlanetId + ',';
+        rtn += '"targetMovePlanetId" :' + this.targetMovePlanetId + ',';
         rtn += '"rescureTime" :' + this.rescureTime + ',';
 
         rtn += '"lastUpdatedTime" :' + this.lastUpdatedTime + '';
@@ -425,7 +428,12 @@ var Storage = cc.Class.extend(
 
 this.basePlanetId  = getData["basePlanetId"];
 this.targetPlanetId  = getData["targetPlanetId"];
+this.targetMovePlanetId  = getData["targetMovePlanetId"];
 this.rescureTime  = getData["rescureTime"];
+
+
+
+
 
     },
 

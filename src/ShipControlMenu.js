@@ -26,10 +26,7 @@ var ShipControlMenu = cc.Node.extend({
         this.uiShipMonitor002.setPosition(0, 0);
         this.uiShipMonitor.addChild(this.uiShipMonitor002);
         this.buttonLaunch = new cc.MenuItemImage("res/button_ship_launch.png", "res/button_ship_launch.png", function () {
-            
-
             var _fuelCost = Math.ceil(this.game.pulledDist);
-
             this.game.InfoMenu.setCost(_fuelCost, 10);
             this.game.InfoMenu.uiWindowLaunch.setVisible(true);
             this.game.InfoMenu.infoNode.setVisible(true);
