@@ -1,3 +1,7 @@
+//ship
+//https://pngtree.com/element/down?id=MzE3MTMxNg==&type=1
+//https://pngtree.com/freepng/vector-satellite-material_3171316.html
+
 var res = {
 };
 

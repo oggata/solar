@@ -36,18 +36,21 @@ if(planetData){
         this.planetDistance.setOpacity(255 * 0.7);
         //this.planetSprite.addChild(this.planetDistance);
         this.degree = 0;
+
+
     },
     shuffle: function () {
         return Math.random() - .5;
     },
     update: function () {
+//cc.log(this.degree);
         //if(this.game.shipDistType == "SET_FREE_DIST") return true;
         if (this.game.masterShip.status == "SET_FREE_DIST") return true;
         //角度を増やします
         this.degree += 1;
         var centerX = this.planetSpriteW / 2;
         var centerY = this.planetSpriteW / 2;
-        var radius = this.planetSpriteW / 2 + 50;
+        var radius = this.planetSpriteW / 2 + 140;
         //角度をラジアンに変換します
         var rad = this.degree * Math.PI / 180;
         //X座標 = 円の中心のX座標 + 半径 × Cos(ラジアン)を出す

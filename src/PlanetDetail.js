@@ -31,8 +31,6 @@ var PlanetDetail = cc.Node.extend({
         this.timeLabel.setAnchorPoint(1, 0.5);
         this.timeLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.detail.addChild(this.timeLabel);
-
-
         this.isOwnPlanet = false;
         var buttonClose = new cc.MenuItemImage("res/button_close.png", "res/button_close.png", function () {
             this.game.infoNode.setVisible(false);
@@ -40,37 +38,14 @@ var PlanetDetail = cc.Node.extend({
         buttonClose.setPosition(55, 710);
         this.buttonEvent = new cc.MenuItemImage("res/button_window_event.png", "res/button_window_event.png", function () {
             if (this.isOwnPlanet == false) return;
-
             this.game.infoNode.setVisible(false);
         }, this);
         this.buttonEvent.setPosition(170, -40);
         this.buttonGoto = new cc.MenuItemImage("res/button_window_goto.png", "res/button_window_goto.png", function () {
-            
             if (this.isOwnPlanet == false) return;
-
-                    //cc.log("xxxxxxxxxxxxxxxxx");
-                    //this.game.masterShip.dx = this.game.tmpDx2 / 80;
-                    //this.game.masterShip.dy = this.game.tmpDy2 / 80;
-                    //this.game.masterShip.status = "MOVING";
-                    //this.game.storage.saveCurrentData();
-                    /*
-                    var _dx = 1;
-                    var _dy = 1;
-                    var _time = 60 * 10 + parseInt(new Date() / 1000);
-                    var _basePlanetId = this.game.storage.getBasePlanetId(CONFIG.CARD[1]);;
-                    var _destinationPlanetId = this.planetId;
-                    this.game.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId,
-                        "MOVING", 1);
-                    */
-
-
-
-this.game.storage.targetMovePlanetId = this.planetId;
-this.game.storage.targetMovePlanetId = this.planetId;
-this.game.storage.saveCurrentData();
-
-
-
+            this.game.storage.targetMovePlanetId = this.planetId;
+            this.game.storage.targetMovePlanetId = this.planetId;
+            this.game.storage.saveCurrentData();
             this.game.goToDiscoveryLayer();
         }, this);
         this.buttonGoto.setPosition(470, -40);
@@ -90,11 +65,11 @@ this.game.storage.saveCurrentData();
         this.isOwnPlanet = this.game.storage.isOwnPlanetData(CONFIG.PLANET[planetId]);
         if (this.isOwnPlanet == false) {
             _image = "res/planet_w350_notfound.png";
-            this.buttonGoto.setOpacity(255*0.3);
-            this.buttonEvent.setOpacity(255*0.3);
-        }else{
-            this.buttonGoto.setOpacity(255*1);
-            this.buttonEvent.setOpacity(255*1);
+            this.buttonGoto.setOpacity(255 * 0.3);
+            this.buttonEvent.setOpacity(255 * 0.3);
+        } else {
+            this.buttonGoto.setOpacity(255 * 1);
+            this.buttonEvent.setOpacity(255 * 1);
         }
         this.planetSprite = cc.Sprite.create(_image);
         this.planetSprite.setPosition(140, 520);
@@ -102,27 +77,5 @@ this.game.storage.saveCurrentData();
         this.detail.addChild(this.planetSprite);
         this.nameLabel.setString(_name);
         this.detail.removeChild(this.routeAllow);
-
-        /*
-        //自分がこの惑星のトークンを所有していれば表示しない
-        if (_isOwnPlanet == false) {
-            this.routeAllow = cc.Sprite.create("res/route_allow.png");
-            this.routeAllow.setPosition(320, 310);
-            this.detail.addChild(this.routeAllow);
-            for (var i = 0; i < _route.length; i++) {
-                var _routePlanetName = CONFIG.PLANET[_route[i]].name;
-                var _routePlanetImage = CONFIG.PLANET[_route[i]].image;
-                var _isOwnPlanet = this.game.storage.isOwnPlanetData(CONFIG.PLANET[_route[i]]);
-                cc.log(_isOwnPlanet);
-                this.routePlanet002Sprite = cc.Sprite.create(_routePlanetImage);
-                this.routePlanet002Sprite.setPosition(70 + 170 * i, 20);
-                this.routePlanet002Sprite.setScale(0.3);
-                this.routeAllow.addChild(this.routePlanet002Sprite);
-                if (_isOwnPlanet == false) {
-                    this.routePlanet002Sprite.setOpacity(255 * 0.5);
-                }
-            }
-        }
-        */
     },
 });

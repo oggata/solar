@@ -50,11 +50,13 @@ var PlanetsLayer = cc.Layer.extend({
         this.addChild(this.backNode);
         this.header = cc.Sprite.create("res/header_owned_planets.png");
         this.header.setAnchorPoint(0, 0);
-        this.header.setPosition(0, 1136 - 136);
+        this.viewSize = cc.director.getVisibleSize();
+        this.header.setPosition(0, this.viewSize.height - 136);
+        //this.header.setPosition(0, 1136 - 136);
         this.addChild(this.header);
         this.footer = new Footer(this);
         this.addChild(this.footer);
-        this.infoNode = cc.LayerColor.create(new cc.Color(0, 0, 0, 255), 640, 1136);
+        this.infoNode = cc.LayerColor.create(new cc.Color(0, 0, 0, 255), 640, this.viewSize.height);
         this.infoNode.setAnchorPoint(0.5, 0.5);
         this.infoNode.setPosition(0, 0);
         this.infoNode.setOpacity(255 * 0.8);
@@ -80,7 +82,7 @@ var PlanetsLayer = cc.Layer.extend({
         return true;
     },
     createTable: function () {
-        var tableView = cc.TableView.create(this, cc.size(640, 1136 - 136 - 136));
+        var tableView = cc.TableView.create(this, cc.size(640, this.viewSize.height - 136 - 136));
         tableView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
         tableView.setPosition(0, 136);
         tableView.setDelegate(this);

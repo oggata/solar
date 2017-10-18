@@ -64,12 +64,13 @@ var ShipControlMenu = cc.Node.extend({
         this.uiShipMonitor004.setAnchorPoint(0, 0);
         this.uiShipMonitor004.setPosition(0, 0);
         this.uiShipMonitor.addChild(this.uiShipMonitor004);
-        this.targetTimeLabel = cc.LabelTTF.create("", "Arial", 62);
+        /*
+        this.targetTimeLabel = cc.LabelTTF.create("", "Arial", 32);
         this.targetTimeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         this.targetTimeLabel.setPosition(320, 800);
-        //this.targetTimeLabel.setAnchorPoint(0, 0);
         this.targetTimeLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.uiShipMonitor004.addChild(this.targetTimeLabel);
+        */
         this.buttonCancel = new cc.MenuItemImage("res/button_ship_cancel.png", "res/button_ship_cancel.png", function () {
             var _dx = 0;
             var _dy = 0;

@@ -86,7 +86,7 @@ var MissionsLayer = cc.Layer.extend({
                 var menu001 = new cc.Menu(this.buttonPlanet);
                 menu001.setPosition(0, 0);
                 this.treeNode.addChild(menu001);
-                this.buttonPlanet.setScale(0.35);
+                this.buttonPlanet.setScale(0.54);
                 this.buttonPlanet.setPosition(this.planets[masterCnt].position[0], this.planets[masterCnt].position[1]);
                 //枝になる可能性のある惑星を全て_branchPlanetsに入れてシャッフルする
                 var _branchPlanets = [];
@@ -147,7 +147,9 @@ var MissionsLayer = cc.Layer.extend({
         this.lastTouchGameLayerY = this.treeNode.getPosition().y;
         this.header = cc.Sprite.create("res/header_owned_mission.png");
         this.header.setAnchorPoint(0, 0);
-        this.header.setPosition(0, 1136 - 136);
+        this.viewSize = cc.director.getVisibleSize();
+        this.header.setPosition(0, this.viewSize.height - 136);
+        //this.header.setPosition(0, 1136 - 136);
         this.addChild(this.header);
         this.scaleButton001 = new cc.MenuItemImage("res/button_scale_001.png", "res/button_scale_001.png", function (
             sender) {

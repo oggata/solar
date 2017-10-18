@@ -83,6 +83,7 @@ var GameLayer = cc.Layer.extend({
         this.baseNode.setAnchorPoint(0, 0);
         this.baseNode.setPosition(0, 0);
         this.addChild(this.baseNode);
+
         this.battleWindow = new BattleWindow(this);
         this.addChild(this.battleWindow);
         this.battleWindow.setPosition(0, 0);
@@ -142,7 +143,7 @@ var GameLayer = cc.Layer.extend({
         this.setResultStatus();
     },
     setScroll: function () {
-        this.cameraSpeed = 5 * 2.2;
+        this.cameraSpeed = 2.5 * 2.2;
         if (Math.abs(this.targetBaseNodePosX - this.baseNodePosX) >= 2.5 * 3) {
             //差分が5以上の時
             if (this.targetBaseNodePosX > this.baseNodePosX) {

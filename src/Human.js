@@ -356,7 +356,7 @@ var Human = cc.Node.extend({
     //(コイナーtype)コインを取得する
     setRouteType002: function () {
         this.maxDistance = 40;
-        this.walkSpeed = 2.5 * 2;
+        this.walkSpeed = 1.2 * 2;
         //coinの存在するマーカーを全部取得する
         for (var c = 0; c < this.game.coins.length; c++) {
             for (var i = 0; i < this.distances.length; i++) {
