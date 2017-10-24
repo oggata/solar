@@ -45,8 +45,6 @@ var Ship = cc.Node.extend({
             this.radar2.radarCnt = 1;
         }
 
-
-
         for (var j = 0; j < this.radars.length; j++) {
             this.radars[j].setOpacity(255 * 0.3);
             this.radars[j].radarCnt += 1;

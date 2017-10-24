@@ -79,6 +79,11 @@ var GameLayer = cc.Layer.extend({
         this.header1.setAnchorPoint(0.5, 0);
         this.header1.setPosition(320, 1136 - 72);
 
+        this.backNode = cc.Sprite.create("res/back_top2.png");
+        this.backNode.setAnchorPoint(0, 0);
+        this.backNode.setPosition(0, 0);
+        this.addChild(this.backNode);
+
         this.baseNode = cc.Sprite.create("res/back_top.png");
         this.baseNode.setAnchorPoint(0, 0);
         this.baseNode.setPosition(0, 0);
@@ -88,8 +93,17 @@ var GameLayer = cc.Layer.extend({
         this.addChild(this.battleWindow);
         this.battleWindow.setPosition(0, 0);
         this.battleWindowScale = 0.1;
-        this.maxBattleWindowScale = 1.2;
+        this.maxBattleWindowScale = 0.8;
         this.battleWindow.setScale(this.battleWindowScale);
+
+
+        //ノイズを乗せる
+        this.noiseNode = cc.Sprite.create("res/back_top5.png");
+        this.noiseNode.setAnchorPoint(0, 0);
+        this.noiseNode.setPosition(0, 0);
+        this.addChild(this.noiseNode);
+
+
         this.setHeaderLabel();
         this.setStartLabel();
         this.resultSprite = new BattleResult(this);
@@ -105,9 +119,32 @@ var GameLayer = cc.Layer.extend({
         this.gameDirection = "";
         this.isMapMoving = false;
         this.labelStartCnt007Cnt = 0;
+
+
+        this.noiseTime = 0;
+        this.noiseOpacity = 0;
+        this.noiseAddOpacity = 0;
         return true;
     },
     update: function (dt) {
+
+        //ノイズのエフェクト
+        this.noiseTime++;
+        if (this.noiseTime >= 30 * 15) {
+            this.noiseTime = 0;
+        }
+        if (this.noiseTime >= 0 && this.noiseTime <= 30 * 3) {
+            if (this.noiseOpacity <= 0) {
+                this.noiseAddOpacity = 0.4;
+            } else if (this.noiseOpacity >= 0.4) {
+                this.noiseAddOpacity = -0.4;
+            }
+            this.noiseOpacity += this.noiseAddOpacity;
+            this.noiseNode.setOpacity(255 * this.noiseOpacity);
+        } else {
+            this.noiseNode.setOpacity(255 * 0);
+        }
+
 
         this.header1.update();
 
@@ -143,7 +180,8 @@ var GameLayer = cc.Layer.extend({
         this.setResultStatus();
     },
     setScroll: function () {
-        this.cameraSpeed = 2.5 * 2.2;
+        //this.walkSpeed = 1 * 2;
+        this.cameraSpeed = this.battleWindow.player.walkSpeed;
         if (Math.abs(this.targetBaseNodePosX - this.baseNodePosX) >= 2.5 * 3) {
             //差分が5以上の時
             if (this.targetBaseNodePosX > this.baseNodePosX) {

@@ -161,12 +161,11 @@ var DiscoveryLayer2 = cc.Layer.extend({
         var fade = 2.5; // 消えるまでの時間
         var minSeg = 0.1; // セグメントの最小値（小さく設定すると滑らかになる）
         var stroke = 10; //描画の幅
-        var texture = "res/button_close.png"; //テクスチャの画像
+        var texture = "res/planet_arrow.png"; //テクスチャの画像
         this.shipSmoke2 = cc.MotionStreak.create(4, 0.1, 10, cc.color.RED, texture);
         this.baseNode.addChild(this.shipSmoke2, 999);
         this.shipSmoke = cc.MotionStreak.create(2, 0.1, 8, cc.color.MAGENTA, texture);
         this.baseNode.addChild(this.shipSmoke, 9999);
-        //this.shipSmoke.setPosition(320, 320);
         //カメラの設定
         this.cameraTargetPosX = 0;
         this.cameraTargetPosY = 0;
@@ -234,7 +233,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
                 this.ship.setRotation(360 - this.basePlanet.degree + 360 + 90);
             }
         }
-        //this.addDebris(2);
+        //ノイズのエフェクト
         this.noiseTime++;
         if (this.noiseTime >= 30 * 15) {
             this.noiseTime = 0;

@@ -167,8 +167,6 @@ var InfoMenu = cc.Node.extend({
         }else{
             this.buttonSearch.setOpacity(255*0.3);
         }
-
-
         if (this.uiWindowAccount.isVisible()) {
             this.buttonCancel.setVisible(false);
             this.buttonSearch.setVisible(false);
@@ -193,8 +191,6 @@ var InfoMenu = cc.Node.extend({
             this.buttonOk.setVisible(false);
             this.buttonGetPlanet.setVisible(false);
         }
-        //storageが不足しているかチェックする
-        //this.game.storage.totalCoinAmount
     },
     goToGameLayer: function (cardId) {
         var scene = cc.Scene.create();

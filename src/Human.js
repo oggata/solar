@@ -1,12 +1,10 @@
 var Human = cc.Node.extend({
-    ctor: function (game, col, row, colorName, markerId, algorithmId, moveType) {
+    ctor: function (game, col, row, colorName, moveType) {
         this._super();
         this.game = game;
         this.hp = 100;
         this.maxHp = 100;
         this.colorName = colorName;
-        this.markerId = markerId;
-        this.algorithmId = algorithmId;
         if (colorName == "RED") {
             this.image = "res/enemy88.png";
             this.imgWidth = 1280 / 8;
@@ -23,17 +21,11 @@ var Human = cc.Node.extend({
         }
         //init
         this.direction = "front";
-        this.walkingDirection = "up";
-        this.tmpWalkingDirection = "up";
         this.initializeWalkAnimation();
-        this._mostNearMarker = null;
-        this._mostNearDistance = 99999;
         this.col = col;
         this.row = row;
         var marker = this.getMarker(col, row);
         this.setPosition(marker.getPosition().x, marker.getPosition().y);
-        this.timeCnt = 0;
-        this.tmpTargetDist = null;
         this.baseMarker = null;
         this.targetMarkers = [];
         this.targetMarker = null;
@@ -44,18 +36,15 @@ var Human = cc.Node.extend({
         this.moveType = moveType;
         if (this.moveType == 99) {
             this.setRouteType000();
-        } else if (this.moveType == 1) {
-            this.setRouteType033();
-        } else if (this.moveType == 2) {
-            this.setRouteType033();
-        } else {
+        }else{
             this.setRouteType033();
         }
+
         this.isAuto = true;
         if (this.isAuto == true && this.colorName == "GREEN") {
             this.setRouteType002();
         }
-        this.walkSpeed = 2.5;
+        this.walkSpeed = 1 * 2;
         this.maxDistance = 5;
         this.deadCnt = 0;
         this.isDead = false;
@@ -120,24 +109,11 @@ var Human = cc.Node.extend({
             if (this.deadCnt >= 30 * 3) {
                 this.isDead = true;
                 //this.game.addDeburis(this.getPosition().x + 50, this.getPosition().y + 50, 1);
-                for (var i = 0; i <= 5; i++) {
-                    //this.game.addDeburis(this.getPosition().x + 70, this.getPosition().y + 70, 1);
-                }
                 return false;
             }
-            /*
-                        for (var i = 0; i <= 3; i++) {
-                            this.game.addDeburis(this.getPosition().x + 50, this.getPosition().y + 50, 1);
-                        }
-            */
-            //return false;
         }
         if (this.hp > 0) {
             if (this.game.mode != "gaming") return;
-            this.timeCnt++;
-            if (this.timeCnt >= 30 * 1) {
-                this.timeCnt = 0;
-            }
             if (this.reverseArr.length >= 1) {
                 if (this.reverseArr[0]) {
                     this.targetMarker = this.getMarker(this.reverseArr[0].col, this.reverseArr[0].row);
@@ -161,10 +137,6 @@ var Human = cc.Node.extend({
                 this.setDistance(this.col, this.row);
                 if (this.moveType == 99) {
                     this.setRouteType000();
-                } else if (this.moveType == 1) {
-                    this.setRouteType033();
-                } else if (this.moveType == 2) {
-                    this.setRouteType033();
                 } else {
                     this.setRouteType033();
                 }
@@ -173,6 +145,7 @@ var Human = cc.Node.extend({
                 }
             }
         }
+        //cc.log("col: " + this.col + "/row:" + this.row);
         return true;
     },
     getHumanCnt: function (targetCol, targetRow) {
@@ -260,7 +233,7 @@ var Human = cc.Node.extend({
     //プレイヤー用。ターゲットされたマーカーを追いかける
     setRouteType000: function () {
         this.maxDistance = 2;
-        this.walkSpeed = 2.1 * 2;
+        //this.walkSpeed = 2.1 * 2;
         //自分が配置されたマーカーから、特定距離(5)のマーカーを全部取得する
         //this.targetDistance = this.getRandNumberFromRange(1, 5);
         for (var i = 0; i < this.distances.length; i++) {
@@ -334,29 +307,11 @@ var Human = cc.Node.extend({
             this.setRoute();
         }
     },
-    //(ドローワーtype)自陣を塗っていく
-    setRouteType001: function () {
-        this.walkSpeed = 2.5 * 3;
-        //自分が配置されたマーカーから、特定距離(5)のマーカーを全部取得する
-        this.targetDistance = this.getRandNumberFromRange(1, 4);
-        for (var i = 0; i < this.distances.length; i++) {
-            if (this.distances[i].dist == this.targetDistance) {
-                var _marker = this.getMarker(this.distances[i].col, this.distances[i].row);
-                this.targetMarkers.push(this.distances[i]);
-            }
-        }
-        //選択されたマーカー一覧から一つを選ぶ
-        if (this.targetMarkers.length > 0) {
-            this.targetMarker = this.targetMarkers[this.getRandNumberFromRange(0, this.targetMarkers.length - 1)];
-        } else {
-            this.targetMarker = null;
-        }
-        this.setRoute();
-    },
+
     //(コイナーtype)コインを取得する
     setRouteType002: function () {
         this.maxDistance = 40;
-        this.walkSpeed = 1.2 * 2;
+        //this.walkSpeed = 1 * 2;
         //coinの存在するマーカーを全部取得する
         for (var c = 0; c < this.game.coins.length; c++) {
             for (var i = 0; i < this.distances.length; i++) {
@@ -381,9 +336,10 @@ var Human = cc.Node.extend({
         }
         this.setRoute();
     },
+/*
     //(アタッカーtype)敵に攻撃を仕掛ける
     setRouteType003: function () {
-        this.walkSpeed = 2 * 3;
+        //this.walkSpeed = 2 * 3;
         //敵のenemyの存在するマーカーを全部取得する
         if (this.colorName == "GREEN") {
             this.enemyColorName = "RED";
@@ -414,6 +370,7 @@ var Human = cc.Node.extend({
         }
         this.setRoute();
     },
+*/
     setRoute: function () {
         this.route = [];
         if (this.targetMarker != null) {

@@ -58,8 +58,17 @@ var MissionsLayer = cc.Layer.extend({
         this.basePlanetId = this.storage.getBasePlanetId(CONFIG.CARD[1]);
         this.treeNodeScale = 0.5;
         this.treeNode.setScale(this.treeNodeScale);
-        this.connectedPlanets = new Array();
+
+
+        //this.storage = storage;
+        this.ship = cc.Sprite.create("res/ship_search.png");
+        this.ship.setAnchorPoint(0, 0);
+        this.ship.setPosition(100, 100);
+        this.treeNode.addChild(this.ship,9999999999999999);
+
+
         this.planetButtons = [];
+        this.connectedPlanetsData = new Array();
         //masterの惑星をループさせて配置する
         this.planets = CONFIG.PLANET;
         for (var masterCnt = 0; masterCnt < this.planets.length; masterCnt++) {
@@ -75,13 +84,13 @@ var MissionsLayer = cc.Layer.extend({
                 }, this);
                 this.buttonPlanet.planetId = _planetId;
                 this.planetButtons.push(this.buttonPlanet);
-                /*
-                for debug
+                
+                //for debug
                 this.planetIdLabel = new cc.LabelTTF(_planetId, "Arial", 99);
                 this.planetIdLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
                 this.buttonPlanet.addChild(this.planetIdLabel);
                 this.planetIdLabel.setPosition(20, 20);
-                */
+                
                 this.buttonPlanet.planetId = _planetId;
                 var menu001 = new cc.Menu(this.buttonPlanet);
                 menu001.setPosition(0, 0);
@@ -107,16 +116,12 @@ var MissionsLayer = cc.Layer.extend({
                         this.lineWidth = 9;
                         this.drawNode2.drawSegment(this.fromP, this.toP, this.lineWidth, cc.color(69, 162, 211, 255 * 0.3));
                         //接続している惑星のmasterデータを作る。master->branchとbranch->masterの両方必要。
-                        if (this.connectedPlanets[this.planets[masterCnt].id]) {
-                            this.connectedPlanets[this.planets[masterCnt].id].push(_branchPlanets[lineCnt].id);
-                        } else {
-                            this.connectedPlanets[this.planets[masterCnt].id] = [_branchPlanets[lineCnt].id];
-                        }
-                        if (this.connectedPlanets[_branchPlanets[lineCnt].id]) {
-                            this.connectedPlanets[_branchPlanets[lineCnt].id].push(this.planets[masterCnt].id);
-                        } else {
-                            this.connectedPlanets[_branchPlanets[lineCnt].id] = [this.planets[masterCnt].id];
-                        }
+                        
+
+                        this.isExistsConnectedPlanets2(this.planets[masterCnt].id,_branchPlanets[lineCnt].id);
+                        this.isExistsConnectedPlanets2(_branchPlanets[lineCnt].id,this.planets[masterCnt].id);
+
+
                     }
                 }
                 /*
@@ -139,8 +144,12 @@ var MissionsLayer = cc.Layer.extend({
                 */
             }
         }
-        this.treeNode.setPosition((this.planets[this.basePlanetId].position[0] - 600) * -1 / 2, (this.planets[this.basePlanetId]
+this.treeNode.setPosition((this.planets[this.basePlanetId].position[0] - 600) * -1 / 2, (this.planets[this.basePlanetId]
             .position[1] - 900) * -1 / 2);
+
+
+
+
         this.firstTouchX = 0;
         this.firstTouchY = 0;
         this.lastTouchGameLayerX = this.treeNode.getPosition().x;
@@ -205,14 +214,57 @@ var MissionsLayer = cc.Layer.extend({
         cc.log("bb");
         this.scheduleUpdate();
         cc.log("bb");
+
+        
+        //cc.log(this.connectedPlanetsData);
+        var _startPlanetId = 22;
+        var _finishPlanetId = 14;
+        var _route = [];
+        var _aaa = this.setRoute(_startPlanetId,_finishPlanetId);
+        var _planet = CONFIG.PLANET[_aaa[0].planetId]
+        this.ship.setPosition(_planet.position[0],_planet.position[1]);
+
+this.aaa = _aaa;
+
+this.shipTargetPlanet = CONFIG.PLANET[_aaa[1].planetId];
+//_aaa.splice(0,1);
+
+
+this.treeNode.setPosition((this.ship.getPosition().x - 600) * -1 / 2, (this.ship.getPosition().y - 900) * -1 / 2);
         return true;
     },
 
+
+
     update: function (dt) {
 
+      
+        this.shipTargetPlanet = CONFIG.PLANET[this.aaa[0].planetId];
+
+        if(this.ship.getPosition().x > this.shipTargetPlanet.position[0]){
+            this.ship.setPosition(this.ship.getPosition().x - 1,this.ship.getPosition().y);
+        }
+        if(this.ship.getPosition().x < this.shipTargetPlanet.position[0]){
+            this.ship.setPosition(this.ship.getPosition().x + 1,this.ship.getPosition().y);
+        }
+
+        if(this.ship.getPosition().y > this.shipTargetPlanet.position[1]){
+            this.ship.setPosition(this.ship.getPosition().x,this.ship.getPosition().y - 1);
+        }
+        if(this.ship.getPosition().y < this.shipTargetPlanet.position[1]){
+            this.ship.setPosition(this.ship.getPosition().x,this.ship.getPosition().y + 1);
+        }
+
+if(this.ship.getPosition().x == this.shipTargetPlanet.position[0] && this.ship.getPosition().y > this.shipTargetPlanet.position[1]){
+    cc.log("ggg");
+    this.aaa.splice(0,1);
+}
+
+//var _dist = (this.ship.getPosition().x-this.shipTargetPlanet.position[0]) * (this.ship.getPosition().x-this.shipTargetPlanet.position[0]) + ;
+
+
+
         this.treeNode.setScale(this.treeNodeScale);
-
-
         if(this.basePlanetOpacity <= 0.2){
             this.addPlanetOpacity = 0.05;
         }else if(this.basePlanetOpacity >= 1){
@@ -225,6 +277,189 @@ var MissionsLayer = cc.Layer.extend({
             }
         }
     },
+
+    setRoute:function(_startPlanetId,_finishPlanetId){
+
+        this._routeIds = [];
+        this.connectedIds = [];
+
+        var _data = {planetId:_finishPlanetId,distance:0,connected:[]};
+        this._routeIds.push(_data);
+
+        for (var i = 0; i < this.connectedPlanetsData.length; i++) {
+            if(this.connectedPlanetsData[i].basePlanetId == _finishPlanetId){
+                //connectedPlanetIdで分ける
+                for (var h = 0; h < this.connectedPlanetsData[i].connectedPlanetId.length; h++) {
+                    var _planetId = this.connectedPlanetsData[i].connectedPlanetId[h];
+                    if(this.isSetPlanetId(_planetId) == false){
+                        var _connected = "";
+                        for (var t = 0; t < this.connectedPlanetsData.length; t++) {
+                            if(this.connectedPlanetsData[t].basePlanetId == _planetId){
+                                _connected = this.connectedPlanetsData[t].connectedPlanetId;
+                            }
+                        } 
+                        var _data = {planetId:_planetId,distance:1,connected:_connected};
+                        this._routeIds.push(_data);
+                    }
+                }
+            }
+        }
+
+        for (var j = 0; j < this._routeIds.length; j++) {
+            for (var k = 0; k < this._routeIds[j].connected.length; k++) {
+                var _planetId = this._routeIds[j].connected[k];
+                if(this.isSetPlanetId(_planetId) == false){
+                    var _connected = "";
+                    for (var t = 0; t < this.connectedPlanetsData.length; t++) {
+                        if(this.connectedPlanetsData[t].basePlanetId == _planetId){
+                            _connected = this.connectedPlanetsData[t].connectedPlanetId;
+                        }
+                    } 
+                    var _data = {planetId:_planetId,distance:this._routeIds[j].distance+1,connected:_connected};
+                    this._routeIds.push(_data);
+                }
+            }
+        }
+
+
+        //maxDistanceを求める
+        //var _maxDistance = 0;
+        for (var j = 0; j < this._routeIds.length; j++) {
+            if(this._routeIds[j].planetId == _startPlanetId){
+                _maxDistanceData = this._routeIds[j];
+            }
+        }
+
+        //var _minDistance = 0;
+        for (var j = 0; j < this._routeIds.length; j++) {
+            if(this._routeIds[j].planetId == _finishPlanetId){
+                _minDistanceData = this._routeIds[j];
+            }
+        }
+
+
+        //cc.log(_maxDistance);
+        //今度は startからfinishまで逆に辿って行く
+        var _connected = [];
+        var _distance = 999;
+        var _hoge = "";
+        this.setHogeData = "";
+        this._hoge = [];
+
+//finishを入れる
+this._hoge.push(_maxDistanceData);
+
+        for (var j = 0; j < this._routeIds.length; j++) {
+            if(this._routeIds[j].planetId == _startPlanetId){
+                _connected = this._routeIds[j].connected;
+                _distance = this._routeIds[j].distance;
+                this.setHogeData = this.setHoge(_connected,_distance);
+                for (var u = 0; u < 5; u++) {
+                    this.setHogeData = this.setHoge(this.setHogeData.connected,this.setHogeData.distance);
+                    //cc.log("distance:");
+                    //cc.log(this.setHogeData.distance);
+                    if(!this.setHogeData) break;
+                    if(this.setHogeData.distance <= 1){
+                        cc.log("break");
+                        break;
+                    }
+                }
+            }
+        }
+this._hoge.push(_minDistanceData);
+
+
+
+cc.log(this._hoge);
+        return this._hoge;
+    },
+
+    setHoge:function(_connected,_distance){
+        var _hogedata = "";
+
+        if(!_connected) return ;
+        for (var h = 0; h < _connected.length; h++) {
+            for (var t = 0; t < this._routeIds.length; t++) {
+                if(this._routeIds[t].planetId == _connected[h]){
+                    if(this._routeIds[t].distance == _distance - 1){
+                        this._hoge.push(this._routeIds[t]);
+                        _hogedata = this._routeIds[t];
+                    }
+                }
+            }
+        }
+        return _hogedata;
+    },
+
+
+    isSetPlanetId:function(targetPlanetId){
+        for (var j = 0; j < this._routeIds.length; j++) {
+            if(this._routeIds[j].planetId == targetPlanetId){
+                return true;
+            }
+        }
+        return false;
+    },
+
+    //setPlanetData = [];
+
+/*
+    setRoute:function(_startPlanetId,_finishPlanetId){
+        this.route = [_finishPlanetId];
+        //逆から辿って行く。finishのレベルを探す
+        connectedIds = [];
+        currentLv = 999;
+        targetId = 999;
+        for (var i = 0; i < this.connectedPlanetsData.length; i++) {
+            if(this.connectedPlanetsData[i].basePlanetId == _finishPlanetId){
+                connectedIds = this.connectedPlanetsData[i].connectedPlanetId;
+                currentLv = this.connectedPlanetsData[i].basePlanetLevel;
+            }
+        }
+
+        startLv = CONFIG.PLANET[_startPlanetId].lv;
+        //cc.log(startLv);
+        targetId = connectedIds[0];
+        this.route.push(connectedIds[0]);
+        for (var i = 0; i < 12; i++) {
+            //もう1週
+            for (var j = 0; j < this.connectedPlanetsData.length; j++) {
+                if(this.connectedPlanetsData[j].basePlanetId == targetId){
+                    connectedIds = this.connectedPlanetsData[j].connectedPlanetId;
+                    currentLv = this.connectedPlanetsData[j].basePlanetLevel;
+                }
+            }
+            if(currentLv == startLv){
+                break;
+            }
+
+            targetId = connectedIds[0];
+            this.route.push(connectedIds[0]);
+            if(currentLv == 1){
+                break;
+            }
+        }
+        //次のレベルでfinishのレベル-1を全部調べる
+        cc.log(this.route.reverse());
+    },
+*/
+
+
+    isExistsConnectedPlanets2:function(basePlanetId,connectedPlanetId){
+        for (var i = 0; i < this.connectedPlanetsData.length; i++) {
+            if(this.connectedPlanetsData[i].basePlanetId == basePlanetId){
+                this.connectedPlanetsData[i].connectedPlanetId.push(connectedPlanetId);
+                return true;
+            }
+        }
+        //なければ足す
+        var _level = CONFIG.PLANET[basePlanetId].lv;
+        var _data = {basePlanetId:basePlanetId,basePlanetLevel:_level,connectedPlanetId:[connectedPlanetId]};
+        this.connectedPlanetsData.push(_data);
+        return false;
+    },
+
+
     touchStart: function (location) {
         this.firstTouchX = location.x;
         this.firstTouchY = location.y;

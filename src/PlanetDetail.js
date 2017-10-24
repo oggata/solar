@@ -32,12 +32,8 @@ var PlanetDetail = cc.Node.extend({
         this.timeLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.detail.addChild(this.timeLabel);
         this.isOwnPlanet = false;
-        var buttonClose = new cc.MenuItemImage("res/button_close.png", "res/button_close.png", function () {
-            this.game.infoNode.setVisible(false);
-        }, this);
-        buttonClose.setPosition(55, 710);
-        this.buttonEvent = new cc.MenuItemImage("res/button_window_event.png", "res/button_window_event.png", function () {
-            if (this.isOwnPlanet == false) return;
+        this.buttonEvent = new cc.MenuItemImage("res/button_window_cancel.png", "res/button_window_cancel.png", function () {
+            //if (this.isOwnPlanet == false) return;
             this.game.infoNode.setVisible(false);
         }, this);
         this.buttonEvent.setPosition(170, -40);
@@ -49,7 +45,7 @@ var PlanetDetail = cc.Node.extend({
             this.game.goToDiscoveryLayer();
         }, this);
         this.buttonGoto.setPosition(470, -40);
-        var menu001 = new cc.Menu(this.buttonEvent, this.buttonGoto, buttonClose);
+        var menu001 = new cc.Menu(this.buttonEvent, this.buttonGoto);
         menu001.setPosition(0, 0);
         this.detail.addChild(menu001);
     },

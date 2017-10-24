@@ -39,13 +39,16 @@ var CardLayer = cc.Layer.extend({
         this.addChild(this.baseNode);
         //var _rand = this.getRandNumberFromRange(1, 13);
         var _card = CONFIG.PLANET[1];
-        this.cardPosY = 1500;
         this.card = cc.Sprite.create("res/card_location_001.png");
         this.baseNode.addChild(this.card);
-        this.card.setPosition(320, this.cardPosY);
-        this.labelSprite = cc.Sprite.create("res/label_get_a_normal_card.png");
-        this.labelSprite.setPosition(320, 400);
+        this.card.setPosition(380, 550);
+        this.cardScale = 0.001;
+        
+        this.labelSprite = cc.Sprite.create("res/label_get_card.png");
+        this.labelSprite.setPosition(320, 540);
         this.labelSprite.setOpacity(0);
+        this.baseNode.addChild(this.labelSprite);
+
         this.cardGetTime = 1;
         this.backCardActionOpacity = 0;
         this.cardWaitTime = 0;
@@ -73,7 +76,7 @@ var CardLayer = cc.Layer.extend({
         this.storage.savePlanetDataToStorage(CONFIG.PLANET[this.nextPlanetId], 1);
         this.planetSprite = cc.Sprite.create(CONFIG.PLANET[this.nextPlanetId].image);
         this.card.addChild(this.planetSprite);
-        this.planetSprite.setPosition(180, 270);
+        //this.planetSprite.setPosition(180, 270);
         //var _planetId = 1;
         var _dx = 0;
         var _dy = 0;
@@ -126,22 +129,14 @@ var CardLayer = cc.Layer.extend({
     },
     setCardMotion: function () {
         this.card.setOpacity(1 * 255);
-        if (this.card.getPosition().y > 1200) {
-            this.cardPosY -= 10;
+        this.cardScale+=0.01;
+        this.card.setScale(this.cardScale);
+        this.cardWaitTime++;
+        if (30 * 1.5 < this.cardWaitTime) {
+            this.labelSprite.setOpacity(255 * 1);
         }
-        if (this.card.getPosition().y <= 1200) {
-            this.cardWaitTime++;
-            if (30 * 1 < this.cardWaitTime) {
-                if (600 <= this.card.getPosition().y && this.card.getPosition().y <= 1200) {
-                    this.cardPosY -= 55;
-                    this.labelSprite.setOpacity(255 * 1);
-                }
-            }
-        }
-        this.card.setPosition(320, this.cardPosY);
     },
     resetCardMotion: function () {
-        this.labelSprite.setOpacity(0);
         this.card.setOpacity(1 * 255);
         this.cardWaitTime = 0;
         this.cardPosY = 1500;

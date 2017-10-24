@@ -27,7 +27,7 @@ var BattleWindow = cc.Node.extend({
         this.gameOccupyRate = 0;
         this.gameTimeCnt = 0;
         this.gameTime = 0;
-        this.enemyCnt = 3;
+        this.maxEnemyCnt = 0;
         this.escapeCnt = 0;
         //this.enemies = [];
         this.enemySpeed = 1;
@@ -37,17 +37,15 @@ var BattleWindow = cc.Node.extend({
         this.positionalChips = [];
         for (var j = 0; j < this.chips.length; j++) {
             ////スピードはMAPCHIPTYPEによって違う (1:普通 2:山 3:海)
-            if (this.chips[j].mapChipType == 1) {
+            if (this.chips[j].baseMapType == 1) {
                 this.positionalChips.push(this.chips[j]);
             }
         }
         //コンピューターの時は配置可能リストの中から、ランダムで配置する
-        //if (this.game.isCom == true) {
-        for (var i = 0; i < this.enemyCnt; i++) {
+        for (var i = 0; i < this.maxEnemyCnt; i++) {
             this.positionalChips.sort(this.shuffle);
-            this.addHuman(this.positionalChips[0].col, this.positionalChips[0].row, "RED", 1, 1);
+            this.addHuman(this.positionalChips[0].col, this.positionalChips[0].row, "RED");
         }
-        //}
         //marker
         this.selectedMarker = cc.Sprite.create("res/map-base-red.png");
         this.field.addChild(this.selectedMarker, 9999999999);
@@ -55,12 +53,11 @@ var BattleWindow = cc.Node.extend({
         this.selectedMarker.col = null;
         this.selectedMarker.row = null;
         //player
-        this.human = new Human(this, 10, 10, "GREEN", 1, 1, 99);
+        this.positionalChips.sort(this.shuffle);
+        this.human = new Human(this, this.positionalChips[0].col, this.positionalChips[0].row, "GREEN", 99);
         this.field.addChild(this.human);
         this.humans.push(this.human);
         this.player = this.human;
-        this.player.setVisible(false);
-        this.human.moveType = 99;
         //ship
         this.ship = cc.Sprite.create("res/ship.png");
         this.field.addChild(this.ship, 999999999999);
@@ -81,18 +78,18 @@ var BattleWindow = cc.Node.extend({
         }
     },
     update: function (dt) {
-        var _test = this.getCurrentLevel();
         //時間を計測
         this.gameTimeCnt++;
         if (this.gameTimeCnt >= 30) {
             this.gameTimeCnt = 0;
             this.gameTime++;
         }
-//this.setDifficulty();
-        if (this.humans.length < this.enemyCnt) {
+
+        if (this.humans.length < this.maxEnemyCnt) {
             this.positionalChips.sort(this.shuffle);
-            this.addHuman(this.positionalChips[0].col, this.positionalChips[0].row, "RED", 1, 1);
+            this.addHuman(this.positionalChips[0].col, this.positionalChips[0].row, "RED");
         }
+
         //デブリをupdate
         for (var i = 0; i < this.debris_array.length; i++) {
             if (this.debris_array[i].update() == false) {
@@ -116,7 +113,7 @@ var BattleWindow = cc.Node.extend({
             for (var j = 0; j < this.chips.length; j++) {
                 var _ajust = 0;
                 if (this.chips[j].baseMapType == 2) {
-                    _ajust = 1;
+                    //_ajust = 1;
                 }
                 this.field.reorderChild(this.chips[j], Math.floor(99999999 - (this.chips[j].col + this.chips[j].row) + _ajust));
             }
@@ -125,11 +122,6 @@ var BattleWindow = cc.Node.extend({
                 this.field.reorderChild(this.escapes[j], Math.floor(99999999 - (this.escapes[j].col + this.escapes[j].row) +
                     _ajust));
             }
-            /*
-            if (this.coins.length <= this.maxCoinCnt) {
-                this.positionalChips.sort(this.shuffle);
-                this.addCoin(this.positionalChips[0].col, this.positionalChips[0].row);
-            }*/
         }
         //ローバーをupdateする
         for (var j = 0; j < this.humans.length; j++) {
@@ -148,27 +140,8 @@ var BattleWindow = cc.Node.extend({
             this.orderMaxCnt = 30;
             this.shipPosY = this.player.getPosition().y + 800;
         }
-        /*
-        //markerとplayerのcollision判定
-        for (var m = 0; m < this.chips.length; m++) {
-            if (this.player.col + 1 == this.chips[m].col && this.player.row == this.chips[m].row) {
-                this.chips[m].spriteGreen.setVisible(true);
-            }
-        }
-        */
-        /*
-        //humanとescapeのcollision判定
-        for (var h = 0; h < this.humans.length; h++) {
-            for (var e = 0; e < this.escapes.length; e++) {
-                if (this.humans[h].col == this.escapes[e].col && this.humans[h].row == this.escapes[e].row && this.humans[h].colorName ==
-                    "GREEN") {
-                    this.mode = "result";
-                    this.result = "success";
-                }
-            }
-        }*/
+
         if(this.coins.length == 0){
-            //cc.log(this.coins.length);
             this.mode = "result";
             this.result = "success";
         }
@@ -178,23 +151,12 @@ var BattleWindow = cc.Node.extend({
             for (var c = 0; c < this.coins.length; c++) {
                 if (this.humans[h].col == this.coins[c].col && this.humans[h].row == this.coins[c].row) {
                     this.coins[c].hp = 0;
-                    //for (var i = 0; i <= 3; i++) {
-                    //this.addDeburis(this.coins[c].getPosition().x + 20, this.coins[c].getPosition().y + 20, 1);
-                    //}
                     if (this.humans[h].colorName == "GREEN") {
-                        //cc.log(this.game.storage.totalCoinAmount);
                         this.game.storage.addCoin(1);
-                        //ランダムで素材をaddする
-                        //var _rand = this.getRandNumberFromRange(1, 5);
                         if (this.coins[c].typeNum) {
                             var _typeNum = this.coins[c].typeNum;
                             this.game.addMaterial(_typeNum);
-                            //this.gameScore += 1;
                             this.addMaterial(_typeNum);
-                            //this.addDestroy(this.coins[c].getPosition().x,this.coins[c].getPosition().y);
-                            //this.game.storage.addCoin(1);
-
-                            //cc.log(this.game.storage.totalCoinAmount);
                         }
                     }
                 }
@@ -204,29 +166,15 @@ var BattleWindow = cc.Node.extend({
         for (var h1 = 0; h1 < this.humans.length; h1++) {
             for (var h2 = 0; h2 < this.humans.length; h2++) {
                 if (this.humans[h1] != this.humans[h2]) {
-                    //if(this.humans[h1] != this.player){
                     if (this.humans[h1].colorName != this.humans[h2].colorName) {
                         if (this.humans[h1].col == this.humans[h2].col && this.humans[h1].row == this.humans[h2].row) {
                             this.humans[h1].hp = 0;
                             this.humans[h2].hp = 0;
-                            //for (var i = 0; i <= 5; i++) {
-                            //this.addDeburis(this.humans[h1].getPosition().x + 20, this.humans[h1].getPosition().y + 20, 1);
-                            //}
                         }
                     }
                 }
             }
         }
-        /*
-        //占領率の測定
-        var _occupiedCnt = 0;
-        for (var m = 0; m < this.chips.length; m++) {
-            if (this.chips[m].spriteGreen.isVisible() == true) {
-                _occupiedCnt++;
-            }
-        }
-        this.game.captureCnt = _occupiedCnt;
-        */
         //コインをupdateする
         for (var j = 0; j < this.coins.length; j++) {
             if (this.coins[j].update() == false) {
@@ -292,7 +240,7 @@ var BattleWindow = cc.Node.extend({
         this.shipPosY = this.player.getPosition().y + 800;
     },
     setDifficulty: function () {
-        this.enemyCnt = this.gameLevel + 2;
+        this.maxEnemyCnt = this.gameLevel + 2;
         this.enemySpeed = 1.2 * 2 + this.gameLevel * 0.1;
     },
     addDestroy: function (x, y) {
@@ -315,11 +263,10 @@ var BattleWindow = cc.Node.extend({
         this.field.addChild(_escape, 9999999999999);
         this.escapes.push(_escape);
     },
-    addHuman: function (col, row, colorName, markerId, algorithmId) {
-        //if (this.humans.length >= 20) return;
-        var _rand = this.getRandNumberFromRange(1, 6);
+    addHuman: function (col, row, colorName) {
+        //var _rand = this.getRandNumberFromRange(1, 6);
         var _rand = 1;
-        this.human = new Human(this, col, row, colorName, markerId, algorithmId, _rand);
+        this.human = new Human(this, col, row, colorName, _rand);
         this.field.addChild(this.human);
         this.humans.push(this.human);
     },
@@ -338,52 +285,42 @@ var BattleWindow = cc.Node.extend({
         var _chipH = 20 * 3;
         var _incrementNum = 0;
         var _dirPath = "004";
-        for (var row = 0; row < 28; row++) {
-            for (var col = 0; col < 28; col++) {
-                //// (1:普通 2:山岳 3:海)
-                var _rand = CONFIG.MAP[_incrementNum];
-                //this.chip = cc.Sprite.create("res/map-chip-3-001-a.png");
-                //if (_rand == 1) {
+        for (var row = 0; row < 12; row++) {
+            for (var col = 0; col < 12; col++) {
+                //// (1:普通 2:山岳 3:海 4:null)
+                var _mapChipType = CONFIG.MAP12_2[_incrementNum];
                 this.chip = cc.Sprite.create("res/planets/" + _dirPath + "/map-chip-a.png");
-                //}
-                if (_rand == 2) {
-                    this.chip = cc.Sprite.create("res/planets/" + _dirPath + "/map-chip-b.png");
+                if (_mapChipType == 2) {
+                    this.chip = cc.Sprite.create("res/planets/" + _dirPath + "/map-chip-a.png");
                 }
-                if (_rand == 3) {
-                    this.chip = cc.Sprite.create("res/planets/" + _dirPath + "/map-chip-c.png");
+                if (_mapChipType == 3) {
+                    this.chip = cc.Sprite.create("res/planets/" + _dirPath + "/map-chip-d.png");
                 }
-                this.chip.mapChipType = _rand;
+                if (_mapChipType == 4) {
+                    this.chip = cc.Sprite.create("res/planets/" + _dirPath + "/map-chip-z.png");
+                }
                 this.chip.col = col;
                 this.chip.row = row;
-                this.chip.setOpacity(0.95 * 255);
+                //this.chip.setOpacity(0.8 * 255);
                 this.chips.push(this.chip);
                 this.chip.setAnchorPoint(0.5, 0.5);
-                this.chip.colorId = "WHITE";
-                this.chip.baseMapType = _rand;
+                //this.chip.colorId = "WHITE";
+                this.chip.baseMapType = _mapChipType;
                 this.chip.setPosition(
                     (col + row) * _chipW / 2 * -1 + _chipW * col + 624, _chipH / 2 * (col + row) - _chipH);
                 this.field.addChild(this.chip, 1 - (col + row));
-                this.marker = new Marker(this, col, row, _rand, null, this.game.colorName);
-                this.marker.setPosition(
-                    (col + row) * _chipW / 2 * -1 + _chipW * col + 624, _chipH / 2 * (col + row) - _chipH);
-                this.field.addChild(this.marker);
                 _incrementNum++;
-                if (_rand == 2) {
+                if (this.chip.baseMapType == 2) {                    
                     var _rand3 = this.getRandNumberFromRange(1, 5);
                     if (_rand3 == 1) {
                         this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-a.png");
                     } else if (_rand3 == 2) {
-                        this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-a.png");
+                        this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-b.png");
                     } else if (_rand3 == 3) {
-                        this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-a.png");
+                        this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-b.png");
                     } else {
                         this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-a.png");
                     }
-                    this.tree.setAnchorPoint(0, 0);
-                    this.chip.addChild(this.tree);
-                }
-                if (_rand == 3) {
-                    this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-b.png");
                     this.tree.setAnchorPoint(0, 0);
                     this.chip.addChild(this.tree);
                 }
@@ -401,6 +338,7 @@ var BattleWindow = cc.Node.extend({
         this.field.addChild(this.debris, 999999999999999);
     },
     isOwnTerritory2: function (colorName, posX, posY) {
+        /*
         var _marker = this.getMarker(posX, posY - 200);
         if (_marker) {
             if (_marker.colorId == colorName) {
@@ -408,6 +346,7 @@ var BattleWindow = cc.Node.extend({
             }
         }
         return false;
+        */
     },
     isOwnTerritory: function (colorName, col, row) {
         for (var i = 0; i < this.chips.length; i++) {
@@ -419,7 +358,7 @@ var BattleWindow = cc.Node.extend({
     },
     addPoint2: function (colorName, col, row) {
         for (var i = 0; i < this.chips.length; i++) {
-            if (this.chips[i].mapChipType == 1) {
+            if (this.chips[i].baseMapType == 1) {
                 if (this.chips[i].col == col && this.chips[i].row == row) {
                     this.chips[i].colorId = colorName;
                     //this.chips[i].isRender = true;
