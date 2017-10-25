@@ -52,8 +52,7 @@ var CardList = cc.Node.extend({
     },
     addCard: function (cardData) {
         cc.log(cardData["image"]);
-        var _cardData = new cc.MenuItemImage(cardData["image"], "res/card000_on.png", function (val) {
-        }, this);
+        var _cardData = new cc.MenuItemImage(cardData["image"], "res/card000_on.png", function (val) {}, this);
         this.menu = new cc.Menu(_cardData);
         this.menu.setPosition(320, 600);
         this.cardDetailNode.addChild(this.menu);

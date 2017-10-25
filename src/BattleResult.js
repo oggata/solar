@@ -9,12 +9,12 @@ var BattleResult = cc.Node.extend({
         this.addChild(this.resultSprite);
         this.circleSprite = cc.Sprite.create("res/ui-result-rotate-circle.png");
         this.circleSprite.setPosition(310, 310);
-        this.resultSprite.addChild(this.circleSprite);
+        //this.resultSprite.addChild(this.circleSprite);
         this.cirlceDegrees = 0;
         this.circleSprite.setScale(1.4);
         this.circleSprite2 = cc.Sprite.create("res/ui-result-rotate-circle2.png");
         this.circleSprite2.setPosition(310, 310);
-        this.resultSprite.addChild(this.circleSprite2);
+        //this.resultSprite.addChild(this.circleSprite2);
         this.circle2Scale = 0.5;
         this.circle2ScaleAdd = 0.05;
         this.resultScore = 0;
@@ -33,7 +33,7 @@ var BattleResult = cc.Node.extend({
         this.messageLabel2.setAnchorPoint(0, 1);
         this.messageLabel2.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         //this.resultSprite.addChild(this.messageLabel2);
-        var retryButton = new cc.MenuItemImage("res/button_retry.png", "res/button_retry.png", function () {
+        var retryButton = new cc.MenuItemImage("res/button_window_ok.png", "res/button_window_ok.png", function () {
             this.goToListLayer();
         }, this);
         retryButton.setPosition(320, 50);
@@ -71,12 +71,10 @@ var BattleResult = cc.Node.extend({
         }
         this.resultLabel.setString(this.resultScore + "%");
         if (this.game.battleWindow.result == "success") {
-            this.message = "ミッションを達成しました！\n惑星全体の" + Math.floor(this.game.battleWindow.gameScore) +
-                "点を達成しました。\n報酬として素材を手に入れました。\n";
+            this.message = "ミッションを達成しました！\n惑星全体の" + Math.floor(this.game.battleWindow.gameScore) + "点を達成しました。\n報酬として素材を手に入れました。\n";
             this.titleLabel.setString("YOU ARE FIRST VISITER!");
         } else {
-            this.message = "ミッションに失敗しました！\n惑星全体の" + Math.floor(this.game.battleWindow.gameScore) +
-                "点を達成しました。\n掘削した素材は手に入りませんでした。\n";
+            this.message = "ミッションに失敗しました！\n惑星全体の" + Math.floor(this.game.battleWindow.gameScore) + "点を達成しました。\n掘削した素材は手に入りませんでした。\n";
             this.titleLabel.setString("FAILED TO INVESTIGATE..");
         }
         if (this.message) {

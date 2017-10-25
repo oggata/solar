@@ -4,7 +4,6 @@ var Coin = cc.Node.extend({
         this.game = game;
         this.col = col;
         this.row = row;
-
         /*
         var _rand2 = this.game.getRandNumberFromRange(1, 5);
         _rand2 = 1;
@@ -25,10 +24,8 @@ var Coin = cc.Node.extend({
         this.sprite.setAnchorPoint(0.5, 0);
         this.addChild(this.sprite);
         */
-
-                    this.tree = cc.Sprite.create("res/planets/004/map-chip-z.png");
-                    this.addChild(this.tree);  
-
+        this.tree = cc.Sprite.create("res/planets/004/map-chip-z.png");
+        this.addChild(this.tree);
         this.imgWidth = 1280 / 8;
         this.imgHeight = 1280 / 8;
         this.widthCnt = 6;
@@ -40,44 +37,39 @@ var Coin = cc.Node.extend({
         //this.addChild(this.sprite);
         */
         this.hp = 100;
-
-this.deadTime = 0;
-
+        this.deadTime = 0;
         this.initializeWalkAnimation();
     },
     init: function () {},
     update: function () {
-
-if (this.hp == 0) {
-     this.game.gameScore += 1;
-    return false;
-}
-/*
         if (this.hp == 0) {
-
-            if(this.deadTime == 0){
-                this.initializeWalkAnimation();
-            }
-
-            this.deadTime+=1;
-            if(this.deadTime >= 30*5){
-                this.game.gameScore += 1;
-                return false;
-            }
-
-            return true;
+            this.game.gameScore += 1;
+            return false;
         }
-*/
+        /*
+                if (this.hp == 0) {
+
+                    if(this.deadTime == 0){
+                        this.initializeWalkAnimation();
+                    }
+
+                    this.deadTime+=1;
+                    if(this.deadTime >= 30*5){
+                        this.game.gameScore += 1;
+                        return false;
+                    }
+
+                    return true;
+                }
+        */
         return true;
     },
     initializeWalkAnimation: function () {
-
         this.imgWidth = 120;
         this.imgHeight = 120;
         this.widthCnt = 6;
         //this.setScale(0.6, 0.6);
         this.span = 0.1;
-
         var frameSeq = [];
         for (var row = 0; row < 4; row++) {
             for (var col = 0; col < 5; col++) {
@@ -92,7 +84,7 @@ if (this.hp == 0) {
         this.sprite2.setPosition(0, 40);
         this.sprite2.runAction(this.ra);
         this.sprite2.setAnchorPoint(0.5, 0.5);
-        this.sprite2.setScale(0.5,0.5);
+        this.sprite2.setScale(0.5, 0.5);
         this.addChild(this.sprite2);
     },
 });

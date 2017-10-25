@@ -58,14 +58,11 @@ var MissionsLayer = cc.Layer.extend({
         this.basePlanetId = this.storage.getBasePlanetId(CONFIG.CARD[1]);
         this.treeNodeScale = 0.5;
         this.treeNode.setScale(this.treeNodeScale);
-
-
         //this.storage = storage;
         this.ship = cc.Sprite.create("res/ship_search.png");
         //this.ship.setAnchorPoint(0, 0);
         this.ship.setPosition(100, 100);
-        this.treeNode.addChild(this.ship,9999999999999999);
-
+        this.treeNode.addChild(this.ship, 9999999999999999);
         this.planetButtons = [];
         this.connectedPlanetsData = new Array();
         //masterの惑星をループさせて配置する
@@ -83,13 +80,11 @@ var MissionsLayer = cc.Layer.extend({
                 }, this);
                 this.buttonPlanet.planetId = _planetId;
                 this.planetButtons.push(this.buttonPlanet);
-                
                 //for debug
                 this.planetIdLabel = new cc.LabelTTF(_planetId, "Arial", 99);
                 this.planetIdLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
                 this.buttonPlanet.addChild(this.planetIdLabel);
                 this.planetIdLabel.setPosition(20, 20);
-                
                 this.buttonPlanet.planetId = _planetId;
                 var menu001 = new cc.Menu(this.buttonPlanet);
                 menu001.setPosition(0, 0);
@@ -115,40 +110,13 @@ var MissionsLayer = cc.Layer.extend({
                         this.lineWidth = 9;
                         this.drawNode2.drawSegment(this.fromP, this.toP, this.lineWidth, cc.color(69, 162, 211, 255 * 0.3));
                         //接続している惑星のmasterデータを作る。master->branchとbranch->masterの両方必要。
-                        
-
-                        this.isExistsConnectedPlanets2(this.planets[masterCnt].id,_branchPlanets[lineCnt].id);
-                        this.isExistsConnectedPlanets2(_branchPlanets[lineCnt].id,this.planets[masterCnt].id);
-
-
+                        this.isExistsConnectedPlanets2(this.planets[masterCnt].id, _branchPlanets[lineCnt].id);
+                        this.isExistsConnectedPlanets2(_branchPlanets[lineCnt].id, this.planets[masterCnt].id);
                     }
                 }
-                /*
-                //自分のbasePlanetの場合は、マーカーをおく
-                if (this.basePlanetId == _planetId) {
-                    this.iconHere = cc.Sprite.create("res/icon_here.png");
-                    this.iconHere.setPosition(this.planets[masterCnt].position[0], this.planets[masterCnt].position[1]);
-                    this.treeNode.addChild(this.iconHere);
-                }
-                */
-                //イベントマーカーを設置する
-                /*
-                var _eventId = this.getRandNumberFromRange(1, 5);
-                if (_eventId == 3) {
-                    this.eventMarker = cc.Sprite.create("res/sprite_weekly_event.png");
-                    //this.iconHere.setPosition(this.planets[masterCnt].position[0], this.planets[masterCnt].position[1]);
-                    this.eventMarker.setPosition(351 / 2, 351 / 2);
-                    this.buttonPlanet.addChild(this.eventMarker);
-                }
-                */
             }
         }
-this.treeNode.setPosition((this.planets[this.basePlanetId].position[0] - 600) * -1 / 2, (this.planets[this.basePlanetId]
-            .position[1] - 900) * -1 / 2);
-
-
-
-
+        this.treeNode.setPosition((this.planets[this.basePlanetId].position[0] - 600) * -1 / 2, (this.planets[this.basePlanetId].position[1] - 900) * -1 / 2);
         this.firstTouchX = 0;
         this.firstTouchY = 0;
         this.lastTouchGameLayerX = this.treeNode.getPosition().x;
@@ -159,27 +127,22 @@ this.treeNode.setPosition((this.planets[this.basePlanetId].position[0] - 600) * 
         this.header.setPosition(0, this.viewSize.height - 136);
         //this.header.setPosition(0, 1136 - 136);
         this.addChild(this.header);
-        this.scaleButton001 = new cc.MenuItemImage("res/button_scale_001.png", "res/button_scale_001.png", function (
-            sender) {
-
+        this.scaleButton001 = new cc.MenuItemImage("res/button_scale_001.png", "res/button_scale_001.png", function (sender) {
             this.treeNodeScale += 0.2;
-
         }, this);
-        this.scaleButton002 = new cc.MenuItemImage("res/button_scale_002.png", "res/button_scale_002.png", function (
-            sender) {
+        this.scaleButton002 = new cc.MenuItemImage("res/button_scale_002.png", "res/button_scale_002.png", function (sender) {
             this.treeNodeScale -= 0.2;
         }, this);
-        this.scaleButton001.setPosition(100,100);
-        this.scaleButton001.setPosition(100,-100);
+        this.scaleButton001.setPosition(100, 100);
+        this.scaleButton001.setPosition(100, -100);
         var scaleMenu = new cc.Menu(this.scaleButton001, this.scaleButton002);
         scaleMenu.setPosition(0, 0);
-        this.header.addChild(scaleMenu);
+        //this.header.addChild(scaleMenu);
         this.footer = new Footer(this);
         this.addChild(this.footer);
         this.infoNode = cc.LayerColor.create(new cc.Color(0, 0, 0, 255), 640, 1136);
         this.infoNode.setAnchorPoint(0.5, 0.5);
         this.infoNode.setPosition(0, 0);
-        //this.infoNode.setOpacity(255 * 0.8);
         this.infoNode.setVisible(false);
         this.addChild(this.infoNode, 999999999);
         this.detail = new PlanetDetail(this);
@@ -187,11 +150,8 @@ this.treeNode.setPosition((this.planets[this.basePlanetId].position[0] - 600) * 
         this.infoNode.addChild(this.detail);
         this.planets = [];
         for (var i = 1; i < CONFIG.MISSION.length; i++) {
-            //cc.log(CONFIG.MISSION[i]);
-            //var _hoge = JSON.parse(CONFIG.MISSION[i]);
             this.planets.push(CONFIG.MISSION[i]);
         }
-        //this.createTable();
         cc.eventManager.addListener(cc.EventListener.create({
             event: cc.EventListener.TOUCH_ALL_AT_ONCE,
             onTouchesBegan: function (touches, event) {
@@ -206,126 +166,122 @@ this.treeNode.setPosition((this.planets[this.basePlanetId].position[0] - 600) * 
                 event.getCurrentTarget().touchFinish(touches[0].getLocation());
             }
         }), this);
-
         this.basePlanetOpacity = 1;
         this.addPlanetOpacity = 0.05;
         this.scheduleUpdate();
-
-
-        if(this.storage.moveToId > 0 && this.storage.moveFromId > 0){
+        if (this.storage.moveToId > 0 && this.storage.moveFromId > 0) {
             var _startPlanetId = this.storage.moveFromId;
             var _finishPlanetId = this.storage.moveToId;
             var _route = [];
-            var _aaa = this.setRoute(_startPlanetId,_finishPlanetId);
+            var _aaa = this.setRoute(_startPlanetId, _finishPlanetId);
             var _planet = CONFIG.PLANET[_aaa[0].planetId]
-            this.ship.setPosition(_planet.position[0],_planet.position[1]);
+            this.ship.setPosition(_planet.position[0], _planet.position[1]);
             this.aaa = _aaa;
             this.shipTargetPlanet = CONFIG.PLANET[_aaa[1].planetId];
             this.treeNode.setPosition((this.ship.getPosition().x - 600) * -1 / 2, (this.ship.getPosition().y - 900) * -1 / 2);
-        }else{
-
+        } else {
+            cc.log("basePlanetId:" + this.storage.basePlanetId);
             var _planet = CONFIG.PLANET[this.storage.basePlanetId];
-            this.ship.setPosition(_planet.position[0],_planet.position[1]);
+            this.ship.setPosition(_planet.position[0], _planet.position[1]);
         }
-
         return true;
     },
-
     update: function (dt) {
-if(this.aaa){
-
-        if(this.aaa.length > 0){
-            this.shipTargetPlanet = CONFIG.PLANET[this.aaa[0].planetId];
-            var speed = 10;
-            var targetDist = 10;
-            var dX = -this.ship.getPosition().x + this.shipTargetPlanet.position[0];
-            var dY = -this.ship.getPosition().y + this.shipTargetPlanet.position[1];
-            var dist = Math.sqrt(dX * dX + dY * dY);
-            if (dist > targetDist) {
-                var rad = Math.atan2(dX, dY);
-                var speedX = speed * Math.sin(rad);
-                var speedY = speed * Math.cos(rad);
-                this.ship.setPosition(this.ship.getPosition().x + speedX, this.ship.getPosition().y + speedY);
-                this.treeNode.setPosition((this.ship.getPosition().x - 600) * -1 / 2, (this.ship.getPosition().y - 900) * -1 / 2);
-            } else {
-                this.aaa.splice(0,1);
+        if (this.aaa) {
+            if (this.aaa.length > 0) {
+                this.shipTargetPlanet = CONFIG.PLANET[this.aaa[0].planetId];
+                var speed = 10;
+                var targetDist = 10;
+                var dX = -this.ship.getPosition().x + this.shipTargetPlanet.position[0];
+                var dY = -this.ship.getPosition().y + this.shipTargetPlanet.position[1];
+                var dist = Math.sqrt(dX * dX + dY * dY);
+                if (dist > targetDist) {
+                    var rad = Math.atan2(dX, dY);
+                    var speedX = speed * Math.sin(rad);
+                    var speedY = speed * Math.cos(rad);
+                    this.ship.setPosition(this.ship.getPosition().x + speedX, this.ship.getPosition().y + speedY);
+                    this.treeNode.setPosition((this.ship.getPosition().x - 600) * -1 / 2, (this.ship.getPosition().y - 900) * -1 / 2);
+                } else {
+                    this.aaa.splice(0, 1);
+                }
             }
         }
-}
         this.treeNode.setScale(this.treeNodeScale);
-        if(this.basePlanetOpacity <= 0.2){
+        if (this.basePlanetOpacity <= 0.2) {
             this.addPlanetOpacity = 0.05;
-        }else if(this.basePlanetOpacity >= 1){
+        } else if (this.basePlanetOpacity >= 1) {
             this.addPlanetOpacity = -0.05;
         }
-        this.basePlanetOpacity+=this.addPlanetOpacity;
+        this.basePlanetOpacity += this.addPlanetOpacity;
         for (var i = 0; i < this.planetButtons.length; i++) {
-            if(this.basePlanetId == this.planetButtons[i].planetId){
+            if (this.basePlanetId == this.planetButtons[i].planetId) {
                 this.planetButtons[i].setOpacity(this.basePlanetOpacity * 255);
             }
         }
     },
-
-    setRoute:function(_startPlanetId,_finishPlanetId){
-
+    setRoute: function (_startPlanetId, _finishPlanetId) {
         this._routeIds = [];
         this.connectedIds = [];
-
-        var _data = {planetId:_finishPlanetId,distance:0,connected:[]};
+        var _data = {
+            planetId: _finishPlanetId,
+            distance: 0,
+            connected: []
+        };
         this._routeIds.push(_data);
-
         for (var i = 0; i < this.connectedPlanetsData.length; i++) {
-            if(this.connectedPlanetsData[i].basePlanetId == _finishPlanetId){
+            if (this.connectedPlanetsData[i].basePlanetId == _finishPlanetId) {
                 //connectedPlanetIdで分ける
                 for (var h = 0; h < this.connectedPlanetsData[i].connectedPlanetId.length; h++) {
                     var _planetId = this.connectedPlanetsData[i].connectedPlanetId[h];
-                    if(this.isSetPlanetId(_planetId) == false){
+                    if (this.isSetPlanetId(_planetId) == false) {
                         var _connected = "";
                         for (var t = 0; t < this.connectedPlanetsData.length; t++) {
-                            if(this.connectedPlanetsData[t].basePlanetId == _planetId){
+                            if (this.connectedPlanetsData[t].basePlanetId == _planetId) {
                                 _connected = this.connectedPlanetsData[t].connectedPlanetId;
                             }
-                        } 
-                        var _data = {planetId:_planetId,distance:1,connected:_connected};
+                        }
+                        var _data = {
+                            planetId: _planetId,
+                            distance: 1,
+                            connected: _connected
+                        };
                         this._routeIds.push(_data);
                     }
                 }
             }
         }
-
         for (var j = 0; j < this._routeIds.length; j++) {
             for (var k = 0; k < this._routeIds[j].connected.length; k++) {
                 var _planetId = this._routeIds[j].connected[k];
-                if(this.isSetPlanetId(_planetId) == false){
+                if (this.isSetPlanetId(_planetId) == false) {
                     var _connected = "";
                     for (var t = 0; t < this.connectedPlanetsData.length; t++) {
-                        if(this.connectedPlanetsData[t].basePlanetId == _planetId){
+                        if (this.connectedPlanetsData[t].basePlanetId == _planetId) {
                             _connected = this.connectedPlanetsData[t].connectedPlanetId;
                         }
-                    } 
-                    var _data = {planetId:_planetId,distance:this._routeIds[j].distance+1,connected:_connected};
+                    }
+                    var _data = {
+                        planetId: _planetId,
+                        distance: this._routeIds[j].distance + 1,
+                        connected: _connected
+                    };
                     this._routeIds.push(_data);
                 }
             }
         }
-
-
         //maxDistanceを求める
         //var _maxDistance = 0;
         for (var j = 0; j < this._routeIds.length; j++) {
-            if(this._routeIds[j].planetId == _startPlanetId){
+            if (this._routeIds[j].planetId == _startPlanetId) {
                 _maxDistanceData = this._routeIds[j];
             }
         }
-
         //var _minDistance = 0;
         for (var j = 0; j < this._routeIds.length; j++) {
-            if(this._routeIds[j].planetId == _finishPlanetId){
+            if (this._routeIds[j].planetId == _finishPlanetId) {
                 _minDistanceData = this._routeIds[j];
             }
         }
-
-
         //cc.log(_maxDistance);
         //今度は startからfinishまで逆に辿って行く
         var _connected = [];
@@ -333,43 +289,36 @@ if(this.aaa){
         var _hoge = "";
         this.setHogeData = "";
         this._hoge = [];
-
-//finishを入れる
-this._hoge.push(_maxDistanceData);
-
+        //finishを入れる
+        this._hoge.push(_maxDistanceData);
         for (var j = 0; j < this._routeIds.length; j++) {
-            if(this._routeIds[j].planetId == _startPlanetId){
+            if (this._routeIds[j].planetId == _startPlanetId) {
                 _connected = this._routeIds[j].connected;
                 _distance = this._routeIds[j].distance;
-                this.setHogeData = this.setHoge(_connected,_distance);
+                this.setHogeData = this.setHoge(_connected, _distance);
                 for (var u = 0; u < 5; u++) {
-                    this.setHogeData = this.setHoge(this.setHogeData.connected,this.setHogeData.distance);
+                    this.setHogeData = this.setHoge(this.setHogeData.connected, this.setHogeData.distance);
                     //cc.log("distance:");
                     //cc.log(this.setHogeData.distance);
-                    if(!this.setHogeData) break;
-                    if(this.setHogeData.distance <= 1){
+                    if (!this.setHogeData) break;
+                    if (this.setHogeData.distance <= 1) {
                         cc.log("break");
                         break;
                     }
                 }
             }
         }
-this._hoge.push(_minDistanceData);
-
-
-
-cc.log(this._hoge);
+        this._hoge.push(_minDistanceData);
+        cc.log(this._hoge);
         return this._hoge;
     },
-
-    setHoge:function(_connected,_distance){
+    setHoge: function (_connected, _distance) {
         var _hogedata = "";
-
-        if(!_connected) return ;
+        if (!_connected) return;
         for (var h = 0; h < _connected.length; h++) {
             for (var t = 0; t < this._routeIds.length; t++) {
-                if(this._routeIds[t].planetId == _connected[h]){
-                    if(this._routeIds[t].distance == _distance - 1){
+                if (this._routeIds[t].planetId == _connected[h]) {
+                    if (this._routeIds[t].distance == _distance - 1) {
                         this._hoge.push(this._routeIds[t]);
                         _hogedata = this._routeIds[t];
                     }
@@ -378,90 +327,85 @@ cc.log(this._hoge);
         }
         return _hogedata;
     },
-
-
-    isSetPlanetId:function(targetPlanetId){
+    isSetPlanetId: function (targetPlanetId) {
         for (var j = 0; j < this._routeIds.length; j++) {
-            if(this._routeIds[j].planetId == targetPlanetId){
+            if (this._routeIds[j].planetId == targetPlanetId) {
                 return true;
             }
         }
         return false;
     },
-
     //setPlanetData = [];
-
-/*
-    setRoute:function(_startPlanetId,_finishPlanetId){
-        this.route = [_finishPlanetId];
-        //逆から辿って行く。finishのレベルを探す
-        connectedIds = [];
-        currentLv = 999;
-        targetId = 999;
-        for (var i = 0; i < this.connectedPlanetsData.length; i++) {
-            if(this.connectedPlanetsData[i].basePlanetId == _finishPlanetId){
-                connectedIds = this.connectedPlanetsData[i].connectedPlanetId;
-                currentLv = this.connectedPlanetsData[i].basePlanetLevel;
-            }
-        }
-
-        startLv = CONFIG.PLANET[_startPlanetId].lv;
-        //cc.log(startLv);
-        targetId = connectedIds[0];
-        this.route.push(connectedIds[0]);
-        for (var i = 0; i < 12; i++) {
-            //もう1週
-            for (var j = 0; j < this.connectedPlanetsData.length; j++) {
-                if(this.connectedPlanetsData[j].basePlanetId == targetId){
-                    connectedIds = this.connectedPlanetsData[j].connectedPlanetId;
-                    currentLv = this.connectedPlanetsData[j].basePlanetLevel;
+    /*
+        setRoute:function(_startPlanetId,_finishPlanetId){
+            this.route = [_finishPlanetId];
+            //逆から辿って行く。finishのレベルを探す
+            connectedIds = [];
+            currentLv = 999;
+            targetId = 999;
+            for (var i = 0; i < this.connectedPlanetsData.length; i++) {
+                if(this.connectedPlanetsData[i].basePlanetId == _finishPlanetId){
+                    connectedIds = this.connectedPlanetsData[i].connectedPlanetId;
+                    currentLv = this.connectedPlanetsData[i].basePlanetLevel;
                 }
             }
-            if(currentLv == startLv){
-                break;
-            }
 
+            startLv = CONFIG.PLANET[_startPlanetId].lv;
+            //cc.log(startLv);
             targetId = connectedIds[0];
             this.route.push(connectedIds[0]);
-            if(currentLv == 1){
-                break;
+            for (var i = 0; i < 12; i++) {
+                //もう1週
+                for (var j = 0; j < this.connectedPlanetsData.length; j++) {
+                    if(this.connectedPlanetsData[j].basePlanetId == targetId){
+                        connectedIds = this.connectedPlanetsData[j].connectedPlanetId;
+                        currentLv = this.connectedPlanetsData[j].basePlanetLevel;
+                    }
+                }
+                if(currentLv == startLv){
+                    break;
+                }
+
+                targetId = connectedIds[0];
+                this.route.push(connectedIds[0]);
+                if(currentLv == 1){
+                    break;
+                }
             }
-        }
-        //次のレベルでfinishのレベル-1を全部調べる
-        cc.log(this.route.reverse());
-    },
-*/
-
-
-    isExistsConnectedPlanets2:function(basePlanetId,connectedPlanetId){
+            //次のレベルでfinishのレベル-1を全部調べる
+            cc.log(this.route.reverse());
+        },
+    */
+    isExistsConnectedPlanets2: function (basePlanetId, connectedPlanetId) {
         for (var i = 0; i < this.connectedPlanetsData.length; i++) {
-            if(this.connectedPlanetsData[i].basePlanetId == basePlanetId){
+            if (this.connectedPlanetsData[i].basePlanetId == basePlanetId) {
                 this.connectedPlanetsData[i].connectedPlanetId.push(connectedPlanetId);
                 return true;
             }
         }
         //なければ足す
         var _level = CONFIG.PLANET[basePlanetId].lv;
-        var _data = {basePlanetId:basePlanetId,basePlanetLevel:_level,connectedPlanetId:[connectedPlanetId]};
+        var _data = {
+            basePlanetId: basePlanetId,
+            basePlanetLevel: _level,
+            connectedPlanetId: [connectedPlanetId]
+        };
         this.connectedPlanetsData.push(_data);
         return false;
     },
-
-
     touchStart: function (location) {
-if(this.aaa){
-if(this.aaa.length > 0) return;
-}
+        if (this.aaa) {
+            if (this.aaa.length > 0) return;
+        }
         this.firstTouchX = location.x;
         this.firstTouchY = location.y;
         var touchX = location.x - this.lastTouchGameLayerX;
         var touchY = location.y - this.lastTouchGameLayerY;
     },
     touchMove: function (location) {
-if(this.aaa){
-if(this.aaa.length > 0) return;
-}
-
+        if (this.aaa) {
+            if (this.aaa.length > 0) return;
+        }
         var scrollX = this.firstTouchX - location.x;
         var scrollY = this.firstTouchY - location.y;
         var x = this.lastTouchGameLayerX - scrollX;
@@ -473,62 +417,60 @@ if(this.aaa.length > 0) return;
         var touchY = location.y - this.lastTouchGameLayerY;
     },
     touchFinish: function (location) {
-if(this.aaa){
-if(this.aaa.length > 0) return;
-}
+        if (this.aaa) {
+            if (this.aaa.length > 0) return;
+        }
         this.lastTouchGameLayerX = this.treeNode.getPosition().x;
         this.lastTouchGameLayerY = this.treeNode.getPosition().y;
         var touchX = location.x - this.lastTouchGameLayerX;
         var touchY = location.y - this.lastTouchGameLayerY;
     },
-
-/*
-    createTable: function () {
-        var tableView = cc.TableView.create(this, cc.size(640, 1136 - 136 - 136));
-        tableView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
-        tableView.setPosition(0, 136);
-        tableView.setDelegate(this);
-        tableView.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
-        this.addChild(tableView);
-        tableView.reloadData();
-    },
-    tableCellSizeForIndex: function (table, idx) {
-        return cc.size(640, 122);
-    },
-    tableCellAtIndex: function (table, idx) {
-        var strValue = idx.toFixed(0);
-        var cell = table.dequeueCell();
-        var label;
-        if (!cell) {
-            cell = new CustomTableViewCell();
-            this.spriteCell = cc.Sprite.create("res/table_cell.png");
-            this.spriteCell.setAnchorPoint(0, 0);
-            this.spriteCell.setPosition(0, 0);
-            cell.addChild(this.spriteCell, 9999999);
-            var button = new cc.MenuItemImage("res/button_get_coin.png", "res/button_get_coin_on.png", function () {
-                this.infoNode.setVisible(true);
-                var _planetId = this.planets[strValue].planetId;
-                this.detail.setPlanet(_planetId);
-            }, this);
-            button.setPosition(600, 50);
-            var menu001 = new cc.Menu(button);
-            menu001.setPosition(0, 0);
-            cell.addChild(menu001, 999999999);
-            var _cardId = this.planets[strValue].id;
-            var _name = CONFIG.MISSION[_cardId].name;
-            var nameLabel = cc.LabelTTF.create(_name, "Helvetica", 22);
-            nameLabel.setPosition(130, 86);
-            nameLabel.setAnchorPoint(0, 0);
-            nameLabel.setTag("nameLabel");
-            this.spriteCell.addChild(nameLabel, 9999999);
-        }
-        return cell;
-    },
-    numberOfCellsInTableView: function (table) {
-        return this.planets.length;
-    },
-*/
-
+    /*
+        createTable: function () {
+            var tableView = cc.TableView.create(this, cc.size(640, 1136 - 136 - 136));
+            tableView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
+            tableView.setPosition(0, 136);
+            tableView.setDelegate(this);
+            tableView.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
+            this.addChild(tableView);
+            tableView.reloadData();
+        },
+        tableCellSizeForIndex: function (table, idx) {
+            return cc.size(640, 122);
+        },
+        tableCellAtIndex: function (table, idx) {
+            var strValue = idx.toFixed(0);
+            var cell = table.dequeueCell();
+            var label;
+            if (!cell) {
+                cell = new CustomTableViewCell();
+                this.spriteCell = cc.Sprite.create("res/table_cell.png");
+                this.spriteCell.setAnchorPoint(0, 0);
+                this.spriteCell.setPosition(0, 0);
+                cell.addChild(this.spriteCell, 9999999);
+                var button = new cc.MenuItemImage("res/button_get_coin.png", "res/button_get_coin_on.png", function () {
+                    this.infoNode.setVisible(true);
+                    var _planetId = this.planets[strValue].planetId;
+                    this.detail.setPlanet(_planetId);
+                }, this);
+                button.setPosition(600, 50);
+                var menu001 = new cc.Menu(button);
+                menu001.setPosition(0, 0);
+                cell.addChild(menu001, 999999999);
+                var _cardId = this.planets[strValue].id;
+                var _name = CONFIG.MISSION[_cardId].name;
+                var nameLabel = cc.LabelTTF.create(_name, "Helvetica", 22);
+                nameLabel.setPosition(130, 86);
+                nameLabel.setAnchorPoint(0, 0);
+                nameLabel.setTag("nameLabel");
+                this.spriteCell.addChild(nameLabel, 9999999);
+            }
+            return cell;
+        },
+        numberOfCellsInTableView: function (table) {
+            return this.planets.length;
+        },
+    */
     getRandNumberFromRange: function (min, max) {
         var rand = min + Math.floor(Math.random() * (max - min));
         return rand;

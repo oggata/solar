@@ -2,7 +2,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
     sprite: null,
     ctor: function (storage, cardId) {
         this._super();
-        //cc.sys.localStorage.clear();
+//cc.sys.localStorage.clear();
         //画面サイズの取得
         this.viewSize = cc.director.getVisibleSize();
         this.storage = storage;
@@ -92,13 +92,13 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.error.addChild(this.errorLabel);
         this.errorLabel.setPosition(320, 120);
         //メッセージの制御
-        this.messageLabel = cc.LabelTTF.create("", "Arial", 18);
-        this.messageLabel.setPosition(160, 240);
+        this.messageLabel = cc.LabelTTF.create("AAAAAAAAAAAA", "Arial", 18);
+        this.messageLabel.setPosition(30, 900);
         this.messageLabel.setAnchorPoint(0, 1);
         this.messageLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.addChild(this.messageLabel);
+        this.backNode.addChild(this.messageLabel,9999999999999);
         this.messageLabel.setAnchorPoint(0, 1);
-        this.message = "名称: AOXP-12345！\n所有者: なし\n成功目標: 25%以上の探索\n敵対反応: あり\n採掘できる鉱物: 銅、ニッケル、鉄など";
+        this.message = "ワクセイタンサシステム\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートカンリョウシマシタ....\n\n";
         this.messageTime = 0;
         this.visibleStrLenght = 0;
         this.launchCnt = 0;
@@ -134,8 +134,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
             var _time = 0;
             var _basePlanetId = 1;
             var _destinationPlanetId = 0;
-            this.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId,
-                "NO_DIST", 1);
+            this.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId, "NO_DIST", 1);
         }
         for (var key in this.storage.shipData) {
             if (this.storage.shipData.hasOwnProperty(key)) {
@@ -196,11 +195,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
             this.masterShip.targetTime = parseInt(new Date() / 1000);
         }, this);
         this.debugButton.setPosition(80, 1000);
-        this.debug2Button = new cc.MenuItemImage("res/button_debug.png", "res/button_debug.png", function () {
-            this.storage.addCoin(10000);
-        }, this);
-        this.debug2Button.setPosition(80, 950);
-        var menu001 = new cc.Menu(this.debugButton, this.debug2Button);
+        var menu001 = new cc.Menu(this.debugButton);
         menu001.setPosition(0, 0);
         this.addChild(menu001, 999999999999999999);
         if (this.storage.targetMovePlanetId != 0) {
@@ -235,7 +230,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         }
         //ノイズのエフェクト
         this.noiseTime++;
-        if (this.noiseTime >= 30 * 15) {
+        if (this.noiseTime >= 30 * 6) {
             this.noiseTime = 0;
         }
         if (this.noiseTime >= 0 && this.noiseTime <= 30 * 3) {
@@ -274,16 +269,12 @@ var DiscoveryLayer2 = cc.Layer.extend({
                 this.addDebrisCnt = 0;
                 this.addDebris(1);
             }
-            this.shipSmoke.setPosition(this.ship.getPosition().x + this.masterShip.dx, this.ship.getPosition().y + this.masterShip
-                .dy);
-            this.shipSmoke2.setPosition(this.ship.getPosition().x + this.masterShip.dx, this.ship.getPosition().y + this.masterShip
-                .dy);
+            this.shipSmoke.setPosition(this.ship.getPosition().x + this.masterShip.dx, this.ship.getPosition().y + this.masterShip.dy);
+            this.shipSmoke2.setPosition(this.ship.getPosition().x + this.masterShip.dx, this.ship.getPosition().y + this.masterShip.dy);
         }
         for (var i = 0; i < this.meteorites.length; i++) {
-            this.meteorites[i].setPosition(this.meteorites[i].getPosition().x + this.meteorites[i].dx, this.meteorites[i].getPosition()
-                .y + this.meteorites[i].dy);
-            this.meteorites[i].smoke.setPosition(this.meteorites[i].getPosition().x + this.meteorites[i].dx, this.meteorites[
-                i].getPosition().y + this.meteorites[i].dy);
+            this.meteorites[i].setPosition(this.meteorites[i].getPosition().x + this.meteorites[i].dx, this.meteorites[i].getPosition().y + this.meteorites[i].dy);
+            this.meteorites[i].smoke.setPosition(this.meteorites[i].getPosition().x + this.meteorites[i].dx, this.meteorites[i].getPosition().y + this.meteorites[i].dy);
             var _dist = cc.pDistance(this.ship.getPosition(), this.meteorites[i].getPosition());
             if (_dist >= 800) {
                 this.baseNode.removeChild(this.meteorites[i].smoke);
@@ -292,22 +283,26 @@ var DiscoveryLayer2 = cc.Layer.extend({
         }
         this.ship.update();
         this.shipControlMenu.update();
+
+
         if (this.ship.basePlanet != null) {
             //メッセージ表示の管理
             this.messageTime++;
-            if (this.messageTime >= 1) {
+            if (this.messageTime >= 4) {
                 this.messageTime = 0;
                 this.visibleStrLenght++;
             }
             if (this.visibleStrLenght > this.message.length) {
-                this.visibleStrLenght = this.message.length;
+                this.visibleStrLenght = 0;
             }
             var _visibleString = this.message.substring(0, this.visibleStrLenght);
-            this.messageLabel.setVisible(true);
+            this.messageLabel.setString(_visibleString);
+            this.messageLabel.setVisible(true);   
         } else {
             this.messageTime = 0;
             this.visibleStrLenght = 0;
         }
+        
         this.setBrakingDistance();
         for (var i = 0; i < this.planets.length; i++) {
             this.planets[i].update();
@@ -471,10 +466,8 @@ var DiscoveryLayer2 = cc.Layer.extend({
         //basePlanetがある場合は、そのplanetの衛星軌道をたどる
         if (this.masterShip.status != "MOVING") {
             if (this.ship.basePlanet != null) {
-                var _targetPosX = this.ship.basePlanet.getPosition().x + this.ship.basePlanet.satelliteSprite.getPosition().x -
-                    this.ship.basePlanet.planetSpriteW / 2;
-                var _targetPosY = this.ship.basePlanet.getPosition().y + this.ship.basePlanet.satelliteSprite.getPosition().y -
-                    this.ship.basePlanet.planetSpriteW / 2;
+                var _targetPosX = this.ship.basePlanet.getPosition().x + this.ship.basePlanet.satelliteSprite.getPosition().x - this.ship.basePlanet.planetSpriteW / 2;
+                var _targetPosY = this.ship.basePlanet.getPosition().y + this.ship.basePlanet.satelliteSprite.getPosition().y - this.ship.basePlanet.planetSpriteW / 2;
                 var _posX = this.ship.getPosition().x;
                 var _posY = this.ship.getPosition().y;
                 if (Math.abs(this.ship.getPosition().x - _targetPosX) >= 5) {
@@ -521,9 +514,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
     getMostNearPlanet: function (_x, _y, _dist) {
         for (var i = 0; i < this.planets.length; i++) {
             var _distance = Math.sqrt(
-                (_x - this.planets[i].getPosition().x * this.baseNodeScale) * (_x - this.planets[i].getPosition().x * this.baseNodeScale) +
-                (_y - this.planets[i].getPosition().y * this.baseNodeScale) * (_y - this.planets[i].getPosition().y * this.baseNodeScale)
-            );
+                (_x - this.planets[i].getPosition().x * this.baseNodeScale) * (_x - this.planets[i].getPosition().x * this.baseNodeScale) + (_y - this.planets[i].getPosition().y * this.baseNodeScale) * (_y - this.planets[i].getPosition().y * this.baseNodeScale));
             if (_distance <= _dist) {
                 return this.planets[i];
             }
@@ -531,7 +522,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         return null;
     },
     touchStart: function (location) {
-cc.log(this.masterShip.status);
+        cc.log(this.masterShip.status);
         if (this.masterShip.status != "NO_DIST") return;
         this.touchStatus = "start";
         this.fromP = cc.p(location.x, location.y);
@@ -629,8 +620,7 @@ cc.log(this.masterShip.status);
         var frameSeq = [];
         for (var i = 0; i < this.heightCount; i++) {
             for (var j = 0; j < this.widthCount; j++) {
-                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.itemWidth * j, this.itemHeight * i, this.itemWidth,
-                    this.itemHeight));
+                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.itemWidth * j, this.itemHeight * i, this.itemWidth, this.itemHeight));
                 frameSeq.push(frame);
             }
         }

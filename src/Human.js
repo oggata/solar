@@ -36,10 +36,9 @@ var Human = cc.Node.extend({
         this.moveType = moveType;
         if (this.moveType == 99) {
             this.setRouteType000();
-        }else{
+        } else {
             this.setRouteType033();
         }
-
         this.isAuto = true;
         if (this.isAuto == true && this.colorName == "GREEN") {
             this.setRouteType002();
@@ -152,8 +151,7 @@ var Human = cc.Node.extend({
         return 0;
         var cnt = 0;
         for (var h = 0; h < this.game.humans.length; h++) {
-            if (this.game.humans[h].col == targetCol && this.game.humans[h].row == targetRow && this.game.humans[h].colorName ==
-                "RED") {
+            if (this.game.humans[h].col == targetCol && this.game.humans[h].row == targetRow && this.game.humans[h].colorName == "RED") {
                 cnt++;
             }
         }
@@ -265,8 +263,7 @@ var Human = cc.Node.extend({
         this.hasPlayer = false;
         for (var c = 0; c < this.game.humans.length; c++) {
             for (var i = 0; i < this.distances.length; i++) {
-                if (this.game.humans[c].colorName == this.enemyColorName && this.distances[i].col == this.game.humans[c].col &&
-                    this.distances[i].row == this.game.humans[c].row) {
+                if (this.game.humans[c].colorName == this.enemyColorName && this.distances[i].col == this.game.humans[c].col && this.distances[i].row == this.game.humans[c].row) {
                     var _marker = this.getMarker(this.distances[i].col, this.distances[i].row);
                     this.targetMarkers.push(this.distances[i]);
                     this.hasPlayer = true;
@@ -307,7 +304,6 @@ var Human = cc.Node.extend({
             this.setRoute();
         }
     },
-
     //(コイナーtype)コインを取得する
     setRouteType002: function () {
         this.maxDistance = 40;
@@ -336,41 +332,41 @@ var Human = cc.Node.extend({
         }
         this.setRoute();
     },
-/*
-    //(アタッカーtype)敵に攻撃を仕掛ける
-    setRouteType003: function () {
-        //this.walkSpeed = 2 * 3;
-        //敵のenemyの存在するマーカーを全部取得する
-        if (this.colorName == "GREEN") {
-            this.enemyColorName = "RED";
-        } else {
-            this.enemyColorName = "GREEN";
-        }
-        for (var c = 0; c < this.game.humans.length; c++) {
-            for (var i = 0; i < this.distances.length; i++) {
-                if (this.game.humans[c].colorName == this.enemyColorName && this.distances[i].col == this.game.humans[c].col &&
-                    this.distances[i].row == this.game.humans[c].row) {
-                    var _marker = this.getMarker(this.distances[i].col, this.distances[i].row);
-                    this.targetMarkers.push(this.distances[i]);
+    /*
+        //(アタッカーtype)敵に攻撃を仕掛ける
+        setRouteType003: function () {
+            //this.walkSpeed = 2 * 3;
+            //敵のenemyの存在するマーカーを全部取得する
+            if (this.colorName == "GREEN") {
+                this.enemyColorName = "RED";
+            } else {
+                this.enemyColorName = "GREEN";
+            }
+            for (var c = 0; c < this.game.humans.length; c++) {
+                for (var i = 0; i < this.distances.length; i++) {
+                    if (this.game.humans[c].colorName == this.enemyColorName && this.distances[i].col == this.game.humans[c].col &&
+                        this.distances[i].row == this.game.humans[c].row) {
+                        var _marker = this.getMarker(this.distances[i].col, this.distances[i].row);
+                        this.targetMarkers.push(this.distances[i]);
+                    }
                 }
             }
-        }
-        //マーカーからの距離でsortする
-        this.targetMarkers.sort(function (a, b) {
-            if (a.dist < b.dist) return -1;
-            if (a.dist > b.dist) return 1;
-            return 0;
-        });
-        //選択されたマーカー一覧から一つを選ぶ
-        if (this.targetMarkers.length > 0) {
-            this.targetMarker = this.targetMarkers[0];
-            this.targetDistance = this.targetMarker.dist;
-        } else {
-            this.targetMarker = null;
-        }
-        this.setRoute();
-    },
-*/
+            //マーカーからの距離でsortする
+            this.targetMarkers.sort(function (a, b) {
+                if (a.dist < b.dist) return -1;
+                if (a.dist > b.dist) return 1;
+                return 0;
+            });
+            //選択されたマーカー一覧から一つを選ぶ
+            if (this.targetMarkers.length > 0) {
+                this.targetMarker = this.targetMarkers[0];
+                this.targetDistance = this.targetMarker.dist;
+            } else {
+                this.targetMarker = null;
+            }
+            this.setRoute();
+        },
+    */
     setRoute: function () {
         this.route = [];
         if (this.targetMarker != null) {
@@ -608,8 +604,7 @@ var Human = cc.Node.extend({
             this.sprite.stopAllActions();
             var frameSeq = [];
             for (var i = 0; i < this.widthCnt; i++) {
-                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 1, this.imgWidth, this
-                    .imgHeight));
+                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 1, this.imgWidth, this.imgHeight));
                 frameSeq.push(frame);
             }
             this.wa = cc.Animation.create(frameSeq, this.span);
@@ -623,8 +618,7 @@ var Human = cc.Node.extend({
             this.sprite.stopAllActions();
             var frameSeq = [];
             for (var i = 0; i < this.widthCnt; i++) {
-                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 0, this.imgWidth, this
-                    .imgHeight));
+                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 0, this.imgWidth, this.imgHeight));
                 frameSeq.push(frame);
             }
             this.wa = cc.Animation.create(frameSeq, this.span);
@@ -638,8 +632,7 @@ var Human = cc.Node.extend({
             this.sprite.stopAllActions();
             var frameSeq = [];
             for (var i = 0; i < this.widthCnt; i++) {
-                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 2, this.imgWidth, this
-                    .imgHeight));
+                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 2, this.imgWidth, this.imgHeight));
                 frameSeq.push(frame);
             }
             this.wa = cc.Animation.create(frameSeq, this.span);
@@ -653,8 +646,7 @@ var Human = cc.Node.extend({
             this.sprite.stopAllActions();
             var frameSeq = [];
             for (var i = 0; i < this.widthCnt; i++) {
-                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 3, this.imgWidth, this
-                    .imgHeight));
+                var frame = cc.SpriteFrame.create(this.image, cc.rect(this.imgWidth * i, this.imgHeight * 3, this.imgWidth, this.imgHeight));
                 frameSeq.push(frame);
             }
             this.wa = cc.Animation.create(frameSeq, this.span);

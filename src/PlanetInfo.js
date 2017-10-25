@@ -10,9 +10,7 @@ var PlanetInfo = cc.Node.extend({
             this.baseNode.addChild(this.planetSprite);
             this.planetSprite.setPosition(_x, _y);
             this.planets.push(this.planetSprite);
-            this.names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-                'U', 'V', 'W', 'X', 'Y', 'Z'
-            ];
+            this.names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
             this.names.sort(this.shuffle);
             this.names.sort(this.shuffle);
             this.names.sort(this.shuffle);
@@ -29,9 +27,7 @@ var PlanetInfo = cc.Node.extend({
         }
     },
     init: function () {},
-    update: function (scaleNum) {
-
-    },
+    update: function (scaleNum) {},
     getRandNumberFromRange: function (min, max) {
         var rand = min + Math.floor(Math.random() * (max - min));
         return rand;
@@ -40,9 +36,7 @@ var PlanetInfo = cc.Node.extend({
         for (var i = 0; i < this.planets.length; i++) {
             if (this.planets[i] != this.rocketSprite.basePlanet) {
                 var _distance = Math.sqrt(
-                    (_x - this.planets[i].getPosition().x * this.battleWindowScale) * (_x - this.planets[i].getPosition().x * this
-                        .battleWindowScale) + (_y - this.planets[i].getPosition().y * this.battleWindowScale) * (_y - this.planets[i]
-                        .getPosition().y * this.battleWindowScale));
+                    (_x - this.planets[i].getPosition().x * this.battleWindowScale) * (_x - this.planets[i].getPosition().x * this.battleWindowScale) + (_y - this.planets[i].getPosition().y * this.battleWindowScale) * (_y - this.planets[i].getPosition().y * this.battleWindowScale));
                 if (_distance <= _dist) {
                     return true;
                 }

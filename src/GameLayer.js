@@ -73,35 +73,29 @@ var GameLayer = cc.Layer.extend({
                 event.getCurrentTarget().touchFinish(touches[0].getLocation());
             }
         }), this);
-
-        this.header1 = new Header(this);
-        this.addChild(this.header1, 999999);
-        this.header1.setAnchorPoint(0.5, 0);
-        this.header1.setPosition(320, 1136 - 72);
-
+        //this.header1 = new Header(this);
+        //this.addChild(this.header1, 999999);
+        //this.header1.setAnchorPoint(0.5, 0);
+        //this.header1.setPosition(320, 1136 - 72);
         this.backNode = cc.Sprite.create("res/back_top2.png");
         this.backNode.setAnchorPoint(0, 0);
         this.backNode.setPosition(0, 0);
         this.addChild(this.backNode);
-
         this.baseNode = cc.Sprite.create("res/back_top.png");
         this.baseNode.setAnchorPoint(0, 0);
         this.baseNode.setPosition(0, 0);
         this.addChild(this.baseNode);
-
         this.battleWindow = new BattleWindow(this);
         this.addChild(this.battleWindow);
         this.battleWindow.setPosition(0, 0);
         this.battleWindowScale = 0.1;
         this.maxBattleWindowScale = 0.8;
         this.battleWindow.setScale(this.battleWindowScale);
-
         //ノイズを乗せる
         this.noiseNode = cc.Sprite.create("res/back_top5.png");
         this.noiseNode.setAnchorPoint(0, 0);
         this.noiseNode.setPosition(0, 0);
         this.addChild(this.noiseNode);
-
         this.setHeaderLabel();
         this.setStartLabel();
         this.resultSprite = new BattleResult(this);
@@ -117,14 +111,12 @@ var GameLayer = cc.Layer.extend({
         this.gameDirection = "";
         this.isMapMoving = false;
         this.labelStartCnt007Cnt = 0;
-
         this.noiseTime = 0;
         this.noiseOpacity = 0;
         this.noiseAddOpacity = 0;
         return true;
     },
     update: function (dt) {
-
         //ノイズのエフェクト
         this.noiseTime++;
         if (this.noiseTime >= 30 * 5) {
@@ -141,10 +133,7 @@ var GameLayer = cc.Layer.extend({
         } else {
             this.noiseNode.setOpacity(255 * 0);
         }
-
-
-        this.header1.update();
-
+        //this.header1.update();
         if (this.gameStatus == "gaming") {
             this.battleWindow.setShipHidden();
         }
@@ -389,8 +378,7 @@ var GameLayer = cc.Layer.extend({
     },
     touchMove: function (location) {
         var roopCnt = 1;
-        var dist = Math.sqrt((this.firstTouchX - location.x) * (this.firstTouchX - location.x) + (this.firstTouchY -
-            location.y) * (this.firstTouchY - location.y));
+        var dist = Math.sqrt((this.firstTouchX - location.x) * (this.firstTouchX - location.x) + (this.firstTouchY - location.y) * (this.firstTouchY - location.y));
         if (this.isMapMoving == false && dist >= 10) {
             if (this.firstTouchX < location.x && this.firstTouchY < location.y) {
                 //右上

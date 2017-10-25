@@ -48,11 +48,8 @@ var ItemLayer2 = cc.Layer.extend({
         this.backNode.setPosition(0, 0);
         this.addChild(this.backNode);
         this.createTable();
-
-this.footer = new Footer(this);
-this.addChild(this.footer);
-
-
+        this.footer = new Footer(this);
+        this.addChild(this.footer);
         /*
         this.infoNode = cc.LayerColor.create(new cc.Color(0, 0, 0, 255), 640, 1136);
         this.infoNode.setAnchorPoint(0, 0);

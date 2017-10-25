@@ -18,7 +18,7 @@ var BattleWindow = cc.Node.extend({
         this.coins = [];
         this.escapes = [];
         //最大値を設定する
-        this.maxCoinCnt = 12;
+        this.maxCoinCnt = 3;
         this.orderCnt = 0;
         this.orderMaxCnt = 1;
         this.gameLevel = 1;
@@ -84,12 +84,10 @@ var BattleWindow = cc.Node.extend({
             this.gameTimeCnt = 0;
             this.gameTime++;
         }
-
         if (this.humans.length < this.maxEnemyCnt) {
             this.positionalChips.sort(this.shuffle);
             this.addHuman(this.positionalChips[0].col, this.positionalChips[0].row, "RED");
         }
-
         //デブリをupdate
         for (var i = 0; i < this.debris_array.length; i++) {
             if (this.debris_array[i].update() == false) {
@@ -119,8 +117,7 @@ var BattleWindow = cc.Node.extend({
             }
             for (var j = 0; j < this.escapes.length; j++) {
                 var _ajust = 0;
-                this.field.reorderChild(this.escapes[j], Math.floor(99999999 - (this.escapes[j].col + this.escapes[j].row) +
-                    _ajust));
+                this.field.reorderChild(this.escapes[j], Math.floor(99999999 - (this.escapes[j].col + this.escapes[j].row) + _ajust));
             }
         }
         //ローバーをupdateする
@@ -140,12 +137,10 @@ var BattleWindow = cc.Node.extend({
             this.orderMaxCnt = 30;
             this.shipPosY = this.player.getPosition().y + 800;
         }
-
-        if(this.coins.length == 0){
+        if (this.coins.length == 0) {
             this.mode = "result";
             this.result = "success";
         }
-
         //humanとcoinのcollision判定
         for (var h = 0; h < this.humans.length; h++) {
             for (var c = 0; c < this.coins.length; c++) {
@@ -310,7 +305,7 @@ var BattleWindow = cc.Node.extend({
                     (col + row) * _chipW / 2 * -1 + _chipW * col + 624, _chipH / 2 * (col + row) - _chipH);
                 this.field.addChild(this.chip, 1 - (col + row));
                 _incrementNum++;
-                if (this.chip.baseMapType == 2) {                    
+                if (this.chip.baseMapType == 2) {
                     var _rand3 = this.getRandNumberFromRange(1, 5);
                     if (_rand3 == 1) {
                         this.tree = cc.Sprite.create("res/planets/" + _dirPath + "/map-obj-a.png");
@@ -373,9 +368,7 @@ var BattleWindow = cc.Node.extend({
         var _mindistMarker = null;
         for (var i = 0; i < this.chips.length; i++) {
             var _distance = Math.sqrt(
-                (posX - this.chips[i].getPosition().x * this.game.battleWindowScale) * (posX - this.chips[i].getPosition().x *
-                    this.game.battleWindowScale) + (posY - this.chips[i].getPosition().y * this.game.battleWindowScale) * (posY -
-                    this.chips[i].getPosition().y * this.game.battleWindowScale));
+                (posX - this.chips[i].getPosition().x * this.game.battleWindowScale) * (posX - this.chips[i].getPosition().x * this.game.battleWindowScale) + (posY - this.chips[i].getPosition().y * this.game.battleWindowScale) * (posY - this.chips[i].getPosition().y * this.game.battleWindowScale));
             if (_mindist > _distance) {
                 _mindist = _distance;
                 _mindistMarker = this.chips[i];
