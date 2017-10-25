@@ -130,7 +130,7 @@ var GameLayer = cc.Layer.extend({
 
         //ノイズのエフェクト
         this.noiseTime++;
-        if (this.noiseTime >= 30 * 15) {
+        if (this.noiseTime >= 30 * 5) {
             this.noiseTime = 0;
         }
         if (this.noiseTime >= 0 && this.noiseTime <= 30 * 3) {

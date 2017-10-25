@@ -22,7 +22,6 @@ var Ship = cc.Node.extend({
         this.timeLabel.setPosition(115, 160);
         this.timeLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.rocketSprite.addChild(this.timeLabel);
-
     },
     init: function () {},
     update: function () {

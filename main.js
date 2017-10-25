@@ -72,8 +72,8 @@ cc.game.onStart = function(){
         //cc.director.runScene(new CreditLayerScene());
 //cc.director.runScene(new GameLayerScene());
 //cc.director.runScene(new PlanetsLayerScene());
-cc.director.runScene(new MissionsLayerScene());
-//cc.director.runScene(new DiscoveryLayer2Scene());
+//cc.director.runScene(new MissionsLayerScene());
+cc.director.runScene(new DiscoveryLayer2Scene());
         //cc.director.runScene(new CardLayerScene());
 
         //cc.director.runScene(new LifeLayerScene());

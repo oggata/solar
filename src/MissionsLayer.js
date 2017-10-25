@@ -62,10 +62,9 @@ var MissionsLayer = cc.Layer.extend({
 
         //this.storage = storage;
         this.ship = cc.Sprite.create("res/ship_search.png");
-        this.ship.setAnchorPoint(0, 0);
+        //this.ship.setAnchorPoint(0, 0);
         this.ship.setPosition(100, 100);
         this.treeNode.addChild(this.ship,9999999999999999);
-
 
         this.planetButtons = [];
         this.connectedPlanetsData = new Array();
@@ -210,60 +209,45 @@ this.treeNode.setPosition((this.planets[this.basePlanetId].position[0] - 600) * 
 
         this.basePlanetOpacity = 1;
         this.addPlanetOpacity = 0.05;
-
-        cc.log("bb");
         this.scheduleUpdate();
-        cc.log("bb");
-
-        
-        //cc.log(this.connectedPlanetsData);
-        var _startPlanetId = 22;
-        var _finishPlanetId = 14;
-        var _route = [];
-        var _aaa = this.setRoute(_startPlanetId,_finishPlanetId);
-        var _planet = CONFIG.PLANET[_aaa[0].planetId]
-        this.ship.setPosition(_planet.position[0],_planet.position[1]);
-
-this.aaa = _aaa;
-
-this.shipTargetPlanet = CONFIG.PLANET[_aaa[1].planetId];
-//_aaa.splice(0,1);
 
 
-this.treeNode.setPosition((this.ship.getPosition().x - 600) * -1 / 2, (this.ship.getPosition().y - 900) * -1 / 2);
+        if(this.storage.moveToId > 0 && this.storage.moveFromId > 0){
+            var _startPlanetId = this.storage.moveFromId;
+            var _finishPlanetId = this.storage.moveToId;
+            var _route = [];
+            var _aaa = this.setRoute(_startPlanetId,_finishPlanetId);
+            var _planet = CONFIG.PLANET[_aaa[0].planetId]
+            this.ship.setPosition(_planet.position[0],_planet.position[1]);
+            this.aaa = _aaa;
+            this.shipTargetPlanet = CONFIG.PLANET[_aaa[1].planetId];
+            this.treeNode.setPosition((this.ship.getPosition().x - 600) * -1 / 2, (this.ship.getPosition().y - 900) * -1 / 2);
+        }
+
         return true;
     },
 
-
-
     update: function (dt) {
+if(this.aaa){
 
-      
-        this.shipTargetPlanet = CONFIG.PLANET[this.aaa[0].planetId];
-
-        if(this.ship.getPosition().x > this.shipTargetPlanet.position[0]){
-            this.ship.setPosition(this.ship.getPosition().x - 1,this.ship.getPosition().y);
+        if(this.aaa.length > 0){
+            this.shipTargetPlanet = CONFIG.PLANET[this.aaa[0].planetId];
+            var speed = 10;
+            var targetDist = 10;
+            var dX = -this.ship.getPosition().x + this.shipTargetPlanet.position[0];
+            var dY = -this.ship.getPosition().y + this.shipTargetPlanet.position[1];
+            var dist = Math.sqrt(dX * dX + dY * dY);
+            if (dist > targetDist) {
+                var rad = Math.atan2(dX, dY);
+                var speedX = speed * Math.sin(rad);
+                var speedY = speed * Math.cos(rad);
+                this.ship.setPosition(this.ship.getPosition().x + speedX, this.ship.getPosition().y + speedY);
+                this.treeNode.setPosition((this.ship.getPosition().x - 600) * -1 / 2, (this.ship.getPosition().y - 900) * -1 / 2);
+            } else {
+                this.aaa.splice(0,1);
+            }
         }
-        if(this.ship.getPosition().x < this.shipTargetPlanet.position[0]){
-            this.ship.setPosition(this.ship.getPosition().x + 1,this.ship.getPosition().y);
-        }
-
-        if(this.ship.getPosition().y > this.shipTargetPlanet.position[1]){
-            this.ship.setPosition(this.ship.getPosition().x,this.ship.getPosition().y - 1);
-        }
-        if(this.ship.getPosition().y < this.shipTargetPlanet.position[1]){
-            this.ship.setPosition(this.ship.getPosition().x,this.ship.getPosition().y + 1);
-        }
-
-if(this.ship.getPosition().x == this.shipTargetPlanet.position[0] && this.ship.getPosition().y > this.shipTargetPlanet.position[1]){
-    cc.log("ggg");
-    this.aaa.splice(0,1);
 }
-
-//var _dist = (this.ship.getPosition().x-this.shipTargetPlanet.position[0]) * (this.ship.getPosition().x-this.shipTargetPlanet.position[0]) + ;
-
-
-
         this.treeNode.setScale(this.treeNodeScale);
         if(this.basePlanetOpacity <= 0.2){
             this.addPlanetOpacity = 0.05;
@@ -461,12 +445,15 @@ cc.log(this._hoge);
 
 
     touchStart: function (location) {
+if(this.aaa.length > 0) return;
         this.firstTouchX = location.x;
         this.firstTouchY = location.y;
         var touchX = location.x - this.lastTouchGameLayerX;
         var touchY = location.y - this.lastTouchGameLayerY;
     },
     touchMove: function (location) {
+if(this.aaa.length > 0) return;
+
         var scrollX = this.firstTouchX - location.x;
         var scrollY = this.firstTouchY - location.y;
         var x = this.lastTouchGameLayerX - scrollX;
@@ -478,6 +465,7 @@ cc.log(this._hoge);
         var touchY = location.y - this.lastTouchGameLayerY;
     },
     touchFinish: function (location) {
+if(this.aaa.length > 0) return;
         this.lastTouchGameLayerX = this.treeNode.getPosition().x;
         this.lastTouchGameLayerY = this.treeNode.getPosition().y;
         var touchX = location.x - this.lastTouchGameLayerX;

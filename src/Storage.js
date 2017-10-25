@@ -21,6 +21,9 @@ var Storage = cc.Class.extend(
         this.targetMovePlanetId = 0;
         this.rescureTime = 0;
         this.targetMovePlanetId = 0;
+
+        this.moveFromId = 0;
+        this.moveToId = 0;
     },
 
     getConnectedPlanets:function(){
@@ -372,6 +375,9 @@ var Storage = cc.Class.extend(
         rtn += '"totalCoinAmount" :' + this.totalCoinAmount + ',';
         rtn += '"treasureAmount" :' + this.treasureAmount + ',';
 
+        rtn += '"moveToId" :' + this.moveToId + ',';
+        rtn += '"moveFromId" :' + this.moveFromId + ',';
+
         rtn += '"basePlanetId" :' + this.basePlanetId + ',';
         rtn += '"targetPlanetId" :' + this.targetPlanetId + ',';
         rtn += '"targetMovePlanetId" :' + this.targetMovePlanetId + ',';
@@ -432,7 +438,8 @@ this.targetMovePlanetId  = getData["targetMovePlanetId"];
 this.rescureTime  = getData["rescureTime"];
 
 
-
+this.moveToId  = getData["moveToId"];
+this.moveFromId  = getData["moveFromId"];
 
 
     },

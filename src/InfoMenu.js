@@ -17,7 +17,7 @@ var InfoMenu = cc.Node.extend({
         this.uiWindowAccount.setPosition(320, 120);
         this.infoNode.addChild(this.uiWindowAccount);
         this.uiWindowAccount.setVisible(false);
-        //探索画面
+        //到着画面
         this.uiWindowResult = cc.Sprite.create("res/ui-result-window.png");
         this.uiWindowResult.setPosition(320, 120);
         this.infoNode.addChild(this.uiWindowResult);
@@ -58,6 +58,11 @@ var InfoMenu = cc.Node.extend({
             this.game.arrow.setVisible(false);
             this.game.masterShip.dx = 0;
             this.game.masterShip.dy = 0;
+
+            this.game.storage.moveFromId = 0;
+            this.game.storage.moveToId = 0;
+            this.game.storage.saveCurrentData();
+
         }, this);
         this.buttonCancel.setPosition(180, 40);
         this.buttonSearch = new cc.MenuItemImage("res/button_window_search.png", "res/button_window_search.png", function () {
@@ -89,11 +94,20 @@ var InfoMenu = cc.Node.extend({
                 if(this.game.storage.targetMovePlanetId != 0){
                     _destinationPlanetId = this.game.storage.targetMovePlanetId;
                     this.game.storage.targetMovePlanetId = 0;
+
+                    this.game.storage.moveFromId = _basePlanetId;
+                    this.game.storage.moveToId = _destinationPlanetId;
+                    this.game.storage.saveCurrentData();
+                }else{
+                    this.game.storage.moveFromId = _basePlanetId;
+                    this.game.storage.moveToId = 0;
                 }
                 this.game.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId,
                     "MOVING", 1);
                 //ここで燃料を減らす
                 this.game.storage.useCoin(this.fuelCnt);
+
+
             }
         }, this);
         this.buttonSearch.setPosition(460, 40);

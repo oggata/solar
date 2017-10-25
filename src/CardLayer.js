@@ -57,21 +57,20 @@ var CardLayer = cc.Layer.extend({
         this.scheduleUpdate();
         var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
         var _rootPlanet = CONFIG.PLANET[_rootPlanetNum];
-        //到着する惑星をsetする
-        //cc.log("-------------->");
-        //cc.log(_planet);
         this.nextPlanetId = 1;
         if(_rootPlanet){
-            //cc.log(_rootPlanet.id);
             _planetBranchList = this.storage.getConnectedPlanets();
-            //cc.log(_planetBranchList);
             var _branchList = _planetBranchList[_rootPlanet.id];
             _branchList.sort(this.shuffle);
             this.nextPlanetId = _branchList[0];
         }
 
-        //このカードを持っているか調べる
+//this.storage.moveFromId = this.storage.basePlanetId;
+this.storage.moveFromId = _rootPlanetNum;
+this.storage.moveToId = this.nextPlanetId;
+this.storage.saveCurrentData();
 
+        //このカードを持っているか調べる
         //var _rand = this.getRandNumberFromRange(1, 15);
         this.storage.savePlanetDataToStorage(CONFIG.PLANET[this.nextPlanetId], 1);
         this.planetSprite = cc.Sprite.create(CONFIG.PLANET[this.nextPlanetId].image);
