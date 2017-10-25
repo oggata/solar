@@ -222,6 +222,10 @@ this.treeNode.setPosition((this.planets[this.basePlanetId].position[0] - 600) * 
             this.aaa = _aaa;
             this.shipTargetPlanet = CONFIG.PLANET[_aaa[1].planetId];
             this.treeNode.setPosition((this.ship.getPosition().x - 600) * -1 / 2, (this.ship.getPosition().y - 900) * -1 / 2);
+        }else{
+
+            var _planet = CONFIG.PLANET[this.storage.basePlanetId];
+            this.ship.setPosition(_planet.position[0],_planet.position[1]);
         }
 
         return true;
@@ -445,14 +449,18 @@ cc.log(this._hoge);
 
 
     touchStart: function (location) {
+if(this.aaa){
 if(this.aaa.length > 0) return;
+}
         this.firstTouchX = location.x;
         this.firstTouchY = location.y;
         var touchX = location.x - this.lastTouchGameLayerX;
         var touchY = location.y - this.lastTouchGameLayerY;
     },
     touchMove: function (location) {
+if(this.aaa){
 if(this.aaa.length > 0) return;
+}
 
         var scrollX = this.firstTouchX - location.x;
         var scrollY = this.firstTouchY - location.y;
@@ -465,7 +473,9 @@ if(this.aaa.length > 0) return;
         var touchY = location.y - this.lastTouchGameLayerY;
     },
     touchFinish: function (location) {
+if(this.aaa){
 if(this.aaa.length > 0) return;
+}
         this.lastTouchGameLayerX = this.treeNode.getPosition().x;
         this.lastTouchGameLayerY = this.treeNode.getPosition().y;
         var touchX = location.x - this.lastTouchGameLayerX;

@@ -96,13 +96,11 @@ var GameLayer = cc.Layer.extend({
         this.maxBattleWindowScale = 0.8;
         this.battleWindow.setScale(this.battleWindowScale);
 
-
         //ノイズを乗せる
         this.noiseNode = cc.Sprite.create("res/back_top5.png");
         this.noiseNode.setAnchorPoint(0, 0);
         this.noiseNode.setPosition(0, 0);
         this.addChild(this.noiseNode);
-
 
         this.setHeaderLabel();
         this.setStartLabel();
@@ -119,7 +117,6 @@ var GameLayer = cc.Layer.extend({
         this.gameDirection = "";
         this.isMapMoving = false;
         this.labelStartCnt007Cnt = 0;
-
 
         this.noiseTime = 0;
         this.noiseOpacity = 0;

@@ -210,9 +210,9 @@ var DiscoveryLayer2 = cc.Layer.extend({
             this.InfoMenu.infoNode.setVisible(true);
             this.masterShip.targetTime = 100 + parseInt(new Date() / 1000);
             this.masterShip.status = "SET_FREE_DIST";
-            this.tmpDx2 = 20;
-            this.tmpDy2 = 20;
-            this.pulledDist = 80;
+            this.tmpDx2 = 200;
+            this.tmpDy2 = 200;
+            this.pulledDist = 500;
         }
         this.cameraGapPosX = 0;
         this.cameraGapPosY = 0;
@@ -531,6 +531,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         return null;
     },
     touchStart: function (location) {
+cc.log(this.masterShip.status);
         if (this.masterShip.status != "NO_DIST") return;
         this.touchStatus = "start";
         this.fromP = cc.p(location.x, location.y);
