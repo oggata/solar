@@ -43,7 +43,6 @@ var MissionsLayer = cc.Layer.extend({
         this.distanceNum = 143230;
         this.viewSize = cc.director.getVisibleSize();
         var size = cc.winSize;
-        //this.storage = storage;
         this.backNode = cc.Sprite.create("res/back_top4.png");
         this.backNode.setAnchorPoint(0, 0);
         this.backNode.setPosition(0, 0);
@@ -56,6 +55,7 @@ var MissionsLayer = cc.Layer.extend({
         this.treeNode.addChild(this.drawNode2);
         //var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
         this.basePlanetId = this.storage.getBasePlanetId(CONFIG.CARD[1]);
+        this.storage.basePlanetId = this.storage.getBasePlanetId(CONFIG.CARD[1]);
         this.treeNodeScale = 0.5;
         this.treeNode.setScale(this.treeNodeScale);
         //this.storage = storage;

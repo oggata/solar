@@ -16,6 +16,7 @@ var Header = cc.Node.extend({
         this.header.addChild(this.coinLabel);
         this.coinLabel.setAnchorPoint(1, 0.5);
         this.coinLabel.setPosition(590, 105);
+
         this.levelGauge = new Gauge(120, 25, "");
         this.header.addChild(this.levelGauge);
         this.levelGauge.setPosition(24, 92);
@@ -26,7 +27,7 @@ var Header = cc.Node.extend({
         this.timeLabel.setPosition(510, 50);
         //this.timeLabel.setString("残り" + this.pastSecond + "秒");
         this.timeGauge = new TimeGauge(this);
-        this.timeGauge.setPosition(510, 50);
+        this.timeGauge.setPosition(514, 55);
         this.timeGauge.setScale(0.4);
         this.header.addChild(this.timeGauge);
         var coinButton = new cc.MenuItemImage("res/button_get_coin.png", "res/button_get_coin_on.png", function () {

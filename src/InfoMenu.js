@@ -52,14 +52,13 @@ var InfoMenu = cc.Node.extend({
             this.uiWindowLaunch.setVisible(false);
             this.infoNode.setVisible(false);
             this.game.masterShip.status = "NO_DIST";
-            this.game.masterShip.dx = 0;
-            this.game.masterShip.dy = 0;
             this.game.baseNode.removeChild(this.drawNode2);
             this.game.arrow.setVisible(false);
             this.game.masterShip.dx = 0;
             this.game.masterShip.dy = 0;
             this.game.storage.moveFromId = 0;
             this.game.storage.moveToId = 0;
+            this.game.storage.targetMovePlanetId = 0;
             this.game.storage.saveCurrentData();
         }, this);
         this.buttonCancel.setPosition(180, 40);
@@ -105,7 +104,7 @@ var InfoMenu = cc.Node.extend({
             }
         }, this);
         this.buttonSearch.setPosition(460, 40);
-        this.buttonOk = new cc.MenuItemImage("res/button_window_landing.png", "res/button_window_landing.png", function () {
+        this.buttonOk = new cc.MenuItemImage("res/button_window_ok.png", "res/button_window_ok.png", function () {
             cc.log("xx");
             this.game.masterShip.status = "NO_DIST";
             this.infoNode.setVisible(false);

@@ -5,8 +5,8 @@ var BattleResult = cc.Node.extend({
         this.baseNode = cc.LayerColor.create(new cc.Color(0, 0, 0, 255 * 0.7), 640, 1136);
         this.addChild(this.baseNode);
         this.resultSprite = cc.Sprite.create("res/ui-game-result.png");
-        this.resultSprite.setPosition(320, 1136 / 2);
-        this.addChild(this.resultSprite);
+        this.resultSprite.setPosition(320, 1136 / 2　- 150);
+this.addChild(this.resultSprite);
         this.circleSprite = cc.Sprite.create("res/ui-result-rotate-circle.png");
         this.circleSprite.setPosition(310, 310);
         //this.resultSprite.addChild(this.circleSprite);
@@ -22,7 +22,7 @@ var BattleResult = cc.Node.extend({
         this.resultLabel = cc.LabelTTF.create("54%", "Arial", 84);
         this.resultLabel.setPosition(310, 310);
         //this.resultLabel.setAnchorPoint(0, 1);
-        this.resultSprite.addChild(this.resultLabel);
+        //this.resultSprite.addChild(this.resultLabel);
         this.titleLabel = cc.LabelTTF.create("", "Arial", 32);
         this.titleLabel.setPosition(100, 800);
         this.titleLabel.setAnchorPoint(0, 1);
@@ -39,7 +39,7 @@ var BattleResult = cc.Node.extend({
         retryButton.setPosition(320, 50);
         var menu002 = new cc.Menu(retryButton);
         menu002.setPosition(0, 0);
-        this.resultSprite.addChild(menu002);
+this.resultSprite.addChild(menu002);
         this.message = "";
         this.messageTime2 = 0;
         this.visibleStrLenght2 = 0;

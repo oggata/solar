@@ -90,6 +90,7 @@ var GameLayer = cc.Layer.extend({
         this.battleWindow.setPosition(0, 0);
         this.battleWindowScale = 0.1;
         this.maxBattleWindowScale = 0.8;
+        this.resultBattleWindowScale = 1.0;
         this.battleWindow.setScale(this.battleWindowScale);
         //ノイズを乗せる
         this.noiseNode = cc.Sprite.create("res/back_top5.png");
@@ -266,19 +267,19 @@ var GameLayer = cc.Layer.extend({
         this.baseNodePosX = this.targetBaseNodePosX = 320 - _centerMarker.getPosition().x * this.battleWindowScale;
         this.baseNodePosY = this.targetBaseNodePosY = 400 - _centerMarker.getPosition().y * this.battleWindowScale;
         this.setScroll();
-        if (1 * 10 < this.gameStartTimeCnt && this.gameStartTimeCnt < 10 * 2) {
+        if (1 * 30 < this.gameStartTimeCnt && this.gameStartTimeCnt < 30 * 2) {
             this.labelStartCnt001.setVisible(true);
         }
-        if (2 * 10 < this.gameStartTimeCnt && this.gameStartTimeCnt < 10 * 3) {
+        if (2 * 30 < this.gameStartTimeCnt && this.gameStartTimeCnt < 30 * 3) {
             this.labelStartCnt002.setVisible(true);
         }
-        if (3 * 10 < this.gameStartTimeCnt && this.gameStartTimeCnt < 10 * 4) {
+        if (3 * 30 < this.gameStartTimeCnt && this.gameStartTimeCnt < 30 * 4) {
             this.labelStartCnt003.setVisible(true);
         }
-        if (4 * 10 < this.gameStartTimeCnt && this.gameStartTimeCnt < 10 * 5) {
+        if (4 * 30 < this.gameStartTimeCnt && this.gameStartTimeCnt < 30 * 5) {
             this.labelStartCnt004.setVisible(true);
         }
-        if (this.gameStartTimeCnt >= 10 * 5) {
+        if (this.gameStartTimeCnt >= 30 * 5) {
             if (this.gameStatus == "wait") {
                 this.gameStatus = "gaming";
                 this.message = "";
@@ -294,20 +295,14 @@ var GameLayer = cc.Layer.extend({
             //成功時のみshipがお迎えに来る
             if (this.battleWindow.result == "success") {
                 this.battleWindow.setShipLand("get");
-                //スケールを縮小する
-                /*
-                this.battleWindowScale -= 0.005;
-                if (this.battleWindowScale <= 0.01) {
-                    this.battleWindowScale = 0.01;
-                }*/
                 this.battleWindowScale += 0.02;
-                if (this.battleWindowScale >= 1.5) {
-                    this.battleWindowScale = 1.5;
+                if (this.battleWindowScale >= this.resultBattleWindowScale ) {
+                    this.battleWindowScale = this.resultBattleWindowScale ;
                 }
             } else {
                 this.battleWindowScale += 0.02;
-                if (this.battleWindowScale >= 1.5) {
-                    this.battleWindowScale = 1.5;
+                if (this.battleWindowScale >= this.resultBattleWindowScale ) {
+                    this.battleWindowScale = this.resultBattleWindowScale ;
                 }
             }
             //常に中央を表示するようにする
@@ -326,15 +321,11 @@ var GameLayer = cc.Layer.extend({
             }
             //試合結果を表示する
             if (this.endCnt == 30 * 2.2) {
-                //cc.log("window open!!");
                 //cc.sys.openURL("http://webdesign.about.com/");
                 this.labelStartCnt005.setVisible(false);
                 this.labelStartCnt006.setVisible(false);
                 this.resultSprite.setVisible(true);
                 this.resultSprite.sendMessage();
-            }
-            if (this.endCnt == 5) {
-                //this.storage.saveCreatureDataToStorage(CONFIG.CARD[1], 1);
             }
         }
     },

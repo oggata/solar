@@ -1,9 +1,9 @@
+/*
 var DevelopLayer = cc.Layer.extend({
     ctor: function (storage, playerColorTxt) {
         this._super();
 
         this.playerColorTxt = "green";
-
         this.back = cc.Sprite.create("res/back_top3.png");
         this.back.setPosition(0, 0);
         this.back.setAnchorPoint(0, 0);
@@ -39,3 +39,4 @@ var DivelopLayerScene = cc.Scene.extend({
         this.addChild(layer);
     }
 });
+*/

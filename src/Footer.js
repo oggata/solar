@@ -7,20 +7,22 @@ var Footer = cc.Node.extend({
         this.baseNode.setAnchorPoint(0, 0);
         this.baseNode.setPosition(0, 0);
         this.addChild(this.baseNode);
+
         var buttonMenu001 = new cc.MenuItemImage("res/button_menu_planet.png", "res/button_menu_planet.png", function () {
             this.goToDiscoveryLayer();
         }, this);
         buttonMenu001.setPosition(160 - 80, 60);
+
         var buttonMenu002 = new cc.MenuItemImage("res/button_menu_route.png", "res/button_menu_route.png", function () {
             this.goToItemLayer();
         }, this);
         buttonMenu002.setPosition(160 * 2 - 80, 60);
+
         var buttonMenu003 = new cc.MenuItemImage("res/button_menu_trade.png", "res/button_menu_trade.png", function () {
             //this.goToItemLayer();
             this.goToPlanetsLayer();
         }, this);
         buttonMenu003.setPosition(160 * 3 - 80, 60);
-
 
         var buttonMenu004 = new cc.MenuItemImage("res/button_menu_profile.png", "res/button_menu_profile.png", function () {
             //this.goToItemLayer();
@@ -30,7 +32,6 @@ var Footer = cc.Node.extend({
         var menu002 = new cc.Menu(buttonMenu001, buttonMenu002, buttonMenu003,buttonMenu004);
         menu002.setPosition(0, 0);
         this.baseNode.addChild(menu002);
-
     },
     init: function () {},
     update: function () {

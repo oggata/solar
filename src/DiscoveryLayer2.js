@@ -103,8 +103,8 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.visibleStrLenght = 0;
         this.launchCnt = 0;
         this.initializeWarpAnimation();
-        this.tmpDx = 0;
-        this.tmpDy = 0;
+        //this.tmpDx = 0;
+        //this.tmpDy = 0;
         this.touchStatus = "none";
         this.shipControlMenu = new ShipControlMenu(this);
         this.addChild(this.shipControlMenu);
@@ -117,12 +117,12 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.addChild(this.footer);
         this.arrow = cc.Sprite.create("res/marker_search.png");
         this.arrow.setPosition(0, 1136 - 220);
-        this.baseNode.addChild(this.arrow, 999999999999999999999999999999999999);
+        this.baseNode.addChild(this.arrow, 99999);
         this.arrow.setVisible(false);
         this.arrowLabel = cc.LabelTTF.create("500KM", "Arial", 42);
         this.arrowLabel.setPosition(160, 240);
         this.arrowLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.baseNode.addChild(this.arrowLabel, 999999999999999999999999999999999999);
+        this.baseNode.addChild(this.arrowLabel, 99999);
         this.masterShip = null;
         var keyCnt = Object.keys(this.storage.shipData).length;
         if (keyCnt == 0) {
@@ -147,11 +147,11 @@ var DiscoveryLayer2 = cc.Layer.extend({
         //拠点の惑星を取得する
         var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
         var _planet = CONFIG.PLANET[_rootPlanetNum];
+        //this.storage.basePlanetId = 
         //地球を作成する
         this.basePlanet = new PlanetSprite(this, _planet);
         this.baseNode.addChild(this.basePlanet, 999);
         this.basePlanet.setPosition(5000, 5000);
-        //this.basePlanet.setScale(0.5, 0.5);
         this.planets.push(this.basePlanet);
         //探索船を作る
         this.ship = new Ship(this, this.basePlanet);
@@ -162,9 +162,9 @@ var DiscoveryLayer2 = cc.Layer.extend({
         var stroke = 10; //描画の幅
         var texture = "res/planet_arrow.png"; //テクスチャの画像
         this.shipSmoke2 = cc.MotionStreak.create(4, 0.1, 10, cc.color.RED, texture);
-        this.baseNode.addChild(this.shipSmoke2, 999);
+        this.baseNode.addChild(this.shipSmoke2, 888);
         this.shipSmoke = cc.MotionStreak.create(2, 0.1, 8, cc.color.MAGENTA, texture);
-        this.baseNode.addChild(this.shipSmoke, 9999);
+        this.baseNode.addChild(this.shipSmoke, 888);
         //カメラの設定
         this.cameraTargetPosX = 0;
         this.cameraTargetPosY = 0;
@@ -200,6 +200,8 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.addChild(menu001, 999999999999999999);
         if (this.storage.targetMovePlanetId != 0) {
             _fuelCost = 100;
+
+            //ここで必要なコストを試算して入れる
             this.InfoMenu.setCost(_fuelCost, 10);
             this.InfoMenu.uiWindowLaunch.setVisible(true);
             this.InfoMenu.infoNode.setVisible(true);
@@ -217,6 +219,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         return true;
     },
     update: function (dt) {
+        //
         if (this.masterShip.status != "MOVING") {
             this.debriCnt++;
             if (this.debriCnt >= 15) {
@@ -376,11 +379,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         }
         this.hoge.dx = this.hoge.dx * 2;
         this.hoge.dx = this.hoge.dx * 2;
-        var fade = this.getRandNumberFromRange(1, 6); // 消えるまでの時間
-        var minSeg = 0.01; // セグメントの最小値（小さく設定すると滑らかになる）
-        var stroke = this.getRandNumberFromRange(1, 4); //描画の幅
-        var texture = "res/sprite_star003.png"; //テクスチャの画像
-        this.smoke = cc.MotionStreak.create(fade, minSeg, stroke, cc.color.WHITE, texture);
+        this.smoke = cc.MotionStreak.create(this.getRandNumberFromRange(1, 6), 0.01, this.getRandNumberFromRange(1, 4), cc.color.WHITE, "res/sprite_star003.png");
         this.baseNode.addChild(this.smoke, 999999999999999);
         this.smoke.setPosition(320, 320);
         this.hoge.smoke = this.smoke;
@@ -522,7 +521,6 @@ var DiscoveryLayer2 = cc.Layer.extend({
         return null;
     },
     touchStart: function (location) {
-        cc.log(this.masterShip.status);
         if (this.masterShip.status != "NO_DIST") return;
         this.touchStatus = "start";
         this.fromP = cc.p(location.x, location.y);
@@ -534,7 +532,6 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.baseNode.addChild(this.drawNode2, 99999999999);
     },
     touchMove: function (location) {
-        //if (this.isPullRocket == false) return;
         if (this.touchStatus != "start") return;
         this.removeChild(this.drawNode);
         this.drawNode = cc.DrawNode.create();
@@ -543,7 +540,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.pulledDist = cc.pDistance(this.fromP, this.toP);
         if (this.pulledDist >= 50) {
             this.masterShip.status = "SET_FREE_DIST";
-            var _rate = 1 / this.pulledDist;
+            //var _rate = 1 / this.pulledDist;
             this.tmpDx2 = (this.fromP.x - this.toP.x) * 1;
             this.tmpDy2 = (this.fromP.y - this.toP.y) * 1;
             this.baseNode.removeChild(this.drawNode2);
@@ -559,9 +556,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
             this.arrowLabel.setVisible(true);
             this.arrow.setPosition(this.toP.x, this.toP.y);
             this.arrowLabel.setPosition(this.toP.x, this.toP.y - 50);
-            var _rad = this.getRadian(this.fromP.x, this.fromP.y, this.toP.x, this.toP.y);
-            //cc.log(_rad);
-            //var _rad = this.getRadian(0,100,this.toP.x - this.fromP.x,this.toP.y - this.fromP.y);
+            //var _rad = this.getRadian(this.fromP.x, this.fromP.y, this.toP.x, this.toP.y);
         }
     },
     getRadian: function (x1, y1, x2, y2) {
@@ -573,22 +568,15 @@ var DiscoveryLayer2 = cc.Layer.extend({
         // ラジアンを角度に変換
         var degrees = radians * 180 / Math.PI;
         // 表示オブジェクトの角度に反映
-        //arrow.rotation = degrees;
         this.arrow.setRotation(360 - degrees + 180 + 90);
         this.ship.setRotation(360 - degrees + 360 + 90);
-        //cc.log(degrees);
     },
     touchFinish: function (location) {
-        //if (this.isPullRocket == false) return;
         this.touchStatus = "end";
         if (this.touchStatus != "start") return;
         this.removeChild(this.drawNode);
         var _dist = cc.pDistance(this.fromP, this.toP);
-        //cc.log(_dist);
-        //100
-        var _distRate = 1 / _dist;
-        //this.tmpDx = (this.fromP.x - this.toP.x) / 1000;
-        //this.tmpDy = (this.fromP.y - this.toP.y) / 1000;
+        //var _distRate = 1 / _dist;
         if (_dist >= 50) {
             this.masterShip.status = "SET_FREE_DIST";
         }
