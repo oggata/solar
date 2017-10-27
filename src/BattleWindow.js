@@ -147,7 +147,7 @@ var BattleWindow = cc.Node.extend({
                 if (this.humans[h].col == this.coins[c].col && this.humans[h].row == this.coins[c].row) {
                     this.coins[c].hp = 0;
                     if (this.humans[h].colorName == "GREEN") {
-                        this.game.storage.addCoin(1);
+this.game.storage.addCoin(10);
                         if (this.coins[c].typeNum) {
                             var _typeNum = this.coins[c].typeNum;
                             this.game.addMaterial(_typeNum);

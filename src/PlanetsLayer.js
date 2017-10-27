@@ -111,7 +111,7 @@ var PlanetsLayer = cc.Layer.extend({
             button.setPosition(600, 50);
             var menu001 = new cc.Menu(button);
             menu001.setPosition(0, 0);
-            cell.addChild(menu001, 999999999);
+            //cell.addChild(menu001, 999999999);
             var _cardId = this.planets[strValue].id;
             var _name = CONFIG.PLANET[_cardId].name;
             var _description = CONFIG.PLANET[_cardId].description;

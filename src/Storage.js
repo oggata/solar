@@ -82,12 +82,18 @@ var Storage = cc.Class.extend(
 
     addCoin:function(amount){
         this.totalCoinAmount+=amount;
+        if(this.totalCoinAmount < 0){
+            this.totalCoinAmount = 0;
+        }
         var _getData = this.getDataFromStorage();
         cc.sys.localStorage.setItem("gameStorage",_getData);
     },
 
     useCoin:function(amount){
         this.totalCoinAmount-=amount;
+        if(this.totalCoinAmount < 0){
+            this.totalCoinAmount = 0;
+        }
         var _getData = this.getDataFromStorage();
         cc.sys.localStorage.setItem("gameStorage",_getData);
     },

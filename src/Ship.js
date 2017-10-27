@@ -24,6 +24,18 @@ var Ship = cc.Node.extend({
         this.rocketSprite.addChild(this.timeLabel);
     },
     init: function () {},
+
+    getdoubleDigestNumer:function(number) {
+      return ("0" + number).slice(-2)
+    },
+
+    setTimeLabel:function(pastSecond){
+        var _min = Math.ceil(pastSecond/60);
+        var _second = Math.ceil(pastSecond%60);
+        var _txt = this.getdoubleDigestNumer(_min) + ":" + this.getdoubleDigestNumer(_second);
+        this.timeLabel.setString(_txt);
+    },
+
     update: function () {
 
         this.radarTime += 1;

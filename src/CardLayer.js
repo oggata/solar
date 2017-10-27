@@ -43,10 +43,7 @@ var CardLayer = cc.Layer.extend({
         this.baseNode.addChild(this.card);
         this.card.setPosition(320, 550);
         this.cardScale = 0.001;
-        this.labelSprite = cc.Sprite.create("res/label_get_card.png");
-        this.labelSprite.setPosition(320, 540);
-        this.labelSprite.setOpacity(0);
-        this.baseNode.addChild(this.labelSprite);
+
         this.cardGetTime = 1;
         this.backCardActionOpacity = 0;
         this.cardWaitTime = 0;
@@ -67,19 +64,25 @@ var CardLayer = cc.Layer.extend({
         this.storage.moveToId = this.nextPlanetId;
         this.storage.saveCurrentData();
         //このカードを持っているか調べる
-        //var _rand = this.getRandNumberFromRange(1, 15);
+
+        var _isOwnPlanet = this.storage.isOwnPlanetData(CONFIG.PLANET[this.nextPlanetId]);
+cc.log(_isOwnPlanet);
+
+        if(_isOwnPlanet == true){
+            this.labelSprite = cc.Sprite.create("res/label_get_card.png");
+        }else{
+            this.labelSprite = cc.Sprite.create("res/label_get_newcard.png");
+        }
+        this.labelSprite.setPosition(320, 540);
+        this.labelSprite.setOpacity(0);
+        this.baseNode.addChild(this.labelSprite);
+
+
         this.storage.savePlanetDataToStorage(CONFIG.PLANET[this.nextPlanetId], 1);
         this.planetSprite = cc.Sprite.create(CONFIG.PLANET[this.nextPlanetId].image);
-        this.planetSprite.setAnchorPoint(0.5,0.5);
         this.card.addChild(this.planetSprite);
-        //this.planetSprite.setPosition(180, 270);
-        //var _planetId = 1;
-        var _dx = 0;
-        var _dy = 0;
-        var _time = 0;
-        var _basePlanetId = this.nextPlanetId;
-        var _destinationPlanetId = 0;
-        this.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId, "NO_DIST", 1);
+
+        this.storage.saveShipDataToStorage(CONFIG.CARD[1], 0, 0, 0, this.nextPlanetId, 0, "NO_DIST", 1);
         return true;
     },
     update: function (dt) {

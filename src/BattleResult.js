@@ -36,10 +36,10 @@ this.addChild(this.resultSprite);
         var retryButton = new cc.MenuItemImage("res/button_window_ok.png", "res/button_window_ok.png", function () {
             this.goToListLayer();
         }, this);
-        retryButton.setPosition(320, 50);
+        retryButton.setPosition(453/2, 40);
         var menu002 = new cc.Menu(retryButton);
         menu002.setPosition(0, 0);
-this.resultSprite.addChild(menu002);
+        this.resultSprite.addChild(menu002);
         this.message = "";
         this.messageTime2 = 0;
         this.visibleStrLenght2 = 0;

@@ -51,8 +51,6 @@ var ProfileLayer = cc.Layer.extend({
         this.addChild(this.header);
         this.footer = new Footer(this);
         this.addChild(this.footer);
-        
-
 
         this.masterShip = null;
         var keyCnt = Object.keys(this.storage.shipData).length;
@@ -76,7 +74,7 @@ var ProfileLayer = cc.Layer.extend({
             }
         }
 
-
+/*
         this.debugButton = new cc.MenuItemImage("res/button_debug.png", "res/button_debug.png", function () {
             this.masterShip.targetTime = parseInt(new Date() / 1000);
         }, this);
@@ -85,9 +83,24 @@ var ProfileLayer = cc.Layer.extend({
             this.storage.addCoin(10000);
         }, this);
         this.debug2Button.setPosition(80, 950);
-        var menu001 = new cc.Menu(this.debugButton, this.debug2Button);
+
+*/
+        this.resetButton = new cc.MenuItemImage("res/button_account_reset.png", "res/button_account_reset.png", function () {
+            //this.masterShip.targetTime = parseInt(new Date() / 1000);
+            cc.sys.localStorage.clear();
+
+
+            this.footer.goToDiscoveryLayer();
+        }, this);
+
+        this.resetButton.setPosition(320,400);
+        var menu001 = new cc.Menu(this.resetButton);
         menu001.setPosition(0, 0);
         this.addChild(menu001, 999999999999999999);
+
+
+
+        ////cc.sys.localStorage.clear();
         return true;
     },    
     update: function (dt) {},

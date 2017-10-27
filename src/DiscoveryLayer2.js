@@ -147,7 +147,6 @@ var DiscoveryLayer2 = cc.Layer.extend({
         //拠点の惑星を取得する
         var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
         var _planet = CONFIG.PLANET[_rootPlanetNum];
-        //this.storage.basePlanetId = 
         //地球を作成する
         this.basePlanet = new PlanetSprite(this, _planet);
         this.baseNode.addChild(this.basePlanet, 999);
@@ -157,9 +156,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.ship = new Ship(this, this.basePlanet);
         this.baseNode.addChild(this.ship, 999);
         this.ship.setPosition(5000, 5000);
-        var fade = 2.5; // 消えるまでの時間
-        var minSeg = 0.1; // セグメントの最小値（小さく設定すると滑らかになる）
-        var stroke = 10; //描画の幅
+        //スモーク
         var texture = "res/planet_arrow.png"; //テクスチャの画像
         this.shipSmoke2 = cc.MotionStreak.create(4, 0.1, 10, cc.color.RED, texture);
         this.baseNode.addChild(this.shipSmoke2, 888);
@@ -191,25 +188,12 @@ var DiscoveryLayer2 = cc.Layer.extend({
         } else {
             this.basePlanet.setVisible(true);
         }
-        this.debugButton = new cc.MenuItemImage("res/button_debug.png", "res/button_debug.png", function () {
-            this.masterShip.targetTime = parseInt(new Date() / 1000);
-        }, this);
-        this.debugButton.setPosition(80, 1000);
-        var menu001 = new cc.Menu(this.debugButton);
-        menu001.setPosition(0, 0);
-        this.addChild(menu001, 999999999999999999);
-        if (this.storage.targetMovePlanetId != 0) {
-            _fuelCost = 100;
-
-            //ここで必要なコストを試算して入れる
-            this.InfoMenu.setCost(_fuelCost, 10);
-            this.InfoMenu.uiWindowLaunch.setVisible(true);
-            this.InfoMenu.infoNode.setVisible(true);
-            this.masterShip.targetTime = 100 + parseInt(new Date() / 1000);
-            this.masterShip.status = "SET_FREE_DIST";
+        //探索ではなく、移動の場合の分岐
+        if (this.storage.targetMovePlanetId != 0) {            
             this.tmpDx2 = 200;
             this.tmpDy2 = 200;
             this.pulledDist = 500;
+            this.setFuelAndCoinCost();
         }
         this.cameraGapPosX = 0;
         this.cameraGapPosY = 0;
@@ -218,6 +202,19 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.debriCnt = 0;
         return true;
     },
+
+    setFuelAndCoinCost:function(){
+        this.masterShip.status = "SET_FREE_DIST";
+        var _fuelCost = Math.ceil(this.pulledDist);
+        this.InfoMenu.setCost(_fuelCost, 0);
+        this.InfoMenu.uiWindowLaunch.setVisible(true);
+        this.InfoMenu.infoNode.setVisible(true);
+        this.masterShip.targetTime = Math.ceil(this.pulledDist) + parseInt(new Date() / 1000);
+        this.baseNode.removeChild(this.drawNode2);
+        this.arrow.setVisible(false);
+        this.arrowLabel.setVisible(false);
+    },
+
     update: function (dt) {
         //
         if (this.masterShip.status != "MOVING") {
@@ -227,7 +224,6 @@ var DiscoveryLayer2 = cc.Layer.extend({
                 this.addDebris(2);
             }
             if (this.masterShip.status != "SET_FREE_DIST") {
-                //cc.log(this.ship.basePlanet.degree);
                 this.ship.setRotation(360 - this.basePlanet.degree + 360 + 90);
             }
         }
@@ -247,9 +243,8 @@ var DiscoveryLayer2 = cc.Layer.extend({
         } else {
             this.noiseNode.setOpacity(255 * 0);
         }
-        this.header1.fuelLabel.setString("" + this.storage.totalCoinAmount);
         //時間を進める
-        this.header1.timeGauge.update();
+        this.header1.update();
         if (this.errorCnt >= 1) {
             this.errorCnt++;
             if (this.errorCnt >= 30 * 2) {
@@ -257,14 +252,15 @@ var DiscoveryLayer2 = cc.Layer.extend({
                 this.error.setVisible(false);
             }
         }
-        this.fuelPastSecond = this.getPastSecond();
-        if (this.fuelPastSecond <= 0) {
-            this.fuelPastSecond = 0;
-            this.header1.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+
+        this.batteryAmount = this.getPastSecond();
+        if (this.batteryAmount <= 0) {
+            this.batteryAmount = 0;
+            this.header1.batteryAmountLabel.setString("CHARGED");
         } else {
-            this.header1.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+            this.header1.batteryAmountLabel.setString("残り" + this.batteryAmount + "秒");
         }
-        this.header1.timeLabel.setString("残り" + this.fuelPastSecond + "秒");
+
         this.InfoMenu.update();
         if (this.masterShip.status == "MOVING") {
             this.addDebrisCnt++;
@@ -319,7 +315,10 @@ var DiscoveryLayer2 = cc.Layer.extend({
         }
         this.setRocketSearchCompleate();
         //this.shipControlMenu.targetTimeLabel.setString("" + this.pastSecond + "");
-        this.ship.timeLabel.setString(this.pastSecond);
+        //this.ship.timeLabel.setString(this.pastSecond);
+this.ship.setTimeLabel(this.pastSecond);
+
+
         if (this.masterShip.dx != 0 || this.masterShip.dy != 0) {
             this.labelOpacity -= 0.05;
             if (this.labelOpacity <= 0) {
@@ -385,6 +384,9 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.hoge.smoke = this.smoke;
         this.meteorites.push(this.hoge);
     },
+
+
+
     setRocketSearchCompleate: function () {
         this.pastSecond = this.getPastSecond2();
         if (this.pastSecond <= 0) {
@@ -394,6 +396,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
                 this.masterShip.status = "FINISH";
                 this.masterShip.dx = 0;
                 this.masterShip.dy = 0;
+
                 this.InfoMenu.infoNode.setVisible(true);
                 this.InfoMenu.uiWindowResult.setVisible(true);
                 this.basePlanet.setPosition(this.ship.getPosition().x, this.ship.getPosition().y);
@@ -556,10 +559,10 @@ var DiscoveryLayer2 = cc.Layer.extend({
             this.arrowLabel.setVisible(true);
             this.arrow.setPosition(this.toP.x, this.toP.y);
             this.arrowLabel.setPosition(this.toP.x, this.toP.y - 50);
-            //var _rad = this.getRadian(this.fromP.x, this.fromP.y, this.toP.x, this.toP.y);
+            var _rad = this.setShipAndArrowRadian(this.fromP.x, this.fromP.y, this.toP.x, this.toP.y);
         }
     },
-    getRadian: function (x1, y1, x2, y2) {
+    setShipAndArrowRadian: function (x1, y1, x2, y2) {
         // マウス座標との差分を計算
         var dx = this.toP.x - this.ship.getPosition().x;
         var dy = this.toP.y - this.ship.getPosition().y;

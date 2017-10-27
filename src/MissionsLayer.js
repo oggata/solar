@@ -56,7 +56,7 @@ var MissionsLayer = cc.Layer.extend({
         //var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
         this.basePlanetId = this.storage.getBasePlanetId(CONFIG.CARD[1]);
         this.storage.basePlanetId = this.storage.getBasePlanetId(CONFIG.CARD[1]);
-        this.treeNodeScale = 0.5;
+        this.treeNodeScale = 0.6;
         this.treeNode.setScale(this.treeNodeScale);
         //this.storage = storage;
         this.ship = cc.Sprite.create("res/ship_search.png");
