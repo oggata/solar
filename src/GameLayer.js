@@ -92,11 +92,18 @@ var GameLayer = cc.Layer.extend({
         this.maxBattleWindowScale = 0.8;
         this.resultBattleWindowScale = 1.0;
         this.battleWindow.setScale(this.battleWindowScale);
+
+/*
         //ノイズを乗せる
         this.noiseNode = cc.Sprite.create("res/back_top5.png");
         this.noiseNode.setAnchorPoint(0, 0);
         this.noiseNode.setPosition(0, 0);
         this.addChild(this.noiseNode);
+*/
+
+this.noise = new Noise();
+this.addChild(this.noise);
+
         this.setHeaderLabel();
         this.setStartLabel();
         this.resultSprite = new BattleResult(this);
@@ -118,23 +125,7 @@ var GameLayer = cc.Layer.extend({
         return true;
     },
     update: function (dt) {
-        //ノイズのエフェクト
-        this.noiseTime++;
-        if (this.noiseTime >= 30 * 5) {
-            this.noiseTime = 0;
-        }
-        if (this.noiseTime >= 0 && this.noiseTime <= 30 * 3) {
-            if (this.noiseOpacity <= 0) {
-                this.noiseAddOpacity = 0.4;
-            } else if (this.noiseOpacity >= 0.4) {
-                this.noiseAddOpacity = -0.4;
-            }
-            this.noiseOpacity += this.noiseAddOpacity;
-            this.noiseNode.setOpacity(255 * this.noiseOpacity);
-        } else {
-            this.noiseNode.setOpacity(255 * 0);
-        }
-        //this.header1.update();
+        this.noiseNode.update();
         if (this.gameStatus == "gaming") {
             this.battleWindow.setShipHidden();
         }
@@ -147,8 +138,6 @@ var GameLayer = cc.Layer.extend({
         }
         //常に中央を表示するようにする
         var _centerMarker = this.battleWindow.getMarker2(this.battleWindow.player.col, this.battleWindow.player.row);
-        //this.battleWindowScale
-        //1:320x420  1.6:-100x400 2.2:-500
         this.targetBaseNodePosX = 320 - _centerMarker.getPosition().x * this.battleWindowScale;
         this.targetBaseNodePosY = 400 - _centerMarker.getPosition().y * this.battleWindowScale;
         if (this.gameStatus == "gaming") {

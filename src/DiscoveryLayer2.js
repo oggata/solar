@@ -45,25 +45,19 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.backNode.setAnchorPoint(0, 0);
         this.backNode.setPosition(0, 0);
         this.addChild(this.backNode);
-        this.noiseTime = 0;
-        this.noiseOpacity = 0;
-        this.noiseAddOpacity = 0.05;
-        this.noiseNode = cc.Sprite.create("res/back_top5.png");
-        this.noiseNode.setAnchorPoint(0, 0);
-        this.noiseNode.setPosition(0, 0);
-        this.addChild(this.noiseNode);
-        this.header1 = new Header(this);
-        this.addChild(this.header1, 999999);
-        this.header1.setAnchorPoint(0.5, 0);
+        this.noise = new Noise(this);
+        this.addChild(this.noise);
+        this.header = new Header(this);
+        this.addChild(this.header, 999999);
+        this.header.setAnchorPoint(0.5, 0);
         this.viewSize = cc.director.getVisibleSize();
-        this.header1.setPosition(320, this.viewSize.height - 72);
+        this.header.setPosition(320, this.viewSize.height - 72);
         this.maxChargeTime = 60 * 3;
         this.labelOpacity = 1;
         this.planets = [];
         this.baseNode = cc.Node.create();
         this.baseNode.setPosition(0, 0);
         this.addChild(this.baseNode);
-        //this.isSetPlanet = false;
         this.baseNodeScale = 1.000;
         this.baseNode.setScale(this.baseNodeScale, this.baseNodeScale);
         cc.eventManager.addListener(cc.EventListener.create({
@@ -156,6 +150,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.ship = new Ship(this, this.basePlanet);
         this.baseNode.addChild(this.ship, 999);
         this.ship.setPosition(5000, 5000);
+        //this.ship.setPosition(this.ship.getPosition().x + 500,this.ship.getPosition().y + 800);
         //スモーク
         var texture = "res/planet_arrow.png"; //テクスチャの画像
         this.shipSmoke2 = cc.MotionStreak.create(4, 0.1, 10, cc.color.RED, texture);
@@ -216,6 +211,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
     },
 
     update: function (dt) {
+        this.noise.update();
         //
         if (this.masterShip.status != "MOVING") {
             this.debriCnt++;
@@ -227,6 +223,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
                 this.ship.setRotation(360 - this.basePlanet.degree + 360 + 90);
             }
         }
+/*
         //ノイズのエフェクト
         this.noiseTime++;
         if (this.noiseTime >= 30 * 6) {
@@ -243,8 +240,9 @@ var DiscoveryLayer2 = cc.Layer.extend({
         } else {
             this.noiseNode.setOpacity(255 * 0);
         }
+*/
         //時間を進める
-        this.header1.update();
+        this.header.update();
         if (this.errorCnt >= 1) {
             this.errorCnt++;
             if (this.errorCnt >= 30 * 2) {
@@ -256,9 +254,9 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.batteryAmount = this.getPastSecond();
         if (this.batteryAmount <= 0) {
             this.batteryAmount = 0;
-            this.header1.batteryAmountLabel.setString("CHARGED");
+            this.header.batteryAmountLabel.setString("CHARGED");
         } else {
-            this.header1.batteryAmountLabel.setString("残り" + this.batteryAmount + "秒");
+            this.header.batteryAmountLabel.setString("残り" + this.batteryAmount + "秒");
         }
 
         this.InfoMenu.update();
@@ -283,7 +281,6 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.ship.update();
         this.shipControlMenu.update();
 
-
         if (this.ship.basePlanet != null) {
             //メッセージ表示の管理
             this.messageTime++;
@@ -301,7 +298,6 @@ var DiscoveryLayer2 = cc.Layer.extend({
             this.messageTime = 0;
             this.visibleStrLenght = 0;
         }
-        
         this.setBrakingDistance();
         for (var i = 0; i < this.planets.length; i++) {
             this.planets[i].update();
@@ -314,11 +310,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
             }
         }
         this.setRocketSearchCompleate();
-        //this.shipControlMenu.targetTimeLabel.setString("" + this.pastSecond + "");
-        //this.ship.timeLabel.setString(this.pastSecond);
-this.ship.setTimeLabel(this.pastSecond);
-
-
+        this.ship.setTimeLabel(this.pastSecond);
         if (this.masterShip.dx != 0 || this.masterShip.dy != 0) {
             this.labelOpacity -= 0.05;
             if (this.labelOpacity <= 0) {
@@ -326,7 +318,6 @@ this.ship.setTimeLabel(this.pastSecond);
             }
         }
         this.ship.setPosition(this.ship.getPosition().x + this.masterShip.dx, this.ship.getPosition().y + this.masterShip.dy);
-        //this.shipSmoke.setPosition(this.ship.getPosition().x + this.masterShip.dx, this.ship.getPosition().y + this.masterShip.dy);
         this.setCameraSpeed();
         this.baseNode.setPosition(this.cameraPosX, this.cameraPosY);
     },

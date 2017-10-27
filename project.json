@@ -35,6 +35,7 @@
         "src/Gauge.js",
         "src/Material.js",
         "src/ProfileLayer.js",
+        "src/Noise.js",
 "src/MessageLabel.js",
  "src/InfoMenu.js",
   "src/ShipControlMenu.js",
