@@ -335,47 +335,6 @@ var MissionsLayer = cc.Layer.extend({
         }
         return false;
     },
-    //setPlanetData = [];
-    /*
-        setRoute:function(_startPlanetId,_finishPlanetId){
-            this.route = [_finishPlanetId];
-            //逆から辿って行く。finishのレベルを探す
-            connectedIds = [];
-            currentLv = 999;
-            targetId = 999;
-            for (var i = 0; i < this.connectedPlanetsData.length; i++) {
-                if(this.connectedPlanetsData[i].basePlanetId == _finishPlanetId){
-                    connectedIds = this.connectedPlanetsData[i].connectedPlanetId;
-                    currentLv = this.connectedPlanetsData[i].basePlanetLevel;
-                }
-            }
-
-            startLv = CONFIG.PLANET[_startPlanetId].lv;
-            //cc.log(startLv);
-            targetId = connectedIds[0];
-            this.route.push(connectedIds[0]);
-            for (var i = 0; i < 12; i++) {
-                //もう1週
-                for (var j = 0; j < this.connectedPlanetsData.length; j++) {
-                    if(this.connectedPlanetsData[j].basePlanetId == targetId){
-                        connectedIds = this.connectedPlanetsData[j].connectedPlanetId;
-                        currentLv = this.connectedPlanetsData[j].basePlanetLevel;
-                    }
-                }
-                if(currentLv == startLv){
-                    break;
-                }
-
-                targetId = connectedIds[0];
-                this.route.push(connectedIds[0]);
-                if(currentLv == 1){
-                    break;
-                }
-            }
-            //次のレベルでfinishのレベル-1を全部調べる
-            cc.log(this.route.reverse());
-        },
-    */
     isExistsConnectedPlanets2: function (basePlanetId, connectedPlanetId) {
         for (var i = 0; i < this.connectedPlanetsData.length; i++) {
             if (this.connectedPlanetsData[i].basePlanetId == basePlanetId) {
@@ -425,52 +384,6 @@ var MissionsLayer = cc.Layer.extend({
         var touchX = location.x - this.lastTouchGameLayerX;
         var touchY = location.y - this.lastTouchGameLayerY;
     },
-    /*
-        createTable: function () {
-            var tableView = cc.TableView.create(this, cc.size(640, 1136 - 136 - 136));
-            tableView.setDirection(cc.SCROLLVIEW_DIRECTION_VERTICAL);
-            tableView.setPosition(0, 136);
-            tableView.setDelegate(this);
-            tableView.setVerticalFillOrder(cc.TABLEVIEW_FILL_TOPDOWN);
-            this.addChild(tableView);
-            tableView.reloadData();
-        },
-        tableCellSizeForIndex: function (table, idx) {
-            return cc.size(640, 122);
-        },
-        tableCellAtIndex: function (table, idx) {
-            var strValue = idx.toFixed(0);
-            var cell = table.dequeueCell();
-            var label;
-            if (!cell) {
-                cell = new CustomTableViewCell();
-                this.spriteCell = cc.Sprite.create("res/table_cell.png");
-                this.spriteCell.setAnchorPoint(0, 0);
-                this.spriteCell.setPosition(0, 0);
-                cell.addChild(this.spriteCell, 9999999);
-                var button = new cc.MenuItemImage("res/button_get_coin.png", "res/button_get_coin_on.png", function () {
-                    this.infoNode.setVisible(true);
-                    var _planetId = this.planets[strValue].planetId;
-                    this.detail.setPlanet(_planetId);
-                }, this);
-                button.setPosition(600, 50);
-                var menu001 = new cc.Menu(button);
-                menu001.setPosition(0, 0);
-                cell.addChild(menu001, 999999999);
-                var _cardId = this.planets[strValue].id;
-                var _name = CONFIG.MISSION[_cardId].name;
-                var nameLabel = cc.LabelTTF.create(_name, "Helvetica", 22);
-                nameLabel.setPosition(130, 86);
-                nameLabel.setAnchorPoint(0, 0);
-                nameLabel.setTag("nameLabel");
-                this.spriteCell.addChild(nameLabel, 9999999);
-            }
-            return cell;
-        },
-        numberOfCellsInTableView: function (table) {
-            return this.planets.length;
-        },
-    */
     getRandNumberFromRange: function (min, max) {
         var rand = min + Math.floor(Math.random() * (max - min));
         return rand;
