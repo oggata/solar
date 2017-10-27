@@ -123,12 +123,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
             //初回のアカウント作成
             this.InfoMenu.uiWindowAccount.setVisible(true);
             this.InfoMenu.infoNode.setVisible(true);
-            var _dx = 0;
-            var _dy = 0;
-            var _time = 0;
-            var _basePlanetId = 1;
-            var _destinationPlanetId = 0;
-            this.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId, "NO_DIST", 1);
+            this.storage.saveShipDataToStorage(CONFIG.CARD[1], 0, 0, 0, 1, 0, "NO_DIST", 1);
         }
         for (var key in this.storage.shipData) {
             if (this.storage.shipData.hasOwnProperty(key)) {
@@ -212,7 +207,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
 
     update: function (dt) {
         this.noise.update();
-        //
+
         if (this.masterShip.status != "MOVING") {
             this.debriCnt++;
             if (this.debriCnt >= 15) {
@@ -223,24 +218,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
                 this.ship.setRotation(360 - this.basePlanet.degree + 360 + 90);
             }
         }
-/*
-        //ノイズのエフェクト
-        this.noiseTime++;
-        if (this.noiseTime >= 30 * 6) {
-            this.noiseTime = 0;
-        }
-        if (this.noiseTime >= 0 && this.noiseTime <= 30 * 3) {
-            if (this.noiseOpacity <= 0) {
-                this.noiseAddOpacity = 0.4;
-            } else if (this.noiseOpacity >= 0.4) {
-                this.noiseAddOpacity = -0.4;
-            }
-            this.noiseOpacity += this.noiseAddOpacity;
-            this.noiseNode.setOpacity(255 * this.noiseOpacity);
-        } else {
-            this.noiseNode.setOpacity(255 * 0);
-        }
-*/
+
         //時間を進める
         this.header.update();
         if (this.errorCnt >= 1) {
@@ -376,8 +354,6 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.meteorites.push(this.hoge);
     },
 
-
-
     setRocketSearchCompleate: function () {
         this.pastSecond = this.getPastSecond2();
         if (this.pastSecond <= 0) {
@@ -401,8 +377,8 @@ var DiscoveryLayer2 = cc.Layer.extend({
             this.basePlanet.setVisible(true);
         }
     },
+
     setCameraSpeed: function () {
-        //this.cameraPosX += 2;
         //カメラの設定
         if (this.masterShip.status == "MOVING") {
             //拠点の惑星があれば、その惑星の中心にカメラを固定する
@@ -450,9 +426,8 @@ var DiscoveryLayer2 = cc.Layer.extend({
         }
         this.cameraGapPosY += this.cameraGapAddPosY;
         this.cameraPosY += this.cameraGapPosY;
-        //this.baseNodeScale+=0.005;
-        //this.baseNode.setScale(this.baseNodeScale, this.baseNodeScale);
     },
+
     setBrakingDistance: function () {
         //惑星との距離によって制動距離を変える
         var _targetPlanet = this.getMostNearPlanet(this.ship.getPosition().x, this.ship.getPosition().y, 300);
