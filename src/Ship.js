@@ -25,14 +25,9 @@ var Ship = cc.Node.extend({
     },
     init: function () {},
 
-    getdoubleDigestNumer:function(number) {
-      return ("0" + number).slice(-2)
-    },
 
     setTimeLabel:function(pastSecond){
-        var _min = Math.ceil(pastSecond/60);
-        var _second = Math.ceil(pastSecond%60);
-        var _txt = this.getdoubleDigestNumer(_min) + ":" + this.getdoubleDigestNumer(_second);
+        var _txt = this.game.storage.getFormatedTimeLabel(pastSecond);
         this.timeLabel.setString(_txt);
     },
 

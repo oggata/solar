@@ -8,6 +8,8 @@ CONFIG.SE_VOLUME        = 1;
 CONFIG.CARD_SPEND_COST  = 3;
 
 
+CONFIG.DISCOVER_MESSAGE = "ワクセイタンサシステム\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートカンリョウシマシタ....\n\n";
+
 CONFIG.BASE_CARD_Y = 820;
 //1:平地 2:山 3:平地 4: 5:海 6:
 

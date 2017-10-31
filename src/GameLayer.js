@@ -43,6 +43,7 @@ var GameLayer = cc.Layer.extend({
         this.storage.enemyEventData = new Object();
         //カラーの分別
         this.colorName = colorName;
+        /*
         if (this.colorName == "GREEN") {
             this.enemyColorName = "RED";
             this.greenUserId = this.storage.userId;
@@ -52,6 +53,7 @@ var GameLayer = cc.Layer.extend({
             this.greenUserId = this.storage.battleTargetUserId;
             this.redUserId = this.storage.userId;
         }
+        */
         this.gameStatus = "wait";
         this.result = null;
         this.gameStartTimeCnt = 0;
@@ -73,10 +75,6 @@ var GameLayer = cc.Layer.extend({
                 event.getCurrentTarget().touchFinish(touches[0].getLocation());
             }
         }), this);
-        //this.header1 = new Header(this);
-        //this.addChild(this.header1, 999999);
-        //this.header1.setAnchorPoint(0.5, 0);
-        //this.header1.setPosition(320, 1136 - 72);
         this.backNode = cc.Sprite.create("res/back_top2.png");
         this.backNode.setAnchorPoint(0, 0);
         this.backNode.setPosition(0, 0);
@@ -93,16 +91,8 @@ var GameLayer = cc.Layer.extend({
         this.resultBattleWindowScale = 1.0;
         this.battleWindow.setScale(this.battleWindowScale);
 
-/*
-        //ノイズを乗せる
-        this.noiseNode = cc.Sprite.create("res/back_top5.png");
-        this.noiseNode.setAnchorPoint(0, 0);
-        this.noiseNode.setPosition(0, 0);
-        this.addChild(this.noiseNode);
-*/
-
-this.noise = new Noise();
-this.addChild(this.noise);
+        this.noise = new Noise();
+        this.addChild(this.noise);
 
         this.setHeaderLabel();
         this.setStartLabel();
@@ -125,7 +115,7 @@ this.addChild(this.noise);
         return true;
     },
     update: function (dt) {
-        this.noiseNode.update();
+        this.noise.update();
         if (this.gameStatus == "gaming") {
             this.battleWindow.setShipHidden();
         }

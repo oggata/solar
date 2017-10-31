@@ -26,6 +26,19 @@ var Storage = cc.Class.extend(
         this.moveToId = 0;
     },
 
+    getFormatedTimeLabel:function(pastSecond){
+        var _hour = Math.ceil(pastSecond/3600);
+        var _pastSecondMinusHour = pastSecond - ( 3600 * _hour );
+        var _min = Math.ceil(_pastSecondMinusHour/60);
+        var _second = Math.ceil(_pastSecondMinusHour%60);
+        var _txt = this.getdoubleDigestNumer(_hour) + ":" + this.getdoubleDigestNumer(_min) + ":" + this.getdoubleDigestNumer(_second);
+        return _txt;
+    },
+
+    getdoubleDigestNumer:function(number) {
+      return ("0" + number).slice(-2)
+    },
+
     getConnectedPlanets:function(){
         this.connectedPlanets = new Array();
 

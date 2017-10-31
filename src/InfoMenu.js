@@ -38,16 +38,25 @@ var InfoMenu = cc.Node.extend({
         this.uiWindowLaunch.setPosition(320, 0);
         this.uiWindowLaunch.setVisible(false);
         this.infoNode.addChild(this.uiWindowLaunch);
-        this.shipTargetTimeLabel = cc.LabelTTF.create("332", "Arial", 38);
-        this.shipTargetTimeLabel.setPosition(510, 92);
-        this.shipTargetTimeLabel.setAnchorPoint(1, 0.5);
-        this.shipTargetTimeLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.uiWindowLaunch.addChild(this.shipTargetTimeLabel);
-        this.shipFuel2Label = cc.LabelTTF.create("100", "Arial", 38);
-        this.shipFuel2Label.setPosition(290, 92);
-        this.shipFuel2Label.setAnchorPoint(1, 0.5);
-        this.shipFuel2Label.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.uiWindowLaunch.addChild(this.shipFuel2Label);
+
+        this.launchCoinCostLabel = cc.LabelTTF.create("332", "Arial", 38);
+        this.launchCoinCostLabel.setPosition(510, 92);
+        this.launchCoinCostLabel.setAnchorPoint(1, 0.5);
+        this.launchCoinCostLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
+        this.uiWindowLaunch.addChild(this.launchCoinCostLabel);
+
+        this.launchTimeCostLabel = cc.LabelTTF.create("11:11", "Arial", 25);
+        this.launchTimeCostLabel.setPosition(360, 150);
+        this.launchTimeCostLabel.setAnchorPoint(1, 0.5);
+        this.launchTimeCostLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
+        this.uiWindowLaunch.addChild(this.launchTimeCostLabel);
+
+
+        this.launchFuelCostLabel = cc.LabelTTF.create("100", "Arial", 38);
+        this.launchFuelCostLabel.setPosition(290, 92);
+        this.launchFuelCostLabel.setAnchorPoint(1, 0.5);
+        this.launchFuelCostLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
+        this.uiWindowLaunch.addChild(this.launchFuelCostLabel);
         this.buttonCancel = new cc.MenuItemImage("res/button_window_cancel.png", "res/button_window_cancel.png", function () {
             this.uiWindowLanding.setVisible(false);
             this.uiWindowLaunch.setVisible(false);
@@ -151,18 +160,22 @@ var InfoMenu = cc.Node.extend({
         scene.addChild(MissionsLayer.create(this.storage, cardId));
         cc.director.runScene(cc.TransitionFadeDown.create(0.4, scene));
     },
-    setCost: function (fuelCnt, timeCnt) {
+    setCost: function (fuelCnt, coinCnt, timeCnt) {
         this.fuelCnt = fuelCnt;
+        this.coinCnt = coinCnt;
         this.timeCnt = timeCnt;
         
-        this.shipFuel2Label.setString(fuelCnt);
-        this.shipTargetTimeLabel.setString(timeCnt);
+        this.launchFuelCostLabel.setString(fuelCnt);
+        this.launchCoinCostLabel.setString(coinCnt);
+        var _txt = this.game.storage.getFormatedTimeLabel(this.timeCnt);
+        this.launchTimeCostLabel.setString(_txt);
+
         if (this.game.storage.totalCoinAmount < fuelCnt) {
             this.isAbleToLaunch = false;
-            this.shipFuel2Label.setFontFillColor(new cc.Color(255, 0, 0, 255));
+            this.launchFuelCostLabel.setFontFillColor(new cc.Color(255, 0, 0, 255));
         } else {
             this.isAbleToLaunch = true;
-            this.shipFuel2Label.setFontFillColor(new cc.Color(255, 255, 255, 255));
+            this.launchFuelCostLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         }
 
         if(this.game.getPastSecond() >= 1){

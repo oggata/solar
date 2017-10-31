@@ -86,13 +86,13 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.error.addChild(this.errorLabel);
         this.errorLabel.setPosition(320, 120);
         //メッセージの制御
-        this.messageLabel = cc.LabelTTF.create("AAAAAAAAAAAA", "Arial", 18);
+        this.messageLabel = cc.LabelTTF.create("", "Arial", 18);
         this.messageLabel.setPosition(30, 900);
         this.messageLabel.setAnchorPoint(0, 1);
         this.messageLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.backNode.addChild(this.messageLabel,9999999999999);
         this.messageLabel.setAnchorPoint(0, 1);
-        this.message = "ワクセイタンサシステム\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートカンリョウシマシタ....\n\n";
+        this.message = CONFIG.DISCOVER_MESSAGE;
         this.messageTime = 0;
         this.visibleStrLenght = 0;
         this.launchCnt = 0;
@@ -193,13 +193,20 @@ var DiscoveryLayer2 = cc.Layer.extend({
         return true;
     },
 
+    //移動距離に応じてスピードを返す
+    getTimeFromDist:function(dist){
+        //初回は1Mkm=1Min
+        return dist * 60;
+    },
+
     setFuelAndCoinCost:function(){
         this.masterShip.status = "SET_FREE_DIST";
         var _fuelCost = Math.ceil(this.pulledDist);
-        this.InfoMenu.setCost(_fuelCost, 0);
+        var _time = this.getTimeFromDist(this.pulledDist);
+        this.InfoMenu.setCost(_fuelCost, 0, _time);
         this.InfoMenu.uiWindowLaunch.setVisible(true);
         this.InfoMenu.infoNode.setVisible(true);
-        this.masterShip.targetTime = Math.ceil(this.pulledDist) + parseInt(new Date() / 1000);
+        this.masterShip.targetTime = _time + parseInt(new Date() / 1000);
         this.baseNode.removeChild(this.drawNode2);
         this.arrow.setVisible(false);
         this.arrowLabel.setVisible(false);
@@ -519,7 +526,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
             this.toP = cc.p(this.shipP.x + this.tmpDx2, this.shipP.y + this.tmpDy2);
             this.lineWidth = 2;
             this.drawNode2.drawSegment(this.shipP, this.toP, this.lineWidth, this.lineColor);
-            this.InfoMenu.shipTargetTimeLabel.setString("" + Math.ceil(this.pulledDist) + "");
+            //this.InfoMenu.shipTargetTimeLabel.setString("" + Math.ceil(this.pulledDist) + "");
             this.arrowLabel.setString(Math.ceil(this.pulledDist) + "KM");
             this.arrow.setVisible(true);
             this.arrowLabel.setVisible(true);
