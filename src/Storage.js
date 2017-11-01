@@ -8,8 +8,8 @@ var Storage = cc.Class.extend(
 
         this.playerName = this.getRandNumberFromRange(1,9999999999);
         this.totalGameScore = 0;
-        this.totalCoinAmount = 1;
-        this.treasureAmount = 1000;
+        this.totalCoinAmount = 10000;
+        this.treasureAmount = 10000;
         this.maxGameScore = 0;
         this.bgmVolume = 10;
         this.seVolume = 10;
@@ -24,6 +24,17 @@ var Storage = cc.Class.extend(
 
         this.moveFromId = 0;
         this.moveToId = 0;
+    },
+
+    //移動距離に応じてスピードを返す
+    getTimeFromDist:function(dist){
+        //初回は1Mkm=1Min
+        return dist * 10;
+    },
+
+    getBatteryAmountFromPastSecond: function () {
+        var diffSecond = this.targetTime - parseInt(new Date() / 1000);
+        return diffSecond;
     },
 
     getFormatedTimeLabel:function(pastSecond){
@@ -43,7 +54,6 @@ var Storage = cc.Class.extend(
         this.connectedPlanets = new Array();
 
         //{id:1,difficulty:10},{id:1,difficulty:10}
-
         this.planets = CONFIG.PLANET;
         for (var masterCnt = 0; masterCnt < this.planets.length; masterCnt++) {
             if (this.planets[masterCnt].position) {

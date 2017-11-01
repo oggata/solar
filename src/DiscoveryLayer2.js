@@ -183,7 +183,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
             this.tmpDx2 = 200;
             this.tmpDy2 = 200;
             this.pulledDist = 500;
-            this.setFuelAndCoinCost();
+            this.setFuelAndCoinCost(this.storage.targetMovePlanetId);
         }
         this.cameraGapPosX = 0;
         this.cameraGapPosY = 0;
@@ -193,19 +193,19 @@ var DiscoveryLayer2 = cc.Layer.extend({
         return true;
     },
 
-    //移動距離に応じてスピードを返す
-    getTimeFromDist:function(dist){
-        //初回は1Mkm=1Min
-        return dist * 60;
-    },
-
-    setFuelAndCoinCost:function(){
+    setFuelAndCoinCost:function(targetMovePlanetId){
         this.masterShip.status = "SET_FREE_DIST";
         var _fuelCost = Math.ceil(this.pulledDist);
-        var _time = this.getTimeFromDist(this.pulledDist);
+        var _time = this.storage.getTimeFromDist(this.pulledDist);
         this.InfoMenu.setCost(_fuelCost, 0, _time);
-        this.InfoMenu.uiWindowLaunch.setVisible(true);
+
+        if(targetMovePlanetId){
+            this.InfoMenu.uiWindowMove.setVisible(true);
+        }else{
+            this.InfoMenu.uiWindowLaunch.setVisible(true);
+        }
         this.InfoMenu.infoNode.setVisible(true);
+
         this.masterShip.targetTime = _time + parseInt(new Date() / 1000);
         this.baseNode.removeChild(this.drawNode2);
         this.arrow.setVisible(false);
@@ -236,7 +236,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
             }
         }
 
-        this.batteryAmount = this.getPastSecond();
+        this.batteryAmount = this.storage.getBatteryAmountFromPastSecond();
         if (this.batteryAmount <= 0) {
             this.batteryAmount = 0;
             this.header.batteryAmountLabel.setString("CHARGED");
@@ -371,16 +371,20 @@ var DiscoveryLayer2 = cc.Layer.extend({
                 this.masterShip.dx = 0;
                 this.masterShip.dy = 0;
 
+                //ここでtargetIdがあるかどうか
+
+                //探索結果画面
                 this.InfoMenu.infoNode.setVisible(true);
-                this.InfoMenu.uiWindowResult.setVisible(true);
+                this.InfoMenu.uiWindowSeachResult.setVisible(true);
                 this.basePlanet.setPosition(this.ship.getPosition().x, this.ship.getPosition().y);
             }
         }
         if (this.masterShip.status == "FINISH") {
             this.masterShip.dx = 0;
             this.masterShip.dy = 0;
+            //探索結果画面
             this.InfoMenu.infoNode.setVisible(true);
-            this.InfoMenu.uiWindowResult.setVisible(true);
+            this.InfoMenu.uiWindowSeachResult.setVisible(true);
             this.basePlanet.setVisible(true);
         }
     },
@@ -467,14 +471,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
             }
         }
     },
-    getPastSecond: function () {
-        var diffSecond = this.storage.targetTime - parseInt(new Date() / 1000);
-        return diffSecond;
-    },
-    getPastRescueSecond: function () {
-        var diffSecond = this.masterShip.rescureTime - parseInt(new Date() / 1000);
-        return diffSecond;
-    },
+
     getPastSecond2: function () {
         var diffSecond = this.masterShip.targetTime - parseInt(new Date() / 1000);
         return diffSecond;

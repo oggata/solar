@@ -75,7 +75,7 @@ var ShipControlMenu = cc.Node.extend({
         this.buttonCancel.setPosition(180, 60);
 
         this.buttonWarp = new cc.MenuItemImage("res/button_ship_warp.png", "res/button_ship_warp.png", function () {
-//this.game.masterShip.targetTime = parseInt(new Date() / 1000);
+this.game.masterShip.targetTime = parseInt(new Date() / 1000);
         }, this);
         this.buttonWarp.setPosition(460, 60);
 

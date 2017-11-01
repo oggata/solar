@@ -33,7 +33,7 @@ var Header = cc.Node.extend({
     },
     init: function () {},
     update: function () {
-        var _rate  = 1 - this.game.getPastSecond() / 180;
+        var _rate  = 1 - this.game.storage.getBatteryAmountFromPastSecond() / 180;
         if(_rate >= 1){
             _rate = 1;
         }

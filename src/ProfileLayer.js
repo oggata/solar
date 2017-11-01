@@ -86,10 +86,7 @@ var ProfileLayer = cc.Layer.extend({
 
 */
         this.resetButton = new cc.MenuItemImage("res/button_account_reset.png", "res/button_account_reset.png", function () {
-            //this.masterShip.targetTime = parseInt(new Date() / 1000);
             cc.sys.localStorage.clear();
-
-
             this.footer.goToDiscoveryLayer();
         }, this);
 

@@ -28,12 +28,16 @@ var PlanetDetail = cc.Node.extend({
             this.game.infoNode.setVisible(false);
             //ここで消す
             this.game.storage.targetMovePlanetId = 0;
+            //this.game.storage.moveToId = 0;
+
             this.game.storage.saveCurrentData();
         }, this);
         this.buttonCancel.setPosition(150-30, -40);
         this.buttonGoto = new cc.MenuItemImage("res/button_window_goto.png", "res/button_window_goto.png", function () {
             if (this.isOwnPlanet == false) return;
             this.game.storage.targetMovePlanetId = this.planetId;
+            //this.game.storage.moveToId = this.planetId;
+
             this.game.storage.saveCurrentData();
             this.game.goToDiscoveryLayer();
         }, this);
