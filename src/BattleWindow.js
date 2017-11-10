@@ -58,6 +58,7 @@ var BattleWindow = cc.Node.extend({
         this.field.addChild(this.human);
         this.humans.push(this.human);
         this.player = this.human;
+        this.player.setVisible(false);
         //ship
         this.ship = cc.Sprite.create("res/ship.png");
         this.field.addChild(this.ship, 999999999999);
@@ -76,6 +77,10 @@ var BattleWindow = cc.Node.extend({
             this.positionalChips.sort(this.shuffle);
             this.addEscape(this.positionalChips[0].col, this.positionalChips[0].row);
         }
+
+
+
+
     },
     update: function (dt) {
         //時間を計測
@@ -148,6 +153,7 @@ var BattleWindow = cc.Node.extend({
                     this.coins[c].hp = 0;
                     if (this.humans[h].colorName == "GREEN") {
 this.game.storage.addCoin(10);
+this.game.getItemMarker.setCoin(10);
                         if (this.coins[c].typeNum) {
                             var _typeNum = this.coins[c].typeNum;
                             this.game.addMaterial(_typeNum);

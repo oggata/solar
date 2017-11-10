@@ -53,9 +53,7 @@ var MissionsLayer = cc.Layer.extend({
         this.addChild(this.treeNode);
         this.drawNode2 = cc.DrawNode.create();
         this.treeNode.addChild(this.drawNode2);
-        //var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
-        this.basePlanetId = this.storage.getBasePlanetId(CONFIG.CARD[1]);
-        this.storage.basePlanetId = this.storage.getBasePlanetId(CONFIG.CARD[1]);
+        this.basePlanetId = this.storage.getShipParamByName("basePlanetId");
         this.treeNodeScale = 0.6;
         this.treeNode.setScale(this.treeNodeScale);
         //this.storage = storage;
@@ -180,7 +178,8 @@ var MissionsLayer = cc.Layer.extend({
             this.shipTargetPlanet = CONFIG.PLANET[_aaa[1].planetId];
             this.treeNode.setPosition((this.ship.getPosition().x - 600) * -1 / 2, (this.ship.getPosition().y - 900) * -1 / 2);
         } else {
-            cc.log("basePlanetId:" + this.storage.basePlanetId);
+            //cc.log("basePlanetId:" + this.storage.basePlanetId);
+            var _basePlanetId = this.storage.getShipParamByName("basePlanetId");
             var _planet = CONFIG.PLANET[this.storage.basePlanetId];
             this.ship.setPosition(_planet.position[0], _planet.position[1]);
         }

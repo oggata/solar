@@ -50,8 +50,9 @@ var CardLayer = cc.Layer.extend({
         this.initializeWalkAnimation();
         this.timeCnt = 0;
         this.scheduleUpdate();
-        var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
-        var _rootPlanet = CONFIG.PLANET[_rootPlanetNum];
+
+        var _basePlanetNum = this.storage.getShipParamByName("basePlanetId");
+        var _rootPlanet = CONFIG.PLANET[_basePlanetNum];
         this.nextPlanetId = 1;
         if (_rootPlanet) {
             _planetBranchList = this.storage.getConnectedPlanets();
@@ -59,15 +60,10 @@ var CardLayer = cc.Layer.extend({
             _branchList.sort(this.shuffle);
             this.nextPlanetId = _branchList[0];
         }
-        //this.storage.moveFromId = this.storage.basePlanetId;
-        this.storage.moveFromId = _rootPlanetNum;
-        this.storage.moveToId = this.nextPlanetId;
-        this.storage.saveCurrentData();
+
         //このカードを持っているか調べる
-
         var _isOwnPlanet = this.storage.isOwnPlanetData(CONFIG.PLANET[this.nextPlanetId]);
-cc.log(_isOwnPlanet);
-
+        //cc.log(_isOwnPlanet);
         if(_isOwnPlanet == true){
             this.labelSprite = cc.Sprite.create("res/label_get_card.png");
         }else{
@@ -77,12 +73,11 @@ cc.log(_isOwnPlanet);
         this.labelSprite.setOpacity(0);
         this.baseNode.addChild(this.labelSprite);
 
-
         this.storage.savePlanetDataToStorage(CONFIG.PLANET[this.nextPlanetId], 1);
         this.planetSprite = cc.Sprite.create(CONFIG.PLANET[this.nextPlanetId].image);
         this.card.addChild(this.planetSprite);
 
-        this.storage.saveShipDataToStorage(CONFIG.CARD[1], 0, 0, 0, this.nextPlanetId, 0, "NO_DIST", 1);
+       this.storage.saveShipDataToStorage(0, 0, 0, this.nextPlanetId, "NO_DIST", 0, _basePlanetNum, this.nextPlanetId);
         return true;
     },
     update: function (dt) {
@@ -116,7 +111,6 @@ cc.log(_isOwnPlanet);
             }
         }
         this.wa = cc.Animation.create(frameSeq, this.effectInterval);
-        //this.ra = cc.Repeat.create(cc.Animate.create(this.wa), 1);
         this.ra = cc.RepeatForever.create(cc.Animate.create(this.wa));
         this.sprite = cc.Sprite.create(this.image, cc.rect(0, 0, this.itemWidth, this.itemHeight));
         this.sprite.runAction(this.ra);

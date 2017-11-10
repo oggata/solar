@@ -26,19 +26,14 @@ var PlanetDetail = cc.Node.extend({
         this.isOwnPlanet = false;
         this.buttonCancel = new cc.MenuItemImage("res/button_window_cancel.png", "res/button_window_cancel.png", function () {
             this.game.infoNode.setVisible(false);
-            //ここで消す
-            this.game.storage.targetMovePlanetId = 0;
-            //this.game.storage.moveToId = 0;
-
-            this.game.storage.saveCurrentData();
+            this.game.storage.saveShipDataToStorage(null,null,null,null,null,0,null,null);
+            cc.log("目的地は" + this.game.storage.getShipParamByName("destinationPlanetId") + "です");
         }, this);
         this.buttonCancel.setPosition(150-30, -40);
         this.buttonGoto = new cc.MenuItemImage("res/button_window_goto.png", "res/button_window_goto.png", function () {
             if (this.isOwnPlanet == false) return;
-            this.game.storage.targetMovePlanetId = this.planetId;
-            //this.game.storage.moveToId = this.planetId;
-
-            this.game.storage.saveCurrentData();
+            this.game.storage.saveShipDataToStorage(null,null,null,null,null,this.planetId,null,null);
+            cc.log("目的地は" + this.game.storage.getShipParamByName("destinationPlanetId") + "です");
             this.game.goToDiscoveryLayer();
         }, this);
         this.buttonGoto.setPosition(450-30, -40);

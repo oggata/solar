@@ -40,13 +40,13 @@ var InfoMenu = cc.Node.extend({
             cc.log("xx");
             this.game.masterShip.status = "NO_DIST";
             //探索の場合はカードを引く、移動の場合はカードは引かない
-            var _dest = this.game.storage.getDestinationPlanetId(CONFIG.CARD[1]);
+            //var _dest = this.game.storage.getDestinationPlanetId(CONFIG.CARD[1]);
+            var _dest = this.game.storage.getShipParamByName("destinationPlanetId");
             if (_dest == 0) {
                 this.goToCardLayer();
             } else {
                 var _basePlanetId = _dest;
-                var _destinationPlanetId = 0;
-                this.game.storage.saveShipDataToStorage(CONFIG.CARD[1], 0, 0, 0, _basePlanetId, 0, "NO_DIST", 1);
+                this.game.storage.saveShipDataToStorage(0, 0, 0, _basePlanetId, "NO_DIST", 0, 0, 0);
                 this.goToMissionsLayer();
             }
         }, this);
@@ -161,7 +161,7 @@ var InfoMenu = cc.Node.extend({
         this.buttonMoveCancel.setPosition(180, 40);
 
         //移動ボタン
-        this.buttonMove = new cc.MenuItemImage("res/button_window_search.png", "res/button_window_search.png", function () {
+        this.buttonMove = new cc.MenuItemImage("res/button_window_goto.png", "res/button_window_goto.png", function () {
             if (this.game.storage.getCoinAmount() < this.fuelCnt) {
                 return;
             }
@@ -174,15 +174,10 @@ var InfoMenu = cc.Node.extend({
             var _dx = this.game.masterShip.dx;
             var _dy = this.game.masterShip.dy;
             var _time = Math.ceil(this.game.pulledDist) + parseInt(new Date() / 1000);
-            var _basePlanetId = this.game.storage.getBasePlanetId(CONFIG.CARD[1]);
-            var _destinationPlanetId = 0;
-            this.game.storage.moveFromId = _basePlanetId;
-            this.game.storage.moveToId = this.game.storage.targetMovePlanetId;
-
-            this.game.storage.targetMovePlanetId = 0;
-            
-            this.game.storage.saveCurrentData();
-            this.game.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, this.game.storage.targetMovePlanetId, "MOVING", 1);
+            var _basePlanetId = this.game.storage.getShipParamByName("basePlanetId");
+            var _from = this.game.storage.getShipParamByName("basePlanetId");
+            var _to = this.game.storage.getShipParamByName("destinationPlanetId");
+            this.game.storage.saveShipDataToStorage(_dx, _dy, _time, _basePlanetId, "MOVING", 0, _from, _to);
             //ここで燃料を減らす
             this.game.storage.useCoin(this.fuelCnt);
         }, this);
@@ -251,13 +246,10 @@ var InfoMenu = cc.Node.extend({
             var _dx = this.game.masterShip.dx;
             var _dy = this.game.masterShip.dy;
             var _time = Math.ceil(this.game.pulledDist) + parseInt(new Date() / 1000);
-            var _basePlanetId = this.game.storage.getBasePlanetId(CONFIG.CARD[1]);
-            var _destinationPlanetId = 0;
-
-            this.game.storage.moveFromId = _basePlanetId;
-            this.game.storage.moveToId = 0;
-
-            this.game.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, this.game.storage.targetMovePlanetId, "MOVING", 1);
+            var _basePlanetId = this.game.storage.getShipParamByName("basePlanetId");
+            var _from = _basePlanetId;
+            var _to = 0;
+            this.game.storage.saveShipDataToStorage(_dx, _dy, _time, _basePlanetId, "MOVING", 0, _from, _to);
             //ここで燃料を減らす
             this.game.storage.useCoin(this.fuelCnt);
         }, this);

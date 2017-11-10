@@ -2,7 +2,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
     sprite: null,
     ctor: function (storage, cardId) {
         this._super();
-//cc.sys.localStorage.clear();
+cc.sys.localStorage.clear();
         //画面サイズの取得
         this.viewSize = cc.director.getVisibleSize();
         this.storage = storage;
@@ -123,18 +123,19 @@ var DiscoveryLayer2 = cc.Layer.extend({
             //初回のアカウント作成
             this.InfoMenu.uiWindowAccount.setVisible(true);
             this.InfoMenu.infoNode.setVisible(true);
-            this.storage.saveShipDataToStorage(CONFIG.CARD[1], 0, 0, 0, 1, 0, "NO_DIST", 1);
+            this.storage.saveShipDataToStorage(0, 0, 0, 1, "NO_DIST", 0, 0, 0);
         }
         for (var key in this.storage.shipData) {
             if (this.storage.shipData.hasOwnProperty(key)) {
                 if (key == 'ID_1') {
                     var value = this.storage.shipData[key];
+                    cc.log(value);
                     this.masterShip = JSON.parse(value);
                 }
             }
         }
         //拠点の惑星を取得する
-        var _rootPlanetNum = this.storage.getBasePlanetId(CONFIG.CARD[1]);
+        var _rootPlanetNum = this.storage.getShipParamByName("basePlanetId");
         var _planet = CONFIG.PLANET[_rootPlanetNum];
         //地球を作成する
         this.basePlanet = new PlanetSprite(this, _planet);
@@ -179,17 +180,18 @@ var DiscoveryLayer2 = cc.Layer.extend({
             this.basePlanet.setVisible(true);
         }
         //探索ではなく、移動の場合の分岐
-        if (this.storage.targetMovePlanetId != 0) {            
+        if (this.storage.getShipParamByName("destinationPlanetId") != 0) {            
             this.tmpDx2 = 200;
             this.tmpDy2 = 200;
             this.pulledDist = 500;
-            this.setFuelAndCoinCost(this.storage.targetMovePlanetId);
+            this.setFuelAndCoinCost(this.storage.getShipParamByName("destinationPlanetId"));
         }
         this.cameraGapPosX = 0;
         this.cameraGapPosY = 0;
         this.cameraGapAddPosX = 1;
         this.cameraGapAddPosY = 1;
         this.debriCnt = 0;
+//cc.log(this.masterShip.status);
         return true;
     },
 
@@ -370,9 +372,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
                 this.masterShip.status = "FINISH";
                 this.masterShip.dx = 0;
                 this.masterShip.dy = 0;
-
                 //ここでtargetIdがあるかどうか
-
                 //探索結果画面
                 this.InfoMenu.infoNode.setVisible(true);
                 this.InfoMenu.uiWindowSeachResult.setVisible(true);
@@ -392,11 +392,9 @@ var DiscoveryLayer2 = cc.Layer.extend({
     setCameraSpeed: function () {
         //カメラの設定
         if (this.masterShip.status == "MOVING") {
-            //拠点の惑星があれば、その惑星の中心にカメラを固定する
             this.cameraTargetPosX = 320 - this.ship.getPosition().x;
             this.cameraTargetPosY = 580 - this.ship.getPosition().y;
         } else {
-            //拠点の惑星があれば、ロケットをカメラが追いかける
             this.cameraTargetPosX = 320 - this.ship.basePlanet.getPosition().x;
             this.cameraTargetPosY = 580 - this.ship.basePlanet.getPosition().y;
         }

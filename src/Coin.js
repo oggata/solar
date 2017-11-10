@@ -46,3 +46,42 @@ var Coin = cc.Node.extend({
         this.addChild(this.sprite2);
     },
 });
+
+
+
+var CoinMarker = cc.Node.extend({
+    ctor: function (game) {
+        this._super();
+        this.game = game;
+        this.getItemMarkerCnt = 0;
+        this.getItemMarker = cc.Sprite.create("res/item_001.png");
+        this.addChild(this.getItemMarker);
+        this.spriteOpacity = 0;
+    },
+    init: function () {},
+    setCoin:function(coinCnt){
+        this.getItemMarkerCnt = 1;
+    },
+    update: function () {
+        if(this.getItemMarkerCnt >= 1){
+            this.getItemMarkerCnt++;
+            if(this.getItemMarkerCnt >= 30 * 1){
+                this.getItemMarkerCnt = 0;
+            }
+        }
+        if(this.getItemMarkerCnt == 0){
+            this.spriteOpacity-=5;
+            if(this.spriteOpacity < 0){
+                this.spriteOpacity = 0;
+            }
+        }else{
+            this.spriteOpacity+=5;
+            if(this.spriteOpacity > 100){
+                this.spriteOpacity = 100;
+            }
+        }
+        this.getItemMarker.setOpacity((this.spriteOpacity / 100) * 255);
+    }
+});
+
+

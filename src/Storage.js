@@ -6,6 +6,9 @@ var Storage = cc.Class.extend(
         this.planetData = new Object();
         this.shipData = new Object();
 
+
+        this.currentShipId = 1;
+
         this.playerName = this.getRandNumberFromRange(1,9999999999);
         this.totalGameScore = 0;
         this.totalCoinAmount = 10000;
@@ -15,7 +18,7 @@ var Storage = cc.Class.extend(
         this.seVolume = 10;
         this.targetTime = parseInt( new Date() /1000 );
         this.lastUpdatedTime = parseInt( new Date() /1000 );
-
+/*
         this.basePlanetId = 1;
         this.targetPlanetId = 0;
         this.targetMovePlanetId = 0;
@@ -24,6 +27,7 @@ var Storage = cc.Class.extend(
 
         this.moveFromId = 0;
         this.moveToId = 0;
+*/
     },
 
     //移動距離に応じてスピードを返す
@@ -125,109 +129,115 @@ var Storage = cc.Class.extend(
         return this.totalCoinAmount;
     },
 
-    saveCreatureDataToStorage : function(card,addCount) 
-    {
-        //すでにある場合は、設定値の変更
-        var savedData = this.creatureData;
-        var _updateCnt = 0;
-        for (var savedDataKey in savedData) {
-            if (savedData.hasOwnProperty(savedDataKey)) {
-                var savedDataValue = savedData[savedDataKey];
-                var inputCreatureId= "ID_" + card["id"];
-                if(savedDataKey == inputCreatureId)
-                {
-                    var savedDataObj = JSON.parse(savedDataValue);
-                    var _txt = 
-                        '{"id":' + Math.floor(card["id"]) + 
-                        ',"image":"' + card["image"] + '"' + 
-                        ',"cnt":' + Math.floor(savedDataObj.cnt + addCount) + 
-                        ',"lastUpdatedTime":' + 0 + 
-                        '}'
-                    ;
-                    this.creatureData["ID_" + card["id"]] = _txt;
-                    _updateCnt+=1;
-                }
-            }
-        }
-
-        if(_updateCnt == 0)
-        {
-            var _txt = 
-                '{"id":' + Math.floor(card["id"]) + 
-                ',"image":"' + card["image"] + '"' + 
-                ',"cnt":' + addCount + 
-                ',"lastUpdatedTime":' + 0 + 
-                '}'
-            ;
-            this.creatureData["ID_" + card["id"]] = _txt;
-        }
-        var _getData = this.getDataFromStorage();
-        cc.sys.localStorage.setItem("gameStorage",_getData);
-    },
-
-    getBasePlanetId : function(ship){
+    getShipParamByName : function(type){
         var savedData = this.shipData;
         var _planetData = '';
         var keyCnt = Object.keys(this.shipData).length;
         for (var key in this.shipData) {
             if (this.shipData.hasOwnProperty(key)) {
                 var savedDataValue = this.shipData[key];
-                var inputCreatureId= "ID_" + ship.id;
+                var inputCreatureId= "ID_" + this.currentShipId;
                 if(key == inputCreatureId)
                 {
                     var savedDataObj = JSON.parse(savedDataValue);
                     //cc.log(savedDataObj);
-                    return savedDataObj.basePlanetId;
+                    if(type == "dx"){
+                        return savedDataObj.dx;
+                    }
+                    if(type == "dy"){
+                        return savedDataObj.dy;
+                    }
+                    if(type == "targetTime"){
+                        return savedDataObj.targetTime;
+                    }
+                    if(type == "basePlanetId"){
+                        return savedDataObj.basePlanetId;
+                    }
+                    if(type == "destinationPlanetId"){
+                        return savedDataObj.destinationPlanetId;
+                    }
+                    if(type == "status"){
+                        return savedDataObj.status;
+                    }
+                    if(type == "moveToPlanetId"){
+                        return savedDataObj.moveToPlanetId;
+                    }
+                    if(type == "moveFromPlanetId"){
+                        return savedDataObj.moveFromPlanetId;
+                    }
                 }
             }
         }
         return null;
     },
 
-    getDestinationPlanetId : function(ship){
-        var savedData = this.shipData;
-        var _planetData = '';
-        var keyCnt = Object.keys(this.shipData).length;
-        for (var key in this.shipData) {
-            if (this.shipData.hasOwnProperty(key)) {
-                var savedDataValue = this.shipData[key];
-                var inputCreatureId= "ID_" + ship.id;
-                if(key == inputCreatureId)
-                {
-                    var savedDataObj = JSON.parse(savedDataValue);
-                    return savedDataObj.destinationPlanetId;
-                }
-            }
-        }
-        return null;
-    },
-
-    saveShipDataToStorage : function(card,dx,dy,targetTime,basePlanetId,destinationPlanetId,status,addCount) 
+    saveShipDataToStorage : function(dx,dy,targetTime,basePlanetId,status,destinationPlanetId,moveFromPlanetId,moveToPlanetId) 
     {
         //すでにある場合は、設定値の変更
+        var _ship = CONFIG.CARD[this.currentShipId];
+
         var savedData = this.shipData;
         var _updateCnt = 0;
         for (var savedDataKey in savedData) {
             if (savedData.hasOwnProperty(savedDataKey)) {
                 var savedDataValue = savedData[savedDataKey];
-                var inputCreatureId= "ID_" + card["id"];
+                var inputCreatureId= "ID_" + this.currentShipId;
                 if(savedDataKey == inputCreatureId)
                 {
                     var savedDataObj = JSON.parse(savedDataValue);
+
+                    //accept
+                    var _dx = savedDataObj.dx;
+                    var _dy = savedDataObj.dy;
+                    var _targetTime = savedDataObj.targetTime;
+                    var _basePlanetId = savedDataObj.basePlanetId;
+                    var _destinationPlanetId = savedDataObj.destinationPlanetId;
+                    var _moveToPlanetId = savedDataObj.moveToPlanetId;
+                    var _moveFromPlanetId = savedDataObj.moveFromPlanetId;
+                    var _status = savedDataObj.status;
+                    var _lastUpdatedTime = savedDataObj.lastUpdatedTime;
+                    if(dx != null){
+                        _dx = dx;
+                    }
+                    if(dy != null){
+                        _dy = dy;
+                    }
+                    if(targetTime != null){
+                        _targetTime = targetTime;
+                    }
+                    if(basePlanetId != null){
+                        _basePlanetId = basePlanetId;
+                    }
+                    if(destinationPlanetId != null){
+                        _destinationPlanetId = destinationPlanetId;
+                    }
+                    if(moveToPlanetId != null){
+                        _moveToPlanetId = moveToPlanetId;
+                    }
+                    if(moveFromPlanetId != null){
+                        _moveFromPlanetId = moveFromPlanetId;
+                    }
+                    if(status != null){
+                        _status = status;
+                    }
+                    //if(lastUpdatedTime != null){
+                    //    _lastUpdatedTime = lastUpdatedTime;
+                    //}
                     var _txt = 
-                        '{"id":' + Math.floor(card["id"]) + 
-                        ',"image":"' + card["image"] + '"' + 
-                        //',"cnt":' + Math.floor(savedDataObj.cnt + addCount) + 
-                        ',"dx":' + dx + 
-                        ',"dy":' + dy + 
-                        ',"targetTime":' + targetTime + 
-                        ',"basePlanetId":' + basePlanetId + 
-                        ',"destinationPlanetId":' + destinationPlanetId + 
-                        ',"status":' + '"' + status  + '"' +
-                        ',"lastUpdatedTime":' + 0 + 
+                        '{"id":' + Math.floor(_ship["id"]) + 
+                        ',"image":"' + _ship["image"] + '"' + 
+                        ',"dx":' + _dx + 
+                        ',"dy":' + _dy + 
+                        ',"targetTime":' + _targetTime + 
+                        ',"basePlanetId":' + _basePlanetId + 
+                        ',"destinationPlanetId":' + _destinationPlanetId + 
+                        ',"moveToPlanetId":' + _moveToPlanetId + 
+                        ',"moveFromPlanetId":' + _moveFromPlanetId + 
+                        ',"status":' + '"' + _status  + '"' +
+                        ',"lastUpdatedTime":' + _lastUpdatedTime + 
                         '}'
                     ;
-                    this.shipData["ID_" + card["id"]] = _txt;
+                    this.shipData["ID_" + _ship["id"]] = _txt;
                     _updateCnt+=1;
                 }
             }
@@ -236,19 +246,20 @@ var Storage = cc.Class.extend(
         if(_updateCnt == 0)
         {
             var _txt = 
-                '{"id":' + Math.floor(card["id"]) + 
-                ',"image":"' + card["image"] + '"' + 
-                //',"cnt":' + Math.floor(savedDataObj.cnt + addCount) + 
-                ',"dx":' + dx + 
-                ',"dy":' + dy + 
-                ',"targetTime":' + targetTime + 
-                ',"basePlanetId":' + basePlanetId + 
-                ',"destinationPlanetId":' + destinationPlanetId + 
-                ',"status":' + '"' + status  + '"' +
+                '{"id":' + Math.floor(_ship["id"]) + 
+                ',"image":"' + _ship["image"] + '"' + 
+                ',"dx":' + _dx + 
+                ',"dy":' + _dy + 
+                ',"targetTime":' + _targetTime + 
+                ',"basePlanetId":' + _basePlanetId + 
+                ',"destinationPlanetId":' + _destinationPlanetId + 
+                ',"moveToPlanetId":' + _moveToPlanetId + 
+                ',"moveFromPlanetId":' + _moveFromPlanetId + 
+                ',"status":' + '"' + _status  + '"' +
                 ',"lastUpdatedTime":' + 0 + 
                 '}'
             ;
-            this.shipData["ID_" + card["id"]] = _txt;
+            this.shipData["ID_" + _ship["id"]] = _txt;
         }
         var _getData = this.getDataFromStorage();
         cc.sys.localStorage.setItem("gameStorage",_getData);

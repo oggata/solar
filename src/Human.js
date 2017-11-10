@@ -51,7 +51,7 @@ var Human = cc.Node.extend({
         this.isSpriteVisible = true;
     },
     update: function () {
-        if (this.isAuto != true) {
+        //if (this.isAuto != true) {
             if (this.game.game.gameDirection == "right_up") {
                 var _marker = this.getMarker(this.col + 1, this.row);
                 if (_marker) {
@@ -92,7 +92,7 @@ var Human = cc.Node.extend({
                     }
                 }
             }
-        }
+        //}
         if (this.hp <= 0) {
             this.flushCnt++;
             if (this.flushCnt >= 3) {

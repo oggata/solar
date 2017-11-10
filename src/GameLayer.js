@@ -42,18 +42,7 @@ var GameLayer = cc.Layer.extend({
         this.storage.eventData = new Object();
         this.storage.enemyEventData = new Object();
         //カラーの分別
-        this.colorName = colorName;
-        /*
-        if (this.colorName == "GREEN") {
-            this.enemyColorName = "RED";
-            this.greenUserId = this.storage.userId;
-            this.redUserId = this.storage.battleTargetUserId;
-        } else {
-            this.enemyColorName = "GREEN";
-            this.greenUserId = this.storage.battleTargetUserId;
-            this.redUserId = this.storage.userId;
-        }
-        */
+        //this.colorName = colorName;
         this.gameStatus = "wait";
         this.result = null;
         this.gameStartTimeCnt = 0;
@@ -90,15 +79,22 @@ var GameLayer = cc.Layer.extend({
         this.maxBattleWindowScale = 0.8;
         this.resultBattleWindowScale = 1.0;
         this.battleWindow.setScale(this.battleWindowScale);
-
         this.noise = new Noise();
         this.addChild(this.noise);
-
         this.setHeaderLabel();
         this.setStartLabel();
+
         this.resultSprite = new BattleResult(this);
         this.addChild(this.resultSprite, 9999);
         this.resultSprite.setVisible(false);
+
+
+this.getItemMarkerCnt = 0;
+this.getItemMarker = new CoinMarker(this);
+this.addChild(this.getItemMarker);
+this.getItemMarker.setPosition(320, 900);
+
+
         this.scheduleUpdate();
         this.firstTouchX = 0;
         this.firstTouchY = 0;
@@ -115,6 +111,9 @@ var GameLayer = cc.Layer.extend({
         return true;
     },
     update: function (dt) {
+
+this.getItemMarker.update();
+
         this.noise.update();
         if (this.gameStatus == "gaming") {
             this.battleWindow.setShipHidden();
