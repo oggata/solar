@@ -48,13 +48,7 @@ var MaterialsLayer = cc.Layer.extend({
         this.backNode.setAnchorPoint(0, 0);
         this.backNode.setPosition(0, 0);
         this.addChild(this.backNode);
-/*
-        this.header = cc.Sprite.create("res/header_owned_materials.png");
-        //this.header.setAnchorPoint(0, 0);
-        this.viewSize = cc.director.getVisibleSize();
-        this.header.setPosition(0, this.viewSize.height - 136);
-        this.addChild(this.header);
-*/
+
         this.footer = new Footer(this);
         this.addChild(this.footer);
         this.infoNode = cc.LayerColor.create(new cc.Color(0, 0, 0, 255), 640, this.viewSize.height);
@@ -109,6 +103,8 @@ var MaterialsLayer = cc.Layer.extend({
             this.spriteCell.setAnchorPoint(0, 0);
             this.spriteCell.setPosition(0, 0);
             cell.addChild(this.spriteCell, 9999999);
+cc.log(">>>>");
+cc.log(this.materials[strValue]);
             var button = new cc.MenuItemImage("res/button_get_coin.png", "res/button_get_coin_on.png", function () {
                 this.infoNode.setVisible(true);
                 var _planetId = this.materials[strValue].id;
@@ -133,7 +129,7 @@ var MaterialsLayer = cc.Layer.extend({
             descriptionLabel.setAnchorPoint(0, 0);
             descriptionLabel.setTag("descriptionLabel");
             //this.spriteCell.addChild(descriptionLabel, 9999999);
-var countLabel = cc.LabelTTF.create("10", "Helvetica", 28);
+var countLabel = cc.LabelTTF.create(this.materials[strValue].cnt, "Helvetica", 28);
 countLabel.setPosition(105, 10);
 countLabel.setAnchorPoint(1, 0);
 countLabel.textAlign = cc.TEXT_ALIGNMENT_RIGHT;

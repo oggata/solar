@@ -1,31 +1,35 @@
 var Coin = cc.Node.extend({
-    ctor: function (game, col, row) {
+    ctor: function (game, col, row, type) {
         this._super();
         this.game = game;
         this.col = col;
         this.row = row;
-
         this.mapChip = cc.Sprite.create("res/planets/004/map-chip-z.png");
         this.addChild(this.mapChip);
         this.imgWidth = 1280 / 8;
         this.imgHeight = 1280 / 8;
         this.widthCnt = 6;
-
         this.hp = 100;
         this.deadTime = 0;
-
-
-        var _rand = this.getRandNumberFromRange(1,3);
-        if(_rand == 1){
-            //this.initializeWalkAnimation();
-            this.itemSprite = cc.Sprite.create("res/material-map-003.png");
-            this.addChild(this.itemSprite);
-            this.itemSprite.setPosition(0,20);
-            //this.initializeWalkAnimation();
-        }else{
+        var _rand1 = this.getRandNumberFromRange(1, 5);
+        //_rand1 = 1;
+        if (_rand1 == 1) {
+            //エネルギー
+            this.name = "energy"
+            this.amount = 10;
+            this.isEnergy = true;
             this.initializeWalkAnimation();
+        } else {
+            var _rand = this.getRandNumberFromRange(1, 5);
+            var _data = CONFIG.MATERIAL[_rand];
+            this.name = _data["name"];
+            this.amount = 1;
+            this.material_id = _rand;
+            this.isEnergy = false;
+            this.box = cc.Sprite.create("res/material-box.png");
+            this.addChild(this.box);
+            this.box.setPosition(0, 15);
         }
-
     },
     init: function () {},
     update: function () {
@@ -34,6 +38,15 @@ var Coin = cc.Node.extend({
             return false;
         }
         return true;
+    },
+    getItem: function () {
+        this.game.messageLabel2.message += this.name + "x" + this.amount + "を得ました.\n";
+        if (this.isEnergy == true) {
+            this.game.storage.addCoin(this.amount);
+        } else {
+            //cc.log(CONFIG.MATERIAL[this.material_id]);
+            this.game.storage.saveMaterialDataToStorage(CONFIG.MATERIAL[this.material_id], this.amount);
+        }
     },
     initializeWalkAnimation: function () {
         this.imgWidth = 120;
@@ -57,49 +70,8 @@ var Coin = cc.Node.extend({
         this.sprite2.setScale(0.5, 0.5);
         this.addChild(this.sprite2);
     },
-
     getRandNumberFromRange: function (min, max) {
         var rand = min + Math.floor(Math.random() * (max - min));
         return rand;
     },
 });
-
-/*
-
-var CoinMarker = cc.Node.extend({
-    ctor: function (game) {
-        this._super();
-        this.game = game;
-        this.getItemMarkerCnt = 0;
-        this.getItemMarker = cc.Sprite.create("res/item_001.png");
-        this.addChild(this.getItemMarker);
-        this.spriteOpacity = 0;
-    },
-    init: function () {},
-    setCoin:function(coinCnt){
-        this.getItemMarkerCnt = 1;
-    },
-    update: function () {
-        if(this.getItemMarkerCnt >= 1){
-            this.getItemMarkerCnt++;
-            if(this.getItemMarkerCnt >= 30 * 1){
-                this.getItemMarkerCnt = 0;
-            }
-        }
-        if(this.getItemMarkerCnt == 0){
-            this.spriteOpacity-=5;
-            if(this.spriteOpacity < 0){
-                this.spriteOpacity = 0;
-            }
-        }else{
-            this.spriteOpacity+=5;
-            if(this.spriteOpacity > 100){
-                this.spriteOpacity = 100;
-            }
-        }
-        this.getItemMarker.setOpacity((this.spriteOpacity / 100) * 255);
-    }
-});
-
-*/
-

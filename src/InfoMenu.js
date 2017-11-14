@@ -93,10 +93,11 @@ var InfoMenu = cc.Node.extend({
             this.game.arrow.setVisible(false);
             this.game.masterShip.dx = 0;
             this.game.masterShip.dy = 0;
-            this.game.storage.moveFromId = 0;
-            this.game.storage.moveToId = 0;
-            this.game.storage.targetMovePlanetId = 0;
-            this.game.storage.saveCurrentData();
+            //this.game.storage.moveFromId = 0;
+            //this.game.storage.moveToId = 0;
+            //this.game.storage.targetMovePlanetId = 0;
+            //this.game.storage.saveCurrentData();
+            this.game.storage.saveShipDataToStorage(0,0,0,null,null,0,0,0);
         }, this);
         this.buttonLandingCancel.setPosition(180, 40);
 
@@ -150,10 +151,7 @@ var InfoMenu = cc.Node.extend({
             this.game.arrow.setVisible(false);
             this.game.masterShip.dx = 0;
             this.game.masterShip.dy = 0;
-            this.game.storage.moveFromId = 0;
-            this.game.storage.moveToId = 0;
-            this.game.storage.targetMovePlanetId = 0;
-            this.game.storage.saveCurrentData();
+            this.game.storage.saveShipDataToStorage(0,0,0,null,null,0,0,0);
         }, this);
         this.buttonMoveCancel.setPosition(180, 40);
 
@@ -198,7 +196,7 @@ var InfoMenu = cc.Node.extend({
         this.uiWindowLaunch.addChild(this.launchCoinCostLabel);
 
         //+時間amount
-        this.launchTimeCostLabel = cc.LabelTTF.create("11:11", "Arial", 25);
+        this.launchTimeCostLabel = cc.LabelTTF.create("", "Arial", 25);
         this.launchTimeCostLabel.setPosition(360, 150);
         this.launchTimeCostLabel.setAnchorPoint(1, 0.5);
         this.launchTimeCostLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
@@ -221,10 +219,7 @@ var InfoMenu = cc.Node.extend({
             this.game.arrow.setVisible(false);
             this.game.masterShip.dx = 0;
             this.game.masterShip.dy = 0;
-            this.game.storage.moveFromId = 0;
-            this.game.storage.moveToId = 0;
-            this.game.storage.targetMovePlanetId = 0;
-            this.game.storage.saveCurrentData();
+            this.game.storage.saveShipDataToStorage(0,0,0,null,null,0,0,0);
         }, this);
         this.buttonCancel.setPosition(180, 40);
 
@@ -242,10 +237,11 @@ var InfoMenu = cc.Node.extend({
             this.game.storage.saveCurrentData();
             var _dx = this.game.masterShip.dx;
             var _dy = this.game.masterShip.dy;
-            var _time = Math.ceil(this.game.pulledDist) + parseInt(new Date() / 1000);
+            var _time = this.game.storage.getTimeFromDist(this.game.pulledDist) + parseInt(new Date() / 1000);
             var _basePlanetId = this.game.storage.getShipParamByName("basePlanetId");
             var _from = _basePlanetId;
             var _to = 0;
+
             this.game.storage.saveShipDataToStorage(_dx, _dy, _time, _basePlanetId, "MOVING", 0, _from, _to);
             //ここで燃料を減らす
             this.game.storage.useCoin(this.fuelCnt);
@@ -309,10 +305,6 @@ var InfoMenu = cc.Node.extend({
             this.isAbleToLanding = true;
             this.batteryAmountLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         }
-
-
-
-
         if (this.isAbleToLanding == true) {
             this.buttonLandingPlanet.setOpacity(255 * 1);
         } else {
@@ -323,49 +315,6 @@ var InfoMenu = cc.Node.extend({
         }else{
             this.buttonLaunchShip.setOpacity(255 * 0.3);
         }
-
-/*
-        if (this.uiWindowAccount.isVisible()) {
-            this.buttonMoveShip.setVisible(false);
-            this.buttonCancel.setVisible(false);
-            this.buttonLandingPlanet.setVisible(false);
-            this.buttonLaunchShip.setVisible(false);
-            this.buttonOk.setVisible(true);
-            this.buttonGetPlanet.setVisible(false);
-        }
-        if (this.uiWindowResult.isVisible()) {
-            this.buttonMoveShip.setVisible(false);
-            this.buttonCancel.setVisible(false);
-            this.buttonLandingPlanet.setVisible(false);
-            this.buttonLaunchShip.setVisible(false);
-            this.buttonOk.setVisible(true);
-            this.buttonGetPlanet.setVisible(true);
-        }
-        if (this.uiWindowLanding.isVisible()) {
-            this.buttonMoveShip.setVisible(false);
-            this.buttonCancel.setVisible(true);
-            this.buttonLandingPlanet.setVisible(true);
-            this.buttonLaunchShip.setVisible(false);
-            this.buttonOk.setVisible(false);
-            this.buttonGetPlanet.setVisible(false);
-        }
-        if (this.uiWindowLaunch.isVisible()) {
-            this.buttonMoveShip.setVisible(false);
-            this.buttonCancel.setVisible(true);
-            this.buttonLandingPlanet.setVisible(false);
-            this.buttonLaunchShip.setVisible(true);
-            this.buttonOk.setVisible(false);
-            this.buttonGetPlanet.setVisible(false);
-        }
-        if(this.uiWindowMove.isVisible()){
-            this.buttonMoveShip.setVisible(true);
-            this.buttonCancel.setVisible(true);
-            this.buttonLandingPlanet.setVisible(false);
-            this.buttonLaunchShip.setVisible(false);
-            this.buttonOk.setVisible(false);
-            this.buttonGetPlanet.setVisible(false);
-        }
-*/
     },
     goToGameLayer: function (cardId) {
         var scene = cc.Scene.create();

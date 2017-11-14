@@ -52,7 +52,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.header.setAnchorPoint(0.5, 0);
         this.viewSize = cc.director.getVisibleSize();
         this.header.setPosition(320, this.viewSize.height - 72);
-        this.labelOpacity = 1;
+        //this.labelOpacity = 1;
         this.planets = [];
         this.baseNode = cc.Node.create();
         this.baseNode.setPosition(0, 0);
@@ -200,26 +200,29 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.cameraGapAddPosX = 1;
         this.cameraGapAddPosY = 1;
         this.debriCnt = 0;
-        this.storage.saveMaterialDataToStorage(CONFIG.MATERIAL[1], 1);
+        //this.storage.saveMaterialDataToStorage(CONFIG.MATERIAL[1], 1);
         return true;
     },
     setFuelAndCoinCost: function (targetMovePlanetId) {
         this.masterShip.status = "SET_FREE_DIST";
         var _fuelCost = Math.ceil(this.pulledDist);
-        var _time = this.storage.getTimeFromDist(this.pulledDist);
-        this.InfoMenu.setCost(_fuelCost, 0, _time);
+        var _timeCost = this.storage.getTimeFromDist(this.pulledDist);
+        this.InfoMenu.setCost(_fuelCost, 0, _timeCost);
         if (targetMovePlanetId) {
             this.InfoMenu.uiWindowMove.setVisible(true);
         } else {
             this.InfoMenu.uiWindowLaunch.setVisible(true);
         }
         this.InfoMenu.infoNode.setVisible(true);
-        this.masterShip.targetTime = _time + parseInt(new Date() / 1000);
+        this.masterShip.targetTime = _timeCost + parseInt(new Date() / 1000);
         this.baseNode.removeChild(this.drawNode2);
         this.arrow.setVisible(false);
         this.arrowLabel.setVisible(false);
     },
     update: function (dt) {
+cc.log("masterShipTargetTime==>");
+cc.log(this.masterShip.targetTime);
+
         this.noise.update();
         if (this.masterShip.status != "MOVING") {
             this.debriCnt++;
@@ -249,13 +252,17 @@ var DiscoveryLayer2 = cc.Layer.extend({
         }
         this.InfoMenu.update();
         if (this.masterShip.status == "MOVING") {
+            //デブリを排出する
             this.addDebrisCnt++;
             if (this.addDebrisCnt >= 5) {
                 this.addDebrisCnt = 0;
                 this.addDebris(1);
             }
+            //煙を出す
             this.shipSmoke.setPosition(this.ship.getPosition().x + this.masterShip.dx, this.ship.getPosition().y + this.masterShip.dy);
             this.shipSmoke2.setPosition(this.ship.getPosition().x + this.masterShip.dx, this.ship.getPosition().y + this.masterShip.dy);
+            //秒数を表示
+            this.ship.setTimeLabel(this.getPastSecond());
         }
         for (var i = 0; i < this.meteorites.length; i++) {
             this.meteorites[i].setPosition(this.meteorites[i].getPosition().x + this.meteorites[i].dx, this.meteorites[i].getPosition().y + this.meteorites[i].dy);
@@ -297,13 +304,16 @@ var DiscoveryLayer2 = cc.Layer.extend({
             }
         }
         this.setRocketSearchCompleate();
-        this.ship.setTimeLabel(this.pastSecond);
+        
+//this.ship.setTimeLabel(this.pastSecond);
+        /*
         if (this.masterShip.dx != 0 || this.masterShip.dy != 0) {
             this.labelOpacity -= 0.05;
             if (this.labelOpacity <= 0) {
                 this.labelOpacity = 0;
             }
         }
+        */
         this.ship.setPosition(this.ship.getPosition().x + this.masterShip.dx, this.ship.getPosition().y + this.masterShip.dy);
         this.setCameraSpeed();
         this.baseNode.setPosition(this.cameraPosX, this.cameraPosY);
@@ -363,7 +373,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.meteorites.push(this.hoge);
     },
     setRocketSearchCompleate: function () {
-        this.pastSecond = this.getPastSecond2();
+        this.pastSecond = this.getPastSecond();
         if (this.pastSecond <= 0) {
             this.pastSecond = 0;
             //経過した秒数が0秒 + 既存のステータスがmovigの場合は到着処理を行う
@@ -466,8 +476,8 @@ var DiscoveryLayer2 = cc.Layer.extend({
             }
         }
     },
-    getPastSecond2: function () {
-        var diffSecond = this.masterShip.targetTime - parseInt(new Date() / 1000);
+    getPastSecond: function () {
+        var diffSecond = Math.ceil(this.masterShip.targetTime - parseInt(new Date() / 1000));
         return diffSecond;
     },
     setTargetTime: function () {
@@ -514,8 +524,13 @@ var DiscoveryLayer2 = cc.Layer.extend({
             this.toP = cc.p(this.shipP.x + this.tmpDx2, this.shipP.y + this.tmpDy2);
             this.lineWidth = 2;
             this.drawNode2.drawSegment(this.shipP, this.toP, this.lineWidth, this.lineColor);
-            //this.InfoMenu.shipTargetTimeLabel.setString("" + Math.ceil(this.pulledDist) + "");
-            this.arrowLabel.setString(Math.ceil(this.pulledDist) + "KM");
+            this.arrowLabel.setString(Math.ceil(this.pulledDist) + "AU");
+
+
+
+var _time = this.storage.getTimeFromDist(this.pulledDist);
+this.ship.setTimeLabel(_time);
+
             this.arrow.setVisible(true);
             this.arrowLabel.setVisible(true);
             this.arrow.setPosition(this.toP.x, this.toP.y);

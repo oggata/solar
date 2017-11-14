@@ -69,7 +69,7 @@ var BattleWindow = cc.Node.extend({
         //materialを足す
         for (var i = 0; i < this.maxCoinCnt; i++) {
             this.positionalChips.sort(this.shuffle);
-            this.addCoin(this.positionalChips[0].col, this.positionalChips[0].row);
+            this.addCoin(this.positionalChips[0].col, this.positionalChips[0].row, 1);
         }
         //escape
         for (var i = 0; i < this.escapeCnt; i++) {
@@ -148,13 +148,20 @@ var BattleWindow = cc.Node.extend({
                 if (this.humans[h].col == this.coins[c].col && this.humans[h].row == this.coins[c].row) {
                     this.coins[c].hp = 0;
                     if (this.humans[h].colorName == "GREEN") {
+
+                        this.coins[c].getItem();
+                        /*
                         this.game.messageLabel2.message += "コインx10が追加しました\n";
                         this.game.storage.addCoin(10);
+                        */
+
+/*
                         if (this.coins[c].typeNum) {
                             var _typeNum = this.coins[c].typeNum;
                             this.game.addMaterial(_typeNum);
                             this.addMaterial(_typeNum);
                         }
+*/
                     }
                 }
             }
@@ -267,15 +274,16 @@ var BattleWindow = cc.Node.extend({
         this.field.addChild(this.human);
         this.humans.push(this.human);
     },
-    addCoin: function (col, row) {
+    addCoin: function (col, row, type) {
         //この場所にすでにcoinが入っていないかcheckする
-        this.coin = new Coin(this, col, row);
+        this.coin = new Coin(this.game, col, row,type);
         this.coin.col = col;
         this.coin.row = row;
         var _marker = this.getMarker2(col, row);
         this.coin.setPosition(_marker.getPosition().x, _marker.getPosition().y);
         this.field.addChild(this.coin);
         this.coins.push(this.coin);
+        //CONFIG.MATERIAL
     },
     initMap: function () {
         var _chipW = 32 * 3;

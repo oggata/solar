@@ -57,9 +57,8 @@ var MissionsLayer = cc.Layer.extend({
         this.treeNodeScale = 0.6;
         this.treeNode.setScale(this.treeNodeScale);
         //this.storage = storage;
-        this.ship = cc.Sprite.create("res/ship_search.png");
-        //this.ship.setAnchorPoint(0, 0);
-        this.ship.setPosition(100, 100);
+        this.ship = cc.Sprite.create("res/ship_search2.png");
+        //this.ship.setPosition(100, 100);
         this.treeNode.addChild(this.ship, 9999999999999999);
         this.planetButtons = [];
         this.connectedPlanetsData = new Array();
@@ -167,8 +166,6 @@ var MissionsLayer = cc.Layer.extend({
         this.basePlanetOpacity = 1;
         this.addPlanetOpacity = 0.05;
         this.scheduleUpdate();
-
-
         //fromとtoがセットされているか確認する
         var _startPlanetId = this.storage.getShipParamByName("moveFromPlanetId");
         var _finishPlanetId = this.storage.getShipParamByName("moveToPlanetId");

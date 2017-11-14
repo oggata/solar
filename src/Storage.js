@@ -30,11 +30,19 @@ var Storage = cc.Class.extend(
     },
 
     getFormatedTimeLabel:function(pastSecond){
-        var _hour = Math.ceil(pastSecond/3600);
-        var _pastSecondMinusHour = pastSecond - ( 3600 * _hour );
-        var _min = Math.ceil(_pastSecondMinusHour/60);
-        var _second = Math.ceil(_pastSecondMinusHour%60);
+        var _hour = 0;
+        if(pastSecond >= 3600){
+            _hour = Math.floor(pastSecond/3600);
+        }
+        var _min = 0;
+        if(pastSecond >= 60){
+            var _pastSecondMinusHour = pastSecond - ( 3600 * _hour );
+            _min = Math.floor(_pastSecondMinusHour/60);
+        }
+        var _second = Math.floor(pastSecond - ( 3600 * _hour + 60 * _min )) ;
+        //var _second = Math.ceil(_secondTime%60);
         var _txt = this.getdoubleDigestNumer(_hour) + ":" + this.getdoubleDigestNumer(_min) + ":" + this.getdoubleDigestNumer(_second);
+        //cc.log(pastSecond + "/" + "aa" + Math.floor(3600 * _hour + 60 * _min) + "///" + _second);
         return _txt;
     },
 
@@ -344,15 +352,6 @@ var Storage = cc.Class.extend(
 
     saveMaterialDataToStorage : function(material,addCount) 
     {
-
-/*
-try {
-
-}
-catch (e) {
-
-}
-*/
         //すでにある場合は、設定値の変更
         var savedData = this.materialData;
         var _updateCnt = 0;

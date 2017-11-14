@@ -73,7 +73,7 @@ var CreateLayer = cc.Layer.extend({
         this.items = [];
         var keyCnt = Object.keys(this.itemData).length;
         for (var key in this.itemData) {
-            cc.log(key);
+            //cc.log(key);
             if(key >= 1){
                 if (this.itemData.hasOwnProperty(key)) {
                     var value = this.itemData[key];
@@ -127,6 +127,11 @@ var CreateLayer = cc.Layer.extend({
 
             var _materials = this.items[strValue].materials;
 
+//this.materials[strValue].cnt
+
+            var _cnt = this.storage.countOwnMaterialData(_cardId);
+//cc.log("====");
+//cc.log(_cnt);
             var _materialTxt = "";
 
             if(_materials){
