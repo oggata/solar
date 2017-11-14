@@ -21,7 +21,7 @@ var Storage = cc.Class.extend(
     //移動距離に応じてスピードを返す
     getTimeFromDist:function(dist){
         //初回は1Mkm=1Min
-        return dist * 10;
+        return dist * 30;
     },
 
     getBatteryAmountFromPastSecond: function () {

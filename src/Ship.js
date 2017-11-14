@@ -26,7 +26,7 @@ var Ship = cc.Node.extend({
     init: function () {},
 
     setTimeLabel:function(pastSecond){
-        cc.log(pastSecond);
+        //cc.log(pastSecond);
         var _txt = this.game.storage.getFormatedTimeLabel(pastSecond);
         this.timeLabel.setString(_txt);
     },

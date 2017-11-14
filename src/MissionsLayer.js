@@ -56,9 +56,7 @@ var MissionsLayer = cc.Layer.extend({
         this.basePlanetId = this.storage.getShipParamByName("basePlanetId");
         this.treeNodeScale = 0.6;
         this.treeNode.setScale(this.treeNodeScale);
-        //this.storage = storage;
         this.ship = cc.Sprite.create("res/ship_search2.png");
-        //this.ship.setPosition(100, 100);
         this.treeNode.addChild(this.ship, 9999999999999999);
         this.planetButtons = [];
         this.connectedPlanetsData = new Array();
@@ -113,6 +111,12 @@ var MissionsLayer = cc.Layer.extend({
                 }
             }
         }
+
+        for (var masterCnt = 0; masterCnt < this.planets.length; masterCnt++) {
+            if (this.planets[masterCnt].position) {
+            }
+        }
+
         this.treeNode.setPosition((this.planets[this.basePlanetId].position[0] - 600) * -1 / 2, (this.planets[this.basePlanetId].position[1] - 900) * -1 / 2);
         this.firstTouchX = 0;
         this.firstTouchY = 0;
@@ -122,7 +126,6 @@ var MissionsLayer = cc.Layer.extend({
         this.header.setAnchorPoint(0, 0);
         this.viewSize = cc.director.getVisibleSize();
         this.header.setPosition(0, this.viewSize.height - 136);
-        //this.header.setPosition(0, 1136 - 136);
         this.addChild(this.header);
         this.scaleButton001 = new cc.MenuItemImage("res/button_scale_001.png", "res/button_scale_001.png", function (sender) {
             this.treeNodeScale += 0.2;
@@ -182,6 +185,9 @@ var MissionsLayer = cc.Layer.extend({
             var _planet = CONFIG.PLANET[_basePlanetId];
             this.ship.setPosition(_planet.position[0], _planet.position[1]);
         }
+
+
+        //cc.log(this.setRoute(1,6));
         return true;
     },
     update: function (dt) {
@@ -296,8 +302,6 @@ var MissionsLayer = cc.Layer.extend({
                 this.setHogeData = this.setHoge(_connected, _distance);
                 for (var u = 0; u < 5; u++) {
                     this.setHogeData = this.setHoge(this.setHogeData.connected, this.setHogeData.distance);
-                    //cc.log("distance:");
-                    //cc.log(this.setHogeData.distance);
                     if (!this.setHogeData) break;
                     if (this.setHogeData.distance <= 1) {
                         cc.log("break");

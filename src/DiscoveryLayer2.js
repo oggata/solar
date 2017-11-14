@@ -125,14 +125,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
                 var value = this.storage.shipData['ID_1'];
                 this.masterShip = JSON.parse(value);
             }
-            for (var key in this.storage.shipData) {
-                if (this.storage.shipData.hasOwnProperty(key)) {
-                    if (key == 'ID_1') {
-                        var value = this.storage.shipData[key];
-                        this.masterShip = JSON.parse(value);
-                    }
-                }
-            }
+            this.loadMasterShipData();
         } catch (e) {
             //JSONがparseできなかった時もアカウントを作成し直す.
             //初回のアカウント作成
@@ -155,9 +148,8 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.ship = new Ship(this, this.basePlanet);
         this.baseNode.addChild(this.ship, 999);
         this.ship.setPosition(5180, 5180);
-        //this.ship.setPosition(this.ship.getPosition().x + 500,this.ship.getPosition().y + 800);
         //スモーク
-        var texture = "res/planet_arrow.png"; //テクスチャの画像
+        var texture = "res/smoke.png"; //テクスチャの画像
         this.shipSmoke2 = cc.MotionStreak.create(4, 0.1, 10, cc.color.RED, texture);
         this.baseNode.addChild(this.shipSmoke2, 888);
         this.shipSmoke = cc.MotionStreak.create(2, 0.1, 8, cc.color.MAGENTA, texture);
@@ -203,6 +195,19 @@ var DiscoveryLayer2 = cc.Layer.extend({
         //this.storage.saveMaterialDataToStorage(CONFIG.MATERIAL[1], 1);
         return true;
     },
+
+loadMasterShipData:function(){
+    for (var key in this.storage.shipData) {
+        if (this.storage.shipData.hasOwnProperty(key)) {
+            if (key == 'ID_1') {
+                var value = this.storage.shipData[key];
+                this.masterShip = JSON.parse(value);
+            }
+        }
+    }
+
+},
+
     setFuelAndCoinCost: function (targetMovePlanetId) {
         this.masterShip.status = "SET_FREE_DIST";
         var _fuelCost = Math.ceil(this.pulledDist);
@@ -220,9 +225,6 @@ var DiscoveryLayer2 = cc.Layer.extend({
         this.arrowLabel.setVisible(false);
     },
     update: function (dt) {
-cc.log("masterShipTargetTime==>");
-cc.log(this.masterShip.targetTime);
-
         this.noise.update();
         if (this.masterShip.status != "MOVING") {
             this.debriCnt++;
@@ -304,16 +306,6 @@ cc.log(this.masterShip.targetTime);
             }
         }
         this.setRocketSearchCompleate();
-        
-//this.ship.setTimeLabel(this.pastSecond);
-        /*
-        if (this.masterShip.dx != 0 || this.masterShip.dy != 0) {
-            this.labelOpacity -= 0.05;
-            if (this.labelOpacity <= 0) {
-                this.labelOpacity = 0;
-            }
-        }
-        */
         this.ship.setPosition(this.ship.getPosition().x + this.masterShip.dx, this.ship.getPosition().y + this.masterShip.dy);
         this.setCameraSpeed();
         this.baseNode.setPosition(this.cameraPosX, this.cameraPosY);
@@ -366,7 +358,7 @@ cc.log(this.masterShip.targetTime);
         }
         this.hoge.dx = this.hoge.dx * 2;
         this.hoge.dx = this.hoge.dx * 2;
-        this.smoke = cc.MotionStreak.create(this.getRandNumberFromRange(1, 6), 0.01, this.getRandNumberFromRange(1, 4), cc.color.WHITE, "res/sprite_star003.png");
+        this.smoke = cc.MotionStreak.create(this.getRandNumberFromRange(1, 6), 0.01, this.getRandNumberFromRange(1, 4), cc.color.WHITE, "res/smoke.png");
         this.baseNode.addChild(this.smoke);
         this.smoke.setPosition(320, 320);
         this.hoge.smoke = this.smoke;

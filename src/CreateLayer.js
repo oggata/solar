@@ -77,7 +77,7 @@ var CreateLayer = cc.Layer.extend({
             if(key >= 1){
                 if (this.itemData.hasOwnProperty(key)) {
                     var value = this.itemData[key];
-                    cc.log(value);
+                    //cc.log(value);
                     this.items.push(value);
                 }
             }
