@@ -79,10 +79,10 @@ var MissionsLayer = cc.Layer.extend({
                 this.buttonPlanet.planetId = _planetId;
                 this.planetButtons.push(this.buttonPlanet);
                 //for debug
-                this.planetIdLabel = new cc.LabelTTF(_planetId, "Arial", 99);
+                this.planetIdLabel = new cc.LabelTTF(_planetId, "Arial", 48);
                 this.planetIdLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
                 this.buttonPlanet.addChild(this.planetIdLabel);
-                this.planetIdLabel.setPosition(20, 20);
+                this.planetIdLabel.setPosition(40, 40);
                 this.buttonPlanet.planetId = _planetId;
                 var menu001 = new cc.Menu(this.buttonPlanet);
                 menu001.setPosition(0, 0);
@@ -167,9 +167,12 @@ var MissionsLayer = cc.Layer.extend({
         this.basePlanetOpacity = 1;
         this.addPlanetOpacity = 0.05;
         this.scheduleUpdate();
-        if (this.storage.moveToId > 0 && this.storage.moveFromId > 0) {
-            var _startPlanetId = this.storage.moveFromId;
-            var _finishPlanetId = this.storage.moveToId;
+
+
+        //fromとtoがセットされているか確認する
+        var _startPlanetId = this.storage.getShipParamByName("moveFromPlanetId");
+        var _finishPlanetId = this.storage.getShipParamByName("moveToPlanetId");
+        if (_startPlanetId > 0 && _finishPlanetId > 0) {
             var _route = [];
             var _aaa = this.setRoute(_startPlanetId, _finishPlanetId);
             var _planet = CONFIG.PLANET[_aaa[0].planetId]
@@ -178,9 +181,8 @@ var MissionsLayer = cc.Layer.extend({
             this.shipTargetPlanet = CONFIG.PLANET[_aaa[1].planetId];
             this.treeNode.setPosition((this.ship.getPosition().x - 600) * -1 / 2, (this.ship.getPosition().y - 900) * -1 / 2);
         } else {
-            //cc.log("basePlanetId:" + this.storage.basePlanetId);
             var _basePlanetId = this.storage.getShipParamByName("basePlanetId");
-            var _planet = CONFIG.PLANET[this.storage.basePlanetId];
+            var _planet = CONFIG.PLANET[_basePlanetId];
             this.ship.setPosition(_planet.position[0], _planet.position[1]);
         }
         return true;

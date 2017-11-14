@@ -54,7 +54,7 @@ var Footer = cc.Node.extend({
     goToPlanetsLayer: function (cardId) {
         var scene = cc.Scene.create();
         //次のステージへいくためにstorageは必ず受けた渡す
-        scene.addChild(PlanetsLayer.create(this.storage, cardId));
+        scene.addChild(MaterialsLayer.create(this.storage, cardId));
         cc.director.runScene(cc.TransitionFadeDown.create(0.4, scene));
     },
     goToProfileLayer: function (cardId) {

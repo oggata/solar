@@ -36,6 +36,11 @@
         "src/Material.js",
         "src/ProfileLayer.js",
         "src/Noise.js",
+
+"src/MaterialsLayer.js",
+"src/HeaderItem.js",
+"src/CreateLayer.js",
+
 "src/MessageLabel.js",
  "src/InfoMenu.js",
   "src/ShipControlMenu.js",

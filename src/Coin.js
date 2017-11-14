@@ -13,7 +13,19 @@ var Coin = cc.Node.extend({
 
         this.hp = 100;
         this.deadTime = 0;
-        this.initializeWalkAnimation();
+
+
+        var _rand = this.getRandNumberFromRange(1,3);
+        if(_rand == 1){
+            //this.initializeWalkAnimation();
+            this.itemSprite = cc.Sprite.create("res/material-map-003.png");
+            this.addChild(this.itemSprite);
+            this.itemSprite.setPosition(0,20);
+            //this.initializeWalkAnimation();
+        }else{
+            this.initializeWalkAnimation();
+        }
+
     },
     init: function () {},
     update: function () {
@@ -45,9 +57,14 @@ var Coin = cc.Node.extend({
         this.sprite2.setScale(0.5, 0.5);
         this.addChild(this.sprite2);
     },
+
+    getRandNumberFromRange: function (min, max) {
+        var rand = min + Math.floor(Math.random() * (max - min));
+        return rand;
+    },
 });
 
-
+/*
 
 var CoinMarker = cc.Node.extend({
     ctor: function (game) {
@@ -84,4 +101,5 @@ var CoinMarker = cc.Node.extend({
     }
 });
 
+*/
 

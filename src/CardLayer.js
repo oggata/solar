@@ -56,7 +56,8 @@ var CardLayer = cc.Layer.extend({
         this.nextPlanetId = 1;
         if (_rootPlanet) {
             _planetBranchList = this.storage.getConnectedPlanets();
-            var _branchList = _planetBranchList[_rootPlanet.id];
+            cc.log(_planetBranchList);
+            var _branchList = _planetBranchList[_basePlanetNum];
             _branchList.sort(this.shuffle);
             this.nextPlanetId = _branchList[0];
         }

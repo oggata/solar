@@ -37,9 +37,8 @@ var ShipControlMenu = cc.Node.extend({
             this.game.baseNode.removeChild(this.game.drawNode2);
             this.game.arrow.setVisible(false);
             this.game.arrowLabel.setVisible(false);
-            var _basePlanetId = this.game.storage.getBasePlanetId(CONFIG.CARD[1]);;
-            this.game.storage.saveShipDataToStorage(CONFIG.CARD[1], 0, 0, 0, _basePlanetId, 0,
-                "NO_DIST", 1);
+            var _basePlanetId = this.game.storage.getShipParamByName("basePlanetId");
+            this.game.storage.saveShipDataToStorage(0, 0, 0, _basePlanetId, "NO_DIST", 0,0,0);
         }, this);
         this.buttonCancel.setPosition(180, 60);
         var menu001 = new cc.Menu(this.buttonLaunch, this.buttonCancel);
@@ -56,20 +55,14 @@ var ShipControlMenu = cc.Node.extend({
         this.uiShipMonitor.addChild(this.uiShipMonitor004);
 
         this.buttonCancel = new cc.MenuItemImage("res/button_ship_cancel.png", "res/button_ship_cancel.png", function () {
-            var _dx = 0;
-            var _dy = 0;
-            var _time = 0;
-            var _basePlanetId = this.game.storage.getBasePlanetId(CONFIG.CARD[1]);;
-            var _destinationPlanetId = 0;
-            this.game.storage.saveShipDataToStorage(CONFIG.CARD[1], _dx, _dy, _time, _basePlanetId, _destinationPlanetId,
-                "NO_DIST", 1);
+            var _basePlanetId = this.game.storage.getShipParamByName("basePlanetId");
+            this.game.storage.saveShipDataToStorage(0, 0, 0, _basePlanetId, "NO_DIST", 0,0,0);
             this.game.masterShip.status = "NO_DIST";
             this.game.masterShip.dx = 0;
             this.game.masterShip.dy = 0;
             this.game.baseNode.removeChild(this.game.drawNode2);
             this.game.arrow.setVisible(false);
             this.game.arrowLabel.setVisible(false);
-            //this.game.basePlanet.setVisible(true);
             this.game.footer.goToDiscoveryLayer();
         }, this);
         this.buttonCancel.setPosition(180, 60);

@@ -88,12 +88,12 @@ var GameLayer = cc.Layer.extend({
         this.addChild(this.resultSprite, 9999);
         this.resultSprite.setVisible(false);
 
-
+/*
 this.getItemMarkerCnt = 0;
 this.getItemMarker = new CoinMarker(this);
 this.addChild(this.getItemMarker);
 this.getItemMarker.setPosition(320, 900);
-
+*/
 
         this.scheduleUpdate();
         this.firstTouchX = 0;
@@ -108,12 +108,14 @@ this.getItemMarker.setPosition(320, 900);
         this.noiseTime = 0;
         this.noiseOpacity = 0;
         this.noiseAddOpacity = 0;
+
+        this.messageLabel2 = new MessageLabel(this);
+        this.backNode.addChild(this.messageLabel2, 9999999999999);
+        this.messageLabel2.setPosition(30, 900);
         return true;
     },
     update: function (dt) {
-
-this.getItemMarker.update();
-
+        this.messageLabel2.update();
         this.noise.update();
         if (this.gameStatus == "gaming") {
             this.battleWindow.setShipHidden();
@@ -145,7 +147,6 @@ this.getItemMarker.update();
         this.setResultStatus();
     },
     setScroll: function () {
-        //this.walkSpeed = 1 * 2;
         this.cameraSpeed = this.battleWindow.player.walkSpeed;
         if (Math.abs(this.targetBaseNodePosX - this.baseNodePosX) >= 2.5 * 3) {
             //差分が5以上の時

@@ -37,16 +37,13 @@ var InfoMenu = cc.Node.extend({
         this.uiWindowSeachResult.setVisible(false);
 
         this.buttonGetPlanet = new cc.MenuItemImage("res/button_window_search.png", "res/button_window_search.png", function () {
-            cc.log("xx");
             this.game.masterShip.status = "NO_DIST";
-            //探索の場合はカードを引く、移動の場合はカードは引かない
-            //var _dest = this.game.storage.getDestinationPlanetId(CONFIG.CARD[1]);
-            var _dest = this.game.storage.getShipParamByName("destinationPlanetId");
-            if (_dest == 0) {
+            //moveTo先の惑星がなければカードを引く。あれば、引かない。
+            var _moveToPlanetId = this.game.storage.getShipParamByName("moveToPlanetId");
+            if (_moveToPlanetId == 0) {
                 this.goToCardLayer();
             } else {
-                var _basePlanetId = _dest;
-                this.game.storage.saveShipDataToStorage(0, 0, 0, _basePlanetId, "NO_DIST", 0, 0, 0);
+                this.game.storage.saveShipDataToStorage(0, 0, 0, _moveToPlanetId, "NO_DIST", 0, null, null);
                 this.goToMissionsLayer();
             }
         }, this);

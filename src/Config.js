@@ -6,6 +6,7 @@ CONFIG.DEBUG_STAGE_NUM  = 4;
 CONFIG.BGM_VOLUME       = 1;
 CONFIG.SE_VOLUME        = 1;
 CONFIG.CARD_SPEND_COST  = 3;
+CONFIG.MAX_CHARGE_TIME  = 10;
 
 
 CONFIG.DISCOVER_MESSAGE = "ワクセイタンサシステム\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートカンリョウシマシタ....\n\n";
@@ -210,13 +211,106 @@ CONFIG.SHIP = [
 ];
 
 
-CONFIG.CARD = [
+CONFIG.MATERIAL = [
+    { 
+    },
+    { 
+        "id"         : 1,
+        "name"       : "プラスチックの破片",
+        "description": "",
+        "genre"      : "sozai",
+    },
+    { 
+        "id"         : 2,
+        "name"       : "鉄の破片",
+        "description": "",
+        "genre"      : "sozai",
+    },
+    { 
+        "id"         : 3,
+        "name"       : "銅の破片",
+        "description": "",
+        "genre"      : "sozai",
+    },
+    { 
+        "id"         : 4,
+        "name"       : "アルミニウムの破片",
+        "description": "",
+        "genre"      : "sozai",
+    },
+    { 
+        "id"         : 5,
+        "name"       : "鉄線",
+        "description": "",
+        "genre"      : "sozai",
+    },
+    { 
+        "id"         : 6,
+        "name"       : "銅線",
+        "description": "",
+        "genre"      : "sozai",
+    }
+];
+
+
+CONFIG.ITEM = [
     { 
     },
     { 
         "id"         : 1,
         "name"       : "バッテリーモジュール",
         "description": "より多くの電気を貯めることができる",
+        "genre"      : "",
+        "useTxt"     : "",
+        "image"      : "res/sozai001.png",
+        "materials"  : [{material_id:1,amount:5},{material_id:2,amount:5},{material_id:3,amount:5}],
+    },
+    { 
+        "id"         : 2,
+        "name"       : "ソーラーモジュール",
+        "description": "単位時間あたりの充電量が増加する",
+        "genre"      : "",
+        "useTxt"     : "",
+        "image"      : "res/sozai001.png",
+        "materials"  : [{material_id:1,amount:5},{material_id:2,amount:5},{material_id:3,amount:5}],
+    },
+    { 
+        "id"         : 3,
+        "name"       : "燃焼モジュール",
+        "description": "より遠くまで飛ぶことができる",
+        "genre"      : "",
+        "useTxt"     : "",
+        "image"      : "res/sozai001.png",
+        "materials"  : [{material_id:1,amount:5},{material_id:2,amount:5},{material_id:3,amount:5}],
+    },
+    { 
+        "id"         : 4,
+        "name"       : "エンジンモジュール",
+        "description": "探索スピードが増加する",
+        "genre"      : "",
+        "useTxt"     : "",
+        "image"      : "res/sozai001.png",
+        "materials"  : [{material_id:1,amount:5},{material_id:2,amount:5},{material_id:3,amount:5}],
+    },
+    { 
+        "id"         : 5,
+        "name"       : "アンテナモジュール",
+        "description": "Sランク惑星の発見率が増加する",
+        "genre"      : "",
+        "useTxt"     : "",
+        "image"      : "res/sozai001.png",
+        "materials"  : [{material_id:1,amount:5},{material_id:2,amount:5},{material_id:3,amount:5}],
+    },
+];
+
+
+CONFIG.CARD = [
+    { 
+    },
+    { 
+        "id"         : 1,
+        "name"       : "XXX",
+        "description": "XXX",
         "genre"      : "test",
         "useTxt"     : "",
         "image"      : "res/sozai001.png",
@@ -224,55 +318,7 @@ CONFIG.CARD = [
         "strong"     : [1,0,0,0],
         "isOwnTerritory" : false,
         "maxPopulation" : 2,
-    },
-    { 
-        "id"         : 2,
-        "name"       : "ソーラーモジュール",
-        "description": "単位時間あたりの充電量が増加する",
-        "genre"      : "test",
-        "useTxt"     : "",
-        "image"      : "res/sozai002.png",
-        "weak"       : [],
-        "strong"     : [0,1,0,0],
-        "isOwnTerritory" : false,
-        "maxPopulation" : 0,
-    },
-    { 
-        "id"         : 2,
-        "name"       : "燃焼モジュール",
-        "description": "より遠くまで飛ぶことができる",
-        "genre"      : "test",
-        "useTxt"     : "",
-        "image"      : "res/sozai002.png",
-        "weak"       : [],
-        "strong"     : [0,1,0,0],
-        "isOwnTerritory" : false,
-        "maxPopulation" : 0,
-    },
-    { 
-        "id"         : 2,
-        "name"       : "エンジンモジュール",
-        "description": "探索スピードが増加する",
-        "genre"      : "test",
-        "useTxt"     : "",
-        "image"      : "res/sozai002.png",
-        "weak"       : [],
-        "strong"     : [0,1,0,0],
-        "isOwnTerritory" : false,
-        "maxPopulation" : 0,
-    },
-    { 
-        "id"         : 2,
-        "name"       : "アンテナモジュール",
-        "description": "Sランク惑星の発見率が増加する",
-        "genre"      : "test",
-        "useTxt"     : "",
-        "image"      : "res/sozai002.png",
-        "weak"       : [],
-        "strong"     : [0,1,0,0],
-        "isOwnTerritory" : false,
-        "maxPopulation" : 0,
-    },
+    }
 ];
 
 CONFIG.MISSION = [
@@ -329,7 +375,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [0,400*1],
-        "route"       : [1,2,3]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 2,
@@ -341,7 +387,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [-400,400*2],
-        "route"       : [1,2,3]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 3,
@@ -353,7 +399,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [700,400*2],
-        "route"       : [1,2,3]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 4,
@@ -365,7 +411,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [-200,400*2],
-        "route"       : [1,2,3]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 5,
@@ -377,7 +423,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [400,400*2],
-        "route"       : [1,2,3]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 6,
@@ -389,7 +435,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [0,400*3],
-        "route"       : [1,2,3]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 7,
@@ -401,7 +447,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [-200,400*3],
-        "route"       : [1,2,3]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 8,
@@ -413,7 +459,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [400,400*3],
-        "route"       : [1,2,3]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 9,
@@ -425,7 +471,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [800,400*3],
-        "route"       : [1,2,3]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 10,
@@ -437,7 +483,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [-800,400*3],
-        "route"       : [1,2,3]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 11,
@@ -449,7 +495,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [600,400*3],
-        "route"       : [1,2,3]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 12,
@@ -461,7 +507,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [-400,400*4],
-        "route"       : [1,2,3]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 13,
@@ -473,7 +519,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [400,400*4],
-        "route"       : [1]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 14,
@@ -485,7 +531,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [0,400*5],
-        "route"       : [1]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 15,
@@ -497,7 +543,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [300,400*5],
-        "route"       : [1]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 16,
@@ -509,7 +555,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [600,400*6],
-        "route"       : [1]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 17,
@@ -521,7 +567,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [-500,400*6],
-        "route"       : [1]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 18,
@@ -533,7 +579,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [0,400*7],
-        "route"       : [1]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 19,
@@ -545,7 +591,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [-400,400*7],
-        "route"       : [1]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 20,
@@ -557,7 +603,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [-600,400*7],
-        "route"       : [1]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 21,
@@ -569,7 +615,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [500,400*7],
-        "route"       : [1]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 22,
@@ -581,7 +627,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 100,
         "position"   : [0,400*8],
-        "route"       : [1]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 23,
@@ -593,7 +639,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [200,400*8],
-        "route"       : [1]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 24,
@@ -605,7 +651,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [400,400*8],
-        "route"       : [1]
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 25,
@@ -617,6 +663,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [-400,400*8],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 26,
@@ -628,6 +675,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [0,400*9],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 27,
@@ -639,6 +687,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [-800,400*9],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 28,
@@ -650,6 +699,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [800,400*9],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 29,
@@ -661,6 +711,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [200,400*9],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 30,
@@ -672,6 +723,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [1000,400*10],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 31,
@@ -683,6 +735,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [500,400*10],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 32,
@@ -694,6 +747,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [100,400*10],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 33,
@@ -705,6 +759,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [-400,400*11],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 34,
@@ -716,6 +771,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [100,400*11],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 35,
@@ -727,6 +783,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [400,400*11],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 36,
@@ -738,6 +795,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [1000,400*11],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 37,
@@ -749,6 +807,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [-100,400*12],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 37,
@@ -760,6 +819,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [-500,400*12],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 38,
@@ -771,6 +831,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [200,400*12],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 39,
@@ -782,6 +843,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [800,400*12],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 40,
@@ -793,6 +855,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [-1000,400*13],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 41,
@@ -804,6 +867,7 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [1000,400*13],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 
         "id"         : 42,
@@ -815,5 +879,6 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [-500,400*13],
+        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
 ];

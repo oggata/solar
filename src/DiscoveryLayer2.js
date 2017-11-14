@@ -2,7 +2,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
     sprite: null,
     ctor: function (storage, cardId) {
         this._super();
-cc.sys.localStorage.clear();
+        //cc.sys.localStorage.clear();
         //画面サイズの取得
         this.viewSize = cc.director.getVisibleSize();
         this.storage = storage;
@@ -52,7 +52,6 @@ cc.sys.localStorage.clear();
         this.header.setAnchorPoint(0.5, 0);
         this.viewSize = cc.director.getVisibleSize();
         this.header.setPosition(320, this.viewSize.height - 72);
-        this.maxChargeTime = 60 * 3;
         this.labelOpacity = 1;
         this.planets = [];
         this.baseNode = cc.Node.create();
@@ -90,15 +89,13 @@ cc.sys.localStorage.clear();
         this.messageLabel.setPosition(30, 900);
         this.messageLabel.setAnchorPoint(0, 1);
         this.messageLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.backNode.addChild(this.messageLabel,9999999999999);
+        this.backNode.addChild(this.messageLabel, 9999999999999);
         this.messageLabel.setAnchorPoint(0, 1);
         this.message = CONFIG.DISCOVER_MESSAGE;
         this.messageTime = 0;
         this.visibleStrLenght = 0;
         this.launchCnt = 0;
         this.initializeWarpAnimation();
-        //this.tmpDx = 0;
-        //this.tmpDy = 0;
         this.touchStatus = "none";
         this.shipControlMenu = new ShipControlMenu(this);
         this.addChild(this.shipControlMenu);
@@ -118,21 +115,33 @@ cc.sys.localStorage.clear();
         this.arrowLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.baseNode.addChild(this.arrowLabel, 99999);
         this.masterShip = null;
-        var keyCnt = Object.keys(this.storage.shipData).length;
-        if (keyCnt == 0) {
+        try {
+            var keyCnt = Object.keys(this.storage.shipData).length;
+            if (keyCnt == 0) {
+                //初回のアカウント作成
+                this.InfoMenu.uiWindowAccount.setVisible(true);
+                this.InfoMenu.infoNode.setVisible(true);
+                this.storage.saveShipDataToStorage(0, 0, 0, 1, "NO_DIST", 0, 0, 0);
+                var value = this.storage.shipData['ID_1'];
+                this.masterShip = JSON.parse(value);
+            }
+            for (var key in this.storage.shipData) {
+                if (this.storage.shipData.hasOwnProperty(key)) {
+                    if (key == 'ID_1') {
+                        var value = this.storage.shipData[key];
+                        this.masterShip = JSON.parse(value);
+                    }
+                }
+            }
+        } catch (e) {
+            //JSONがparseできなかった時もアカウントを作成し直す.
             //初回のアカウント作成
+            cc.log("error>>>");
             this.InfoMenu.uiWindowAccount.setVisible(true);
             this.InfoMenu.infoNode.setVisible(true);
             this.storage.saveShipDataToStorage(0, 0, 0, 1, "NO_DIST", 0, 0, 0);
-        }
-        for (var key in this.storage.shipData) {
-            if (this.storage.shipData.hasOwnProperty(key)) {
-                if (key == 'ID_1') {
-                    var value = this.storage.shipData[key];
-                    cc.log(value);
-                    this.masterShip = JSON.parse(value);
-                }
-            }
+            var value = this.storage.shipData['ID_1'];
+            this.masterShip = JSON.parse(value);
         }
         //拠点の惑星を取得する
         var _rootPlanetNum = this.storage.getShipParamByName("basePlanetId");
@@ -145,7 +154,7 @@ cc.sys.localStorage.clear();
         //探索船を作る
         this.ship = new Ship(this, this.basePlanet);
         this.baseNode.addChild(this.ship, 999);
-        this.ship.setPosition(5000, 5000);
+        this.ship.setPosition(5180, 5180);
         //this.ship.setPosition(this.ship.getPosition().x + 500,this.ship.getPosition().y + 800);
         //スモーク
         var texture = "res/planet_arrow.png"; //テクスチャの画像
@@ -180,7 +189,7 @@ cc.sys.localStorage.clear();
             this.basePlanet.setVisible(true);
         }
         //探索ではなく、移動の場合の分岐
-        if (this.storage.getShipParamByName("destinationPlanetId") != 0) {            
+        if (this.storage.getShipParamByName("destinationPlanetId") != 0) {
             this.tmpDx2 = 200;
             this.tmpDy2 = 200;
             this.pulledDist = 500;
@@ -191,32 +200,27 @@ cc.sys.localStorage.clear();
         this.cameraGapAddPosX = 1;
         this.cameraGapAddPosY = 1;
         this.debriCnt = 0;
-//cc.log(this.masterShip.status);
+        this.storage.saveMaterialDataToStorage(CONFIG.MATERIAL[1], 1);
         return true;
     },
-
-    setFuelAndCoinCost:function(targetMovePlanetId){
+    setFuelAndCoinCost: function (targetMovePlanetId) {
         this.masterShip.status = "SET_FREE_DIST";
         var _fuelCost = Math.ceil(this.pulledDist);
         var _time = this.storage.getTimeFromDist(this.pulledDist);
         this.InfoMenu.setCost(_fuelCost, 0, _time);
-
-        if(targetMovePlanetId){
+        if (targetMovePlanetId) {
             this.InfoMenu.uiWindowMove.setVisible(true);
-        }else{
+        } else {
             this.InfoMenu.uiWindowLaunch.setVisible(true);
         }
         this.InfoMenu.infoNode.setVisible(true);
-
         this.masterShip.targetTime = _time + parseInt(new Date() / 1000);
         this.baseNode.removeChild(this.drawNode2);
         this.arrow.setVisible(false);
         this.arrowLabel.setVisible(false);
     },
-
     update: function (dt) {
         this.noise.update();
-
         if (this.masterShip.status != "MOVING") {
             this.debriCnt++;
             if (this.debriCnt >= 15) {
@@ -227,7 +231,6 @@ cc.sys.localStorage.clear();
                 this.ship.setRotation(360 - this.basePlanet.degree + 360 + 90);
             }
         }
-
         //時間を進める
         this.header.update();
         if (this.errorCnt >= 1) {
@@ -237,7 +240,6 @@ cc.sys.localStorage.clear();
                 this.error.setVisible(false);
             }
         }
-
         this.batteryAmount = this.storage.getBatteryAmountFromPastSecond();
         if (this.batteryAmount <= 0) {
             this.batteryAmount = 0;
@@ -245,7 +247,6 @@ cc.sys.localStorage.clear();
         } else {
             this.header.batteryAmountLabel.setString("残り" + this.batteryAmount + "秒");
         }
-
         this.InfoMenu.update();
         if (this.masterShip.status == "MOVING") {
             this.addDebrisCnt++;
@@ -267,7 +268,6 @@ cc.sys.localStorage.clear();
         }
         this.ship.update();
         this.shipControlMenu.update();
-
         if (this.ship.basePlanet != null) {
             //メッセージ表示の管理
             this.messageTime++;
@@ -280,7 +280,7 @@ cc.sys.localStorage.clear();
             }
             var _visibleString = this.message.substring(0, this.visibleStrLenght);
             this.messageLabel.setString(_visibleString);
-            this.messageLabel.setVisible(true);   
+            this.messageLabel.setVisible(true);
         } else {
             this.messageTime = 0;
             this.visibleStrLenght = 0;
@@ -357,12 +357,11 @@ cc.sys.localStorage.clear();
         this.hoge.dx = this.hoge.dx * 2;
         this.hoge.dx = this.hoge.dx * 2;
         this.smoke = cc.MotionStreak.create(this.getRandNumberFromRange(1, 6), 0.01, this.getRandNumberFromRange(1, 4), cc.color.WHITE, "res/sprite_star003.png");
-        this.baseNode.addChild(this.smoke, 999999999999999);
+        this.baseNode.addChild(this.smoke);
         this.smoke.setPosition(320, 320);
         this.hoge.smoke = this.smoke;
         this.meteorites.push(this.hoge);
     },
-
     setRocketSearchCompleate: function () {
         this.pastSecond = this.getPastSecond2();
         if (this.pastSecond <= 0) {
@@ -388,7 +387,6 @@ cc.sys.localStorage.clear();
             this.basePlanet.setVisible(true);
         }
     },
-
     setCameraSpeed: function () {
         //カメラの設定
         if (this.masterShip.status == "MOVING") {
@@ -436,7 +434,6 @@ cc.sys.localStorage.clear();
         this.cameraGapPosY += this.cameraGapAddPosY;
         this.cameraPosY += this.cameraGapPosY;
     },
-
     setBrakingDistance: function () {
         //惑星との距離によって制動距離を変える
         var _targetPlanet = this.getMostNearPlanet(this.ship.getPosition().x, this.ship.getPosition().y, 300);
@@ -469,17 +466,13 @@ cc.sys.localStorage.clear();
             }
         }
     },
-
     getPastSecond2: function () {
         var diffSecond = this.masterShip.targetTime - parseInt(new Date() / 1000);
         return diffSecond;
     },
     setTargetTime: function () {
-        this.maxChargeTime = 60 * 3;
-        //if(this.storage.targetTime == null){
-        this.storage.targetTime = parseInt(new Date() / 1000) + this.maxChargeTime;
+        this.storage.targetTime = parseInt(new Date() / 1000) + CONFIG.MAX_CHARGE_TIME;
         this.storage.saveCurrentData();
-        //}
     },
     getMostNearPlanet: function (_x, _y, _dist) {
         for (var i = 0; i < this.planets.length; i++) {

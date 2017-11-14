@@ -5,10 +5,8 @@ var Storage = cc.Class.extend(
         this.creatureData = new Object();
         this.planetData = new Object();
         this.shipData = new Object();
-
-
+        this.materialData = new Object();
         this.currentShipId = 1;
-
         this.playerName = this.getRandNumberFromRange(1,9999999999);
         this.totalGameScore = 0;
         this.totalCoinAmount = 10000;
@@ -18,16 +16,6 @@ var Storage = cc.Class.extend(
         this.seVolume = 10;
         this.targetTime = parseInt( new Date() /1000 );
         this.lastUpdatedTime = parseInt( new Date() /1000 );
-/*
-        this.basePlanetId = 1;
-        this.targetPlanetId = 0;
-        this.targetMovePlanetId = 0;
-        this.rescureTime = 0;
-        this.targetMovePlanetId = 0;
-
-        this.moveFromId = 0;
-        this.moveToId = 0;
-*/
     },
 
     //移動距離に応じてスピードを返す
@@ -56,12 +44,9 @@ var Storage = cc.Class.extend(
 
     getConnectedPlanets:function(){
         this.connectedPlanets = new Array();
-
-        //{id:1,difficulty:10},{id:1,difficulty:10}
         this.planets = CONFIG.PLANET;
         for (var masterCnt = 0; masterCnt < this.planets.length; masterCnt++) {
             if (this.planets[masterCnt].position) {
-
                 //枝になる可能性のある惑星を全て_branchPlanetsに入れてシャッフルする
                 var _branchPlanets = [];
                 for (var branchCnt = 0; branchCnt < this.planets.length; branchCnt++) {
@@ -70,7 +55,6 @@ var Storage = cc.Class.extend(
                     }
                 }
                 _branchPlanets.sort(this.shuffle2);
-
                 //1つの惑星から最大何本枝が生えるかを決定する
                 var _maxLineCnt = this.getRandNumberFromRange(1, 2);
                 _maxLineCnt = 1;
@@ -184,18 +168,29 @@ var Storage = cc.Class.extend(
                 var inputCreatureId= "ID_" + this.currentShipId;
                 if(savedDataKey == inputCreatureId)
                 {
-                    var savedDataObj = JSON.parse(savedDataValue);
+                    var _dx = 0;
+                    var _dy = 0;
+                    var _targetTime = 0;
+                    var _basePlanetId = 0;
+                    var _destinationPlanetId = 0;
+                    var _moveToPlanetId = 0;
+                    var _moveFromPlanetId = 0;
+                    var _status = "AAA";
+                    var _lastUpdatedTime = 0;
+                    try {
+                        var savedDataObj = JSON.parse(savedDataValue);
+                        _dx = savedDataObj.dx;
+                        _dy = savedDataObj.dy;
+                        _targetTime = savedDataObj.targetTime;
+                        _basePlanetId = savedDataObj.basePlanetId;
+                        _destinationPlanetId = savedDataObj.destinationPlanetId;
+                        _moveToPlanetId = savedDataObj.moveToPlanetId;
+                        _moveFromPlanetId = savedDataObj.moveFromPlanetId;
+                        _status = savedDataObj.status;
+                        _lastUpdatedTime = savedDataObj.lastUpdatedTime;
+                    } catch (e) {
+                    }
 
-                    //accept
-                    var _dx = savedDataObj.dx;
-                    var _dy = savedDataObj.dy;
-                    var _targetTime = savedDataObj.targetTime;
-                    var _basePlanetId = savedDataObj.basePlanetId;
-                    var _destinationPlanetId = savedDataObj.destinationPlanetId;
-                    var _moveToPlanetId = savedDataObj.moveToPlanetId;
-                    var _moveFromPlanetId = savedDataObj.moveFromPlanetId;
-                    var _status = savedDataObj.status;
-                    var _lastUpdatedTime = savedDataObj.lastUpdatedTime;
                     if(dx != null){
                         _dx = dx;
                     }
@@ -327,6 +322,76 @@ var Storage = cc.Class.extend(
         var _getData = this.getDataFromStorage();
         cc.sys.localStorage.setItem("gameStorage",_getData);
     },
+
+    countOwnMaterialData:function(material_id){
+        var savedData = this.materialData;
+        var keyCnt = Object.keys(this.materialData).length;
+        var incKeyCnt = 1;
+        var _updateCnt = 0;
+        for (var key in this.materialData) {
+            if (this.materialData.hasOwnProperty(key)) {
+                var savedDataValue = this.materialData[key];
+                var inputCreatureId= "ID_" + material_id;
+                if(key == inputCreatureId)
+                {
+                    //cc.log(JSON.parse(savedDataValue).cnt);
+                    return JSON.parse(savedDataValue).cnt;
+                }
+            }
+        }
+        return 0;
+    },
+
+    saveMaterialDataToStorage : function(material,addCount) 
+    {
+
+/*
+try {
+
+}
+catch (e) {
+
+}
+*/
+        //すでにある場合は、設定値の変更
+        var savedData = this.materialData;
+        var _updateCnt = 0;
+        for (var savedDataKey in savedData) {
+            if (savedData.hasOwnProperty(savedDataKey)) {
+                var savedDataValue = savedData[savedDataKey];
+                var inputCreatureId= "ID_" + material["id"];
+                if(savedDataKey == inputCreatureId)
+                {
+                    cc.log(savedDataValue);
+                    var savedDataObj = JSON.parse(savedDataValue);
+                    var _txt = 
+                        '{"id":' + Math.floor(material["id"]) + 
+                        ',"name":"' + material["name"] + '"' + 
+                        ',"cnt":' + Math.floor(savedDataObj.cnt + addCount) + 
+                        ',"lastUpdatedTime":' + 0 + 
+                        '}'
+                    ;
+                    this.materialData["ID_" + material["id"]] = _txt;
+                    _updateCnt+=1;
+                }
+            }
+        }
+
+        if(_updateCnt == 0)
+        {
+            var _txt = 
+                '{"id":' + Math.floor(material["id"]) + 
+                ',"name":"' + material["name"] + '"' + 
+                ',"cnt":' + addCount + 
+                ',"lastUpdatedTime":' + 0 + 
+                '}'
+            ;
+            this.materialData["ID_" + material["id"]] = _txt;
+        }
+        var _getData = this.getDataFromStorage();
+        cc.sys.localStorage.setItem("gameStorage",_getData);
+    },
+
     getRandNumberFromRange: function(min, max) {
         var rand = min + Math.floor(Math.random() * (max - min));
         return rand;
@@ -398,14 +463,29 @@ var Storage = cc.Class.extend(
                 incKeyCnt++;
             }
         }
+
+        var _materialData = '';
+        var keyCnt = Object.keys(this.materialData).length;
+        var incKeyCnt = 1;
+        for (var key in this.materialData) {
+            if (this.materialData.hasOwnProperty(key)) {
+                var value = this.materialData[key];
+                _materialData += '"' + key + '":' + JSON.stringify(value);
+                if(incKeyCnt != keyCnt)
+                {
+                    _materialData += ',';
+                }
+                incKeyCnt++;
+            }
+        }
+
         //return '{"saveData" : true, "creatureData":{"111":{"id":1,"score":123},"222":{"id":1,"score":123},"333":{"id":1,"score":123}}}';
         var rtn = '{';
         rtn += '"saveData" : true,';
         rtn += '"creatureData":{' + _creatureData + '},';
-        //rtn += '"deckData":{' + _deckData + '},';
-        //rtn += '"eventData":{' + _eventData + '},';
         rtn += '"shipData":{' + _shipData + '},';
         rtn += '"planetData":{' + _planetData + '},';
+        rtn += '"materialData":{' + _materialData + '},';
         rtn += '"playerName" :"' + this.playerName + '",';
         rtn += '"totalGameScore" :' + this.totalGameScore + ',';
         rtn += '"maxGameScore" :' + this.maxGameScore + ',';
@@ -414,21 +494,8 @@ var Storage = cc.Class.extend(
         rtn += '"seVolume" :' + this.seVolume + ',';
         rtn += '"totalCoinAmount" :' + this.totalCoinAmount + ',';
         rtn += '"treasureAmount" :' + this.treasureAmount + ',';
-
-        rtn += '"moveToId" :' + this.moveToId + ',';
-        rtn += '"moveFromId" :' + this.moveFromId + ',';
-
-        rtn += '"basePlanetId" :' + this.basePlanetId + ',';
-        rtn += '"targetPlanetId" :' + this.targetPlanetId + ',';
-        rtn += '"targetMovePlanetId" :' + this.targetMovePlanetId + ',';
-        rtn += '"rescureTime" :' + this.rescureTime + ',';
-
         rtn += '"lastUpdatedTime" :' + this.lastUpdatedTime + '';
         rtn += '}';
-        
-
-
-
         return rtn;
     },
 
@@ -459,6 +526,15 @@ var Storage = cc.Class.extend(
             if (stData.hasOwnProperty(key)) {
                 var value = stData[key];
                 this.planetData[key] = value;
+            }
+        }
+
+        this.materialData = new Object();
+        var stData = getData['materialData'];
+        for (var key in stData) {
+            if (stData.hasOwnProperty(key)) {
+                var value = stData[key];
+                this.materialData[key] = value;
             }
         }
 
