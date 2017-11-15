@@ -6,9 +6,7 @@ CONFIG.DEBUG_STAGE_NUM  = 4;
 CONFIG.BGM_VOLUME       = 1;
 CONFIG.SE_VOLUME        = 1;
 CONFIG.CARD_SPEND_COST  = 3;
-CONFIG.MAX_CHARGE_TIME  = 10;
-
-
+CONFIG.MAX_CHARGE_TIME  = 60*1;
 CONFIG.DISCOVER_MESSAGE = "ワクセイタンサシステム\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートチュウデス....\nアップデートカンリョウシマシタ....\n\n";
 
 CONFIG.BASE_CARD_Y = 820;
@@ -807,18 +805,6 @@ CONFIG.PLANET = [
         "fuel"       : 2,
         "time"       : 0,
         "position"   : [-100,400*12],
-        "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
-    },
-    { 
-        "id"         : 37,
-        "name"       : "ピュトゥ",
-        "lv"         : 12,
-        "description": "EEE",
-        "genre"      : "eee",
-        "image"      : "res/planet_w350_005.png",
-        "fuel"       : 2,
-        "time"       : 0,
-        "position"   : [-500,400*12],
         "materials"  : [{material_id:1,rate:0.1},{material_id:2,rate:0.1},{material_id:3,rate:0.1}]
     },
     { 

@@ -27,6 +27,35 @@ var InfoMenu = cc.Node.extend({
         var menu = new cc.Menu(this.buttonCreateAccount);
         menu.setPosition(0, -130);
         this.uiWindowAccount.addChild(menu);
+
+        //ワープ確認画面------------------------------------------------------------------------------
+        this.uiWindowWarp = cc.Sprite.create("res/ui-window-warp.png");
+        this.uiWindowWarp.setPosition(320, 120);
+        this.infoNode.addChild(this.uiWindowWarp);
+        this.uiWindowWarp.setVisible(false);
+
+        this.crystalAmountLabel = cc.LabelTTF.create("1", "Arial", 28);
+        this.crystalAmountLabel.setPosition(320, 92);
+        this.crystalAmountLabel.setAnchorPoint(0.5, 0.5);
+        this.crystalAmountLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
+        this.uiWindowWarp.addChild(this.crystalAmountLabel);
+
+        this.buttonWarpCancel = new cc.MenuItemImage("res/button_window_cancel.png", "res/button_window_cancel.png", function () {
+            this.closeAllWindow();
+        }, this);
+        this.buttonWarpCancel.setPosition(180, 40);
+        this.buttonWarpOk = new cc.MenuItemImage("res/button_landing.png", "res/button_landing.png", function () {
+            if(this.game.storage.crystalAmount <= 0) return;
+            this.game.masterShip.targetTime = parseInt(new Date() / 1000);
+            this.game.storage.useCrystal(1);
+            this.uiWindowWarp.setVisible(false);
+            this.infoNode.setVisible(false);
+        }, this);
+        this.buttonWarpOk.setPosition(460, 40);
+        var menu = new cc.Menu(this.buttonWarpCancel, this.buttonWarpOk);
+        menu.setPosition(0, -130);
+        this.uiWindowWarp.addChild(menu);
+
         //到着結果画面------------------------------------------------------------------------------
         this.uiWindowSeachResult = cc.Sprite.create("res/ui-result-window.png");
         this.uiWindowSeachResult.setPosition(320, 120);
@@ -76,9 +105,7 @@ var InfoMenu = cc.Node.extend({
         this.batteryAmountLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.uiWindowLanding.addChild(this.batteryAmountLabel);
         this.buttonLandingCancel = new cc.MenuItemImage("res/button_window_cancel.png", "res/button_window_cancel.png", function () {
-            this.uiWindowLanding.setVisible(false);
-            this.uiWindowLaunch.setVisible(false);
-            this.infoNode.setVisible(false);
+            this.closeAllWindow();
             this.game.baseNode.removeChild(this.drawNode2);
             this.game.arrow.setVisible(false);
             this.game.storage.saveShipDataToStorage(0, 0, 0, null, null, 0, 0, 0);
@@ -103,27 +130,25 @@ var InfoMenu = cc.Node.extend({
         this.infoNode.addChild(this.uiWindowMove);
         this.uiWindowMove.setVisible(false);
         //+コインamount
-        this.launchCoinCostLabel = cc.LabelTTF.create("332", "Arial", 38);
-        this.launchCoinCostLabel.setPosition(510, 92);
-        this.launchCoinCostLabel.setAnchorPoint(1, 0.5);
-        this.launchCoinCostLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.uiWindowMove.addChild(this.launchCoinCostLabel);
+        this.moveCoinCostLabel = cc.LabelTTF.create("0", "Arial", 38);
+        this.moveCoinCostLabel.setPosition(510, 92);
+        this.moveCoinCostLabel.setAnchorPoint(1, 0.5);
+        this.moveCoinCostLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
+        this.uiWindowMove.addChild(this.moveCoinCostLabel);
         //+時間amount
-        this.launchTimeCostLabel = cc.LabelTTF.create("11:11", "Arial", 25);
-        this.launchTimeCostLabel.setPosition(360, 150);
-        this.launchTimeCostLabel.setAnchorPoint(1, 0.5);
-        this.launchTimeCostLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.uiWindowMove.addChild(this.launchTimeCostLabel);
+        this.moveTimeCostLabel = cc.LabelTTF.create("00:00", "Arial", 25);
+        this.moveTimeCostLabel.setPosition(360, 150);
+        this.moveTimeCostLabel.setAnchorPoint(1, 0.5);
+        this.moveTimeCostLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
+        this.uiWindowMove.addChild(this.moveTimeCostLabel);
         //+燃料amount
-        this.launchFuelCostLabel = cc.LabelTTF.create("100", "Arial", 38);
-        this.launchFuelCostLabel.setPosition(290, 92);
-        this.launchFuelCostLabel.setAnchorPoint(1, 0.5);
-        this.launchFuelCostLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.uiWindowMove.addChild(this.launchFuelCostLabel);
+        this.moveFuelCostLabel = cc.LabelTTF.create("0", "Arial", 38);
+        this.moveFuelCostLabel.setPosition(290, 92);
+        this.moveFuelCostLabel.setAnchorPoint(1, 0.5);
+        this.moveFuelCostLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
+        this.uiWindowMove.addChild(this.moveFuelCostLabel);
         this.buttonMoveCancel = new cc.MenuItemImage("res/button_window_cancel.png", "res/button_window_cancel.png", function () {
-            this.uiWindowLanding.setVisible(false);
-            this.uiWindowLaunch.setVisible(false);
-            this.infoNode.setVisible(false);
+            this.closeAllWindow();
             this.game.baseNode.removeChild(this.drawNode2);
             this.game.arrow.setVisible(false);
             this.game.storage.saveShipDataToStorage(0, 0, 0, null, "NO_DIST", 0, 0, 0);
@@ -178,9 +203,7 @@ var InfoMenu = cc.Node.extend({
         this.uiWindowLaunch.addChild(this.launchFuelCostLabel);
         //+キャンセルボタン
         this.buttonCancel = new cc.MenuItemImage("res/button_window_cancel.png", "res/button_window_cancel.png", function () {
-            this.uiWindowLanding.setVisible(false);
-            this.uiWindowLaunch.setVisible(false);
-            this.infoNode.setVisible(false);
+            this.closeAllWindow();
             this.game.baseNode.removeChild(this.drawNode2);
             this.game.arrow.setVisible(false);
             this.game.storage.saveShipDataToStorage(0, 0, 0, null, "NO_DIST", 0, 0, 0);
@@ -229,10 +252,16 @@ var InfoMenu = cc.Node.extend({
         this.fuelCnt = fuelCnt;
         this.coinCnt = coinCnt;
         this.timeCnt = timeCnt;
+        var _txt = this.game.storage.getFormatedTimeLabel(this.timeCnt);
+
         this.launchFuelCostLabel.setString(fuelCnt);
         this.launchCoinCostLabel.setString(coinCnt);
-        var _txt = this.game.storage.getFormatedTimeLabel(this.timeCnt);
         this.launchTimeCostLabel.setString(_txt);
+
+        this.moveFuelCostLabel.setString(fuelCnt);
+        this.moveCoinCostLabel.setString(coinCnt);
+        this.moveTimeCostLabel.setString(_txt);
+
         if (this.game.storage.totalCoinAmount < fuelCnt) {
             this.isAbleToLaunch = false;
             this.launchFuelCostLabel.setFontFillColor(new cc.Color(255, 0, 0, 255));
@@ -250,6 +279,18 @@ var InfoMenu = cc.Node.extend({
             this.batteryAmountLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         }
     },
+
+    closeAllWindow:function(){
+        this.uiWindowAccount.setVisible(false);
+        this.uiWindowWarp.setVisible(false);
+        this.uiWindowSeachResult.setVisible(false);
+        this.uiWindowMoveResult.setVisible(false);
+        this.uiWindowLanding.setVisible(false);
+        this.uiWindowMove.setVisible(false);
+        this.uiWindowLaunch.setVisible(false);
+        this.infoNode.setVisible(false);
+    },
+
     update: function () {
         if (this.game.storage.getBatteryAmountFromPastSecond() >= 1) {
             this.batteryAmountLabel.setString("あと" + this.game.storage.getBatteryAmountFromPastSecond() + "秒で準備完了");
@@ -269,6 +310,12 @@ var InfoMenu = cc.Node.extend({
             this.buttonLaunchShip.setOpacity(255 * 1);
         } else {
             this.buttonLaunchShip.setOpacity(255 * 0.3);
+        }
+
+        if(this.game.storage.crystalAmount >= 1){
+            this.buttonWarpOk.setOpacity(255 * 1);
+        }else{
+            this.buttonWarpOk.setOpacity(255 * 0.3);
         }
     },
     goToGameLayer: function (cardId) {

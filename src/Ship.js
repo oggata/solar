@@ -17,7 +17,7 @@ var Ship = cc.Node.extend({
         this.status = "xxx";
         this.addDebrisCnt = 0;
 
-        this.timeLabel = cc.LabelTTF.create("32", "Arial", 48);
+        this.timeLabel = cc.LabelTTF.create("", "Arial", 48);
         this.timeLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
         this.timeLabel.setPosition(115, 160);
         this.timeLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
@@ -26,7 +26,9 @@ var Ship = cc.Node.extend({
     init: function () {},
 
     setTimeLabel:function(pastSecond){
-        //cc.log(pastSecond);
+        cc.log("timelabel");
+        cc.log(pastSecond);
+
         var _txt = this.game.storage.getFormatedTimeLabel(pastSecond);
         this.timeLabel.setString(_txt);
     },

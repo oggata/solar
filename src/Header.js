@@ -12,11 +12,11 @@ var Header = cc.Node.extend({
         this.fuelLabel.setAnchorPoint(1, 0.5);
         this.fuelLabel.textAlign = cc.TEXT_ALIGNMENT_RIGHT;
 
-        this.coinLabel = new cc.LabelTTF("0", "Meiryo", 26);
-        this.coinLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
-        this.header.addChild(this.coinLabel);
-        this.coinLabel.setAnchorPoint(1, 0.5);
-        this.coinLabel.setPosition(590, 105);
+        this.crystalLabel = new cc.LabelTTF("1110", "Meiryo", 26);
+        this.crystalLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
+        this.header.addChild(this.crystalLabel);
+        this.crystalLabel.setAnchorPoint(1, 0.5);
+        this.crystalLabel.setPosition(590, 105);
 
         this.batteryGauge = new Gauge(120, 25, "");
         this.header.addChild(this.batteryGauge);
@@ -42,6 +42,7 @@ var Header = cc.Node.extend({
         }
         this.batteryGauge.update(_rate);
         this.fuelLabel.setString(this.game.storage.totalCoinAmount);
+        this.crystalLabel.setString(this.game.storage.crystalAmount);
         return true;
     },
 });

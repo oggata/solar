@@ -37,6 +37,9 @@
         "src/ProfileLayer.js",
         "src/Noise.js",
 
+
+"src/Bag.js",
+
 "src/MaterialsLayer.js",
 "src/HeaderItem.js",
 "src/CreateLayer.js",

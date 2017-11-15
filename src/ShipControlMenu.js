@@ -26,7 +26,7 @@ var ShipControlMenu = cc.Node.extend({
         this.uiShipMonitor.addChild(this.uiShipMonitor002);
         
         this.buttonLaunch = new cc.MenuItemImage("res/button_ship_launch.png", "res/button_ship_launch.png", function () {
-            this.game.setFuelAndCoinCost();
+            this.game.setFuelAndCoinCost(null);
         }, this);
 
         this.buttonLaunch.setPosition(460, 60);
@@ -68,7 +68,10 @@ var ShipControlMenu = cc.Node.extend({
         this.buttonCancel.setPosition(180, 60);
 
         this.buttonWarp = new cc.MenuItemImage("res/button_ship_warp.png", "res/button_ship_warp.png", function () {
-this.game.masterShip.targetTime = parseInt(new Date() / 1000);
+            //this.game.masterShip.targetTime = parseInt(new Date() / 1000);
+            this.game.InfoMenu.uiWindowWarp.setVisible(true);
+            this.game.InfoMenu.infoNode.setVisible(true);
+
         }, this);
         this.buttonWarp.setPosition(460, 60);
 

@@ -10,7 +10,7 @@ var Storage = cc.Class.extend(
         this.playerName = this.getRandNumberFromRange(1,9999999999);
         this.totalGameScore = 0;
         this.totalCoinAmount = 10000;
-        this.treasureAmount = 10000;
+        this.crystalAmount = 10000;
         this.maxGameScore = 0;
         this.bgmVolume = 10;
         this.seVolume = 10;
@@ -18,6 +18,167 @@ var Storage = cc.Class.extend(
         this.lastUpdatedTime = parseInt( new Date() /1000 );
     },
 
+    createBranch:function(){
+        //惑星の枝葉情報を作る
+        this.connectedPlanetsData = new Array();
+        this.planets = CONFIG.PLANET;
+        for (var masterCnt = 0; masterCnt < this.planets.length; masterCnt++) {
+            if (this.planets[masterCnt].position) {
+                //枝になる可能性のある惑星を全て_branchPlanetsに入れてシャッフルする
+                var _branchPlanets = [];
+                for (var branchCnt = 0; branchCnt < this.planets.length; branchCnt++) {
+                    if (this.planets[branchCnt].lv == this.planets[masterCnt].lv - 1) {
+                        _branchPlanets.push(this.planets[branchCnt]);
+                    }
+                }
+                _branchPlanets.sort(this.shuffle);
+                //cc.log(_branchPlanets);
+                //1つの惑星から最大何本枝が生えるかを決定する
+                var _maxLineCnt = this.getRandNumberFromRange(1, 2);
+                _maxLineCnt = 1;
+                for (var lineCnt = 0; lineCnt < _maxLineCnt; lineCnt++) {
+                    if (_branchPlanets[lineCnt]) {
+                        //接続している惑星のmasterデータを作る。master->branchとbranch->masterの両方必要。
+                        this.isExistsConnectedPlanets2(this.planets[masterCnt].id, _branchPlanets[lineCnt].id,this.connectedPlanetsData);
+                        this.isExistsConnectedPlanets2(_branchPlanets[lineCnt].id, this.planets[masterCnt].id,this.connectedPlanetsData);
+                    }
+                }
+
+            }
+        }
+        return this.connectedPlanetsData;
+    },
+
+    isExistsConnectedPlanets2: function (basePlanetId, connectedPlanetId,connectedPlanetsData) {
+        for (var i = 0; i < connectedPlanetsData.length; i++) {
+            if (connectedPlanetsData[i].basePlanetId == basePlanetId) {
+                connectedPlanetsData[i].connectedPlanetId.push(connectedPlanetId);
+                return true;
+            }
+        }
+        //なければ足す
+        var _level = CONFIG.PLANET[basePlanetId].lv;
+        var _data = {
+            basePlanetId: basePlanetId,
+            basePlanetLevel: _level,
+            connectedPlanetId: [connectedPlanetId]
+        };
+        connectedPlanetsData.push(_data);
+        return false;
+    },
+
+    setRoute: function (_startPlanetId, _finishPlanetId, connectedPlanetsData) {
+        var _routeIds = [];
+        var _data = {
+            planetId: _finishPlanetId,
+            distance: 0,
+            connected: []
+        };
+        _routeIds.push(_data);
+        for (var i = 0; i < connectedPlanetsData.length; i++) {
+            if (connectedPlanetsData[i].basePlanetId == _finishPlanetId) {
+                //connectedPlanetIdで分ける
+                for (var h = 0; h < connectedPlanetsData[i].connectedPlanetId.length; h++) {
+                    var _planetId = connectedPlanetsData[i].connectedPlanetId[h];
+                    if (this.isSetPlanetId(_planetId,_routeIds) == false) {
+                        var _connected = "";
+                        for (var t = 0; t < connectedPlanetsData.length; t++) {
+                            if (connectedPlanetsData[t].basePlanetId == _planetId) {
+                                _connected = connectedPlanetsData[t].connectedPlanetId;
+                            }
+                        }
+                        var _data = {
+                            planetId: _planetId,
+                            distance: 1,
+                            connected: _connected
+                        };
+                        _routeIds.push(_data);
+                    }
+                }
+            }
+        }
+        for (var j = 0; j < _routeIds.length; j++) {
+            for (var k = 0; k < _routeIds[j].connected.length; k++) {
+                var _planetId = _routeIds[j].connected[k];
+                if (this.isSetPlanetId(_planetId,_routeIds) == false) {
+                    var _connected = "";
+                    for (var t = 0; t < connectedPlanetsData.length; t++) {
+                        if (connectedPlanetsData[t].basePlanetId == _planetId) {
+                            _connected = connectedPlanetsData[t].connectedPlanetId;
+                        }
+                    }
+                    var _data = {
+                        planetId: _planetId,
+                        distance: _routeIds[j].distance + 1,
+                        connected: _connected
+                    };
+                    _routeIds.push(_data);
+                }
+            }
+        }
+        //maxDistanceを求める
+        //var _maxDistance = 0;
+        for (var j = 0; j < _routeIds.length; j++) {
+            if (_routeIds[j].planetId == _startPlanetId) {
+                _maxDistanceData = _routeIds[j];
+            }
+        }
+        //var _minDistance = 0;
+        for (var j = 0; j < _routeIds.length; j++) {
+            if (_routeIds[j].planetId == _finishPlanetId) {
+                _minDistanceData = _routeIds[j];
+            }
+        }
+        //cc.log(_maxDistance);
+        //今度は startからfinishまで逆に辿って行く
+        var _connected = [];
+        var _distance = 999;
+        var _hoge = "";
+        this.setHogeData = "";
+        this._hoge = [];
+        //finishを入れる
+        this._hoge.push(_maxDistanceData);
+        for (var j = 0; j < _routeIds.length; j++) {
+            if (_routeIds[j].planetId == _startPlanetId) {
+                _connected = _routeIds[j].connected;
+                _distance = _routeIds[j].distance;
+                this.setHogeData = this.setHoge(_connected, _distance,_routeIds);
+                for (var u = 0; u < 5; u++) {
+                    this.setHogeData = this.setHoge(this.setHogeData.connected, this.setHogeData.distance,_routeIds);
+                    if (!this.setHogeData) break;
+                    if (this.setHogeData.distance <= 1) {
+                        cc.log("break");
+                        break;
+                    }
+                }
+            }
+        }
+        this._hoge.push(_minDistanceData);
+        return this._hoge;
+    },
+    setHoge: function (_connected, _distance, _routeIds) {
+        var _hogedata = "";
+        if (!_connected) return;
+        for (var h = 0; h < _connected.length; h++) {
+            for (var t = 0; t < _routeIds.length; t++) {
+                if (_routeIds[t].planetId == _connected[h]) {
+                    if (_routeIds[t].distance == _distance - 1) {
+                        this._hoge.push(_routeIds[t]);
+                        _hogedata = _routeIds[t];
+                    }
+                }
+            }
+        }
+        return _hogedata;
+    },
+    isSetPlanetId: function (targetPlanetId,_routeIds) {
+        for (var j = 0; j < _routeIds.length; j++) {
+            if (_routeIds[j].planetId == targetPlanetId) {
+                return true;
+            }
+        }
+        return false;
+    },
     //移動距離に応じてスピードを返す
     getTimeFromDist:function(dist){
         //初回は1Mkm=1Min
@@ -120,6 +281,31 @@ var Storage = cc.Class.extend(
     getCoinAmount:function(){
         return this.totalCoinAmount;
     },
+
+    addCrystal:function(amount){
+        this.crystalAmount+=amount;
+        if(this.crystalAmount < 0){
+            this.crystalAmount = 0;
+        }
+        var _getData = this.getDataFromStorage();
+        cc.sys.localStorage.setItem("gameStorage",_getData);
+    },
+
+    useCrystal:function(amount){
+        this.crystalAmount-=amount;
+        if(this.crystalAmount < 0){
+            this.crystalAmount = 0;
+        }
+        var _getData = this.getDataFromStorage();
+        cc.sys.localStorage.setItem("gameStorage",_getData);
+    },
+
+    getCrystalAmount:function(){
+        return this.crystalAmount;
+    },
+
+
+
 
     getShipParamByName : function(type){
         var savedData = this.shipData;
@@ -289,6 +475,25 @@ var Storage = cc.Class.extend(
         }else{
             return true;
         }
+    },
+
+    isOwnPlanetData2:function(planet){
+        var savedData = this.planetData;
+        var _planetData = '';
+        var keyCnt = Object.keys(this.planetData).length;
+        var incKeyCnt = 1;
+        var _updateCnt = 0;
+        for (var key in this.planetData) {
+            if (this.planetData.hasOwnProperty(key)) {
+                var savedDataValue = this.planetData[key];
+                var inputCreatureId= "ID_" + planet["id"];
+                if(key == inputCreatureId)
+                {
+                    return JSON.parse(savedDataValue);
+                }
+            }
+        }
+        return null;
     },
 
     savePlanetDataToStorage : function(card,addCount) 
@@ -492,7 +697,7 @@ var Storage = cc.Class.extend(
         rtn += '"bgmVolume" :' + this.bgmVolume + ',';
         rtn += '"seVolume" :' + this.seVolume + ',';
         rtn += '"totalCoinAmount" :' + this.totalCoinAmount + ',';
-        rtn += '"treasureAmount" :' + this.treasureAmount + ',';
+        rtn += '"crystalAmount" :' + this.crystalAmount + ',';
         rtn += '"lastUpdatedTime" :' + this.lastUpdatedTime + '';
         rtn += '}';
         return rtn;
@@ -540,7 +745,7 @@ var Storage = cc.Class.extend(
         this.playerName       = getData["playerName"];
         this.totalGameScore   = getData["totalGameScore"];
         this.totalCoinAmount  = getData["totalCoinAmount"];
-        this.treasureAmount  = getData["treasureAmount"];
+        this.crystalAmount  = getData["crystalAmount"];
         this.maxGameScore     = getData["maxGameScore"];
         this.targetTime       = getData["targetTime"];
         this.bgmVolume        = getData["bgmVolume"];

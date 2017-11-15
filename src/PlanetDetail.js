@@ -27,13 +27,11 @@ var PlanetDetail = cc.Node.extend({
         this.buttonCancel = new cc.MenuItemImage("res/button_window_cancel.png", "res/button_window_cancel.png", function () {
             this.game.infoNode.setVisible(false);
             this.game.storage.saveShipDataToStorage(null,null,null,null,null,0,null,null);
-            //cc.log("目的地は" + this.game.storage.getShipParamByName("destinationPlanetId") + "です");
         }, this);
-        this.buttonCancel.setPosition(150-30, -40);
+        this.buttonCancel.setPosition(120, -40);
         this.buttonGoto = new cc.MenuItemImage("res/button_window_goto.png", "res/button_window_goto.png", function () {
             if (this.isOwnPlanet == false) return;
             this.game.storage.saveShipDataToStorage(null,null,null,null,null,this.planetId,null,null);
-            cc.log("目的地は" + this.game.storage.getShipParamByName("destinationPlanetId") + "です");
             this.game.goToDiscoveryLayer();
         }, this);
         this.buttonGoto.setPosition(450-30, -40);
@@ -49,6 +47,21 @@ var PlanetDetail = cc.Node.extend({
         var _image = CONFIG.PLANET[planetId].image;
         this.detail.removeChild(this.planetSprite);
         this.isOwnPlanet = this.game.storage.isOwnPlanetData(CONFIG.PLANET[planetId]);
+
+
+
+/*
+                var _hoge = this.storage.isOwnPlanetData2(CONFIG.PLANET[_planetId]);
+                if (_hoge == null) {
+                    _image = "res/planet_w350_notfound.png";
+                }else{
+                    _cnt = _hoge.cnt + "";
+                }
+*/
+
+
+
+
         if (this.isOwnPlanet == false) {
             _image = "res/planet_w350_notfound.png";
             this.buttonGoto.setOpacity(255 * 0.3);
