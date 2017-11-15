@@ -2,6 +2,11 @@ var InfoMenu = cc.Node.extend({
     ctor: function (game) {
         this._super();
         this.game = game;
+
+        this.timeCostAmount = 0;
+        this.fuelCostAmount = 0;
+        this.crystalCostAmount = 0;
+
         //インフォメーション表示用
         this.infoNode = cc.Node.create();
         this.infoNode.setPosition(0, 500);
@@ -148,11 +153,12 @@ var InfoMenu = cc.Node.extend({
         this.moveFuelCostLabel.textAlign = cc.TEXT_ALIGNMENT_LEFT;
         this.uiWindowMove.addChild(this.moveFuelCostLabel);
         this.buttonMoveCancel = new cc.MenuItemImage("res/button_window_cancel.png", "res/button_window_cancel.png", function () {
-            this.closeAllWindow();
             this.game.baseNode.removeChild(this.drawNode2);
             this.game.arrow.setVisible(false);
             this.game.storage.saveShipDataToStorage(0, 0, 0, null, "NO_DIST", 0, 0, 0);
             this.game.loadMasterShipData();
+            //ウインドウを閉じる
+            this.closeAllWindow();
         }, this);
         this.buttonMoveCancel.setPosition(180, 40);
         //移動ボタン
@@ -160,12 +166,9 @@ var InfoMenu = cc.Node.extend({
             if (this.game.storage.getCoinAmount() < this.fuelCnt) {
                 return;
             }
-            this.uiWindowMove.setVisible(false);
-            this.infoNode.setVisible(false);
-            this.game.storage.saveCurrentData();
             var _dx = this.game.tmpDx2 / 80;
             var _dy = this.game.tmpDy2 / 80;
-            var _time = Math.ceil(this.game.pulledDist) + parseInt(new Date() / 1000);
+            var _time = this.timeCostAmount + parseInt(new Date() / 1000);
             var _basePlanetId = this.game.storage.getShipParamByName("basePlanetId");
             var _from = this.game.storage.getShipParamByName("basePlanetId");
             var _to = this.game.storage.getShipParamByName("destinationPlanetId");
@@ -173,6 +176,8 @@ var InfoMenu = cc.Node.extend({
             this.game.loadMasterShipData();
             //ここで燃料を減らす
             this.game.storage.useCoin(this.fuelCnt);
+            //ウインドウを閉じる
+            this.closeAllWindow();
         }, this);
         this.buttonMove.setPosition(460, 40);
         var menu = new cc.Menu(this.buttonMove, this.buttonMoveCancel);
@@ -220,7 +225,9 @@ var InfoMenu = cc.Node.extend({
             this.infoNode.setVisible(false);
             var _dx = this.game.tmpDx2 / 80;
             var _dy = this.game.tmpDy2 / 80;
-            var _time = this.game.storage.getTimeFromDist(this.game.pulledDist) + parseInt(new Date() / 1000);
+
+
+            var _time = this.timeCostAmount + parseInt(new Date() / 1000);
             var _basePlanetId = this.game.storage.getShipParamByName("basePlanetId");
             var _from = _basePlanetId;
             var _to = 0;
@@ -249,6 +256,12 @@ var InfoMenu = cc.Node.extend({
         cc.director.runScene(cc.TransitionFadeDown.create(0.4, scene));
     },
     setCost: function (fuelCnt, coinCnt, timeCnt) {
+
+
+        this.timeCostAmount = timeCnt;
+        this.fuelCostAmount = fuelCnt;
+        this.crystalCostAmount = coinCnt;
+
         this.fuelCnt = fuelCnt;
         this.coinCnt = coinCnt;
         this.timeCnt = timeCnt;

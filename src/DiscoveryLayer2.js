@@ -175,6 +175,7 @@ var DiscoveryLayer2 = cc.Layer.extend({
             var _y = this.getRandNumberFromRange(this.ship.getPosition().y - 1136 / 2, this.ship.getPosition().y + 1136 / 2);
             this.addDebrisByPos(_x, _y, 1);
         }
+        //移動中は惑星を表示しない
         if (this.masterShip.status == "MOVING") {
             this.basePlanet.setVisible(false);
         } else {
@@ -182,33 +183,14 @@ var DiscoveryLayer2 = cc.Layer.extend({
         }
         //探索ではなく、移動の場合の分岐
         if (this.storage.getShipParamByName("destinationPlanetId") != 0) {
-/*
-            //惑星までの距離を調べる
-            this.connectedPlanetsData = this.storage.createBranch();
-            var _aaa = this.storage.setRoute(this.storage.getShipParamByName("basePlanetId"), this.storage.getShipParamByName("destinationPlanetId"), this.connectedPlanetsData);
-            cc.log("かかる距離は...");
-            cc.log(_aaa.length-2);
-            var _distance = Math.ceil(_aaa.length-2);
-            if(_distance <= 1){
-                _distance = 1;
-            }
-            var _timeCost = this.storage.getTimeFromDist(_distance * 5);
-            var _fuelCost = _distance * 5;
-            this.InfoMenu.setCost(_fuelCost, 0, _timeCost);
-
-            this.tmpDx2 = 200;
-            this.tmpDy2 = 200;
-            this.pulledDist = 500;
-*/
             this.setFuelAndCoinCost(this.storage.getShipParamByName("destinationPlanetId"));
         }
+
         this.cameraGapPosX = 0;
         this.cameraGapPosY = 0;
         this.cameraGapAddPosX = 1;
         this.cameraGapAddPosY = 1;
         this.debriCnt = 0;
-        //this.storage.saveMaterialDataToStorage(CONFIG.MATERIAL[1], 1);
-
 /*
 this.bag = new Bag(this);
 this.addChild(this.bag);
@@ -231,15 +213,7 @@ this.bag.setPosition(0,0);
 
     setFuelAndCoinCost: function (targetMovePlanetId) {
         this.masterShip.status = "SET_FREE_DIST";
-
-
-
-
-
-
         if (targetMovePlanetId) {
-
-
             //惑星までの距離を調べる
             this.connectedPlanetsData = this.storage.createBranch();
             var _aaa = this.storage.setRoute(this.storage.getShipParamByName("basePlanetId"), this.storage.getShipParamByName("destinationPlanetId"), this.connectedPlanetsData);
@@ -249,7 +223,7 @@ this.bag.setPosition(0,0);
             if(_distance <= 1){
                 _distance = 1;
             }
-            
+
             var _fuelCost = _distance * 100;
             var _timeCost = this.storage.getTimeFromDist(_distance * 100);
             
@@ -266,17 +240,7 @@ this.bag.setPosition(0,0);
             this.InfoMenu.setCost(_fuelCost, 0, _timeCost);
             this.InfoMenu.uiWindowLaunch.setVisible(true);
         }
-
-
-
-
-
         //this.masterShip.targetTime = _timeCost + parseInt(new Date() / 1000);
-
-
-
-
-
         this.InfoMenu.infoNode.setVisible(true);
         this.baseNode.removeChild(this.drawNode2);
         this.arrow.setVisible(false);

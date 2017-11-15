@@ -35,7 +35,7 @@ var Storage = cc.Class.extend(
                 //cc.log(_branchPlanets);
                 //1つの惑星から最大何本枝が生えるかを決定する
                 var _maxLineCnt = this.getRandNumberFromRange(1, 2);
-                _maxLineCnt = 1;
+                //_maxLineCnt = 1;
                 for (var lineCnt = 0; lineCnt < _maxLineCnt; lineCnt++) {
                     if (_branchPlanets[lineCnt]) {
                         //接続している惑星のmasterデータを作る。master->branchとbranch->masterの両方必要。
@@ -223,7 +223,7 @@ var Storage = cc.Class.extend(
                         _branchPlanets.push(this.planets[branchCnt]);
                     }
                 }
-                _branchPlanets.sort(this.shuffle2);
+                _branchPlanets.sort(this.shuffle);
                 //1つの惑星から最大何本枝が生えるかを決定する
                 var _maxLineCnt = this.getRandNumberFromRange(1, 2);
                 _maxLineCnt = 1;
@@ -787,7 +787,31 @@ this.moveFromId  = getData["moveFromId"];
         } else {
             console.log("no plugin init")
         }
-    }
+    },
+
+    getRandNumberFromRange: function (min, max) {
+        var rand = min + Math.floor(Math.random() * (max - min));
+        return rand;
+    },
+    shuffle: function () {
+        return Math.random() - .5;
+    },
+    shuffle2: function () {
+        Math.seed = 6666;
+        max = 1;
+        min = 9999;
+        Math.seed = (Math.seed * 9301 + 49297) % 233280;
+        var rnd = Math.seed / 233280;
+        return rnd - .5;
+    },
+    getSeededRandom: function (max, min, seed) {
+        Math.seed = seed;
+        max = max || 1;
+        min = min || 0;
+        Math.seed = (Math.seed * 9301 + 49297) % 233280;
+        var rnd = Math.seed / 233280;
+        return min + rnd * (max - min);
+    },
 });
 
 var saveData = function (storage)
