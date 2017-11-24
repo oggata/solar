@@ -45,7 +45,7 @@ var Coin = cc.Node.extend({
             this.game.storage.addCoin(this.amount);
         } else {
             //cc.log(CONFIG.MATERIAL[this.material_id]);
-            this.game.storage.saveMaterialDataToStorage(CONFIG.MATERIAL[this.material_id], this.amount);
+            this.game.storage.saveMaterialDataToStorage(this.material_id, this.amount);
         }
     },
     initializeWalkAnimation: function () {

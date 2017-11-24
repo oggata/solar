@@ -80,7 +80,7 @@ var MissionsLayer = cc.Layer.extend({
                 //for debug
                 this.planetIdLabel = new cc.LabelTTF(_planetId, "Arial", 48);
                 this.planetIdLabel.setFontFillColor(new cc.Color(255, 255, 255, 255));
-                this.buttonPlanet.addChild(this.planetIdLabel);
+                //this.buttonPlanet.addChild(this.planetIdLabel);
                 this.planetIdLabel.setPosition(40, 40);
 
                 this.planetAmountLabel = new cc.LabelTTF(_cnt, "Arial", 80);
@@ -105,7 +105,7 @@ var MissionsLayer = cc.Layer.extend({
         this.header.setAnchorPoint(0, 0);
         this.viewSize = cc.director.getVisibleSize();
         this.header.setPosition(0, this.viewSize.height - 136);
-        this.addChild(this.header);
+//this.addChild(this.header);
         this.scaleButton001 = new cc.MenuItemImage("res/button_scale_001.png", "res/button_scale_001.png", function (sender) {
             this.treeNodeScale += 0.2;
         }, this);

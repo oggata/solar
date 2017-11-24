@@ -555,8 +555,28 @@ var Storage = cc.Class.extend(
         return 0;
     },
 
-    saveMaterialDataToStorage : function(material,addCount) 
+    getConfigItem : function(itemId){
+        for (var i = 0; i <= CONFIG.ITEM.length; i++) {
+            if(!CONFIG.ITEM[i]) return;
+            if(CONFIG.ITEM[i].id == itemId){
+                return CONFIG.ITEM[i];
+            }
+        }
+    },
+
+    getConfigMaterial : function(materialId){
+        for (var i = 0; i <= CONFIG.MATERIAL.length; i++) {
+            if(!CONFIG.MATERIAL[i]) return;
+            if(CONFIG.MATERIAL[i].id == materialId){
+                return CONFIG.MATERIAL[i];
+            }
+        }
+    },
+
+    saveMaterialDataToStorage : function(materialId,addCount) 
     {
+        var material = this.getConfigMaterial(materialId);
+        if(material == null) return ;
         //すでにある場合は、設定値の変更
         var savedData = this.materialData;
         var _updateCnt = 0;

@@ -216,37 +216,50 @@ CONFIG.MATERIAL = [
         "id"         : 1,
         "name"       : "プラスチックの破片",
         "description": "",
+        "image"      : "res/sozai001.png",
         "genre"      : "sozai",
     },
     { 
         "id"         : 2,
         "name"       : "鉄の破片",
         "description": "",
+        "image"      : "res/sozai001.png",
         "genre"      : "sozai",
     },
     { 
         "id"         : 3,
         "name"       : "銅の破片",
         "description": "",
+        "image"      : "res/sozai001.png",
         "genre"      : "sozai",
     },
     { 
         "id"         : 4,
         "name"       : "アルミニウムの破片",
         "description": "",
+        "image"      : "res/sozai001.png",
         "genre"      : "sozai",
     },
     { 
         "id"         : 5,
         "name"       : "鉄線",
         "description": "",
+        "image"      : "res/sozai001.png",
         "genre"      : "sozai",
     },
     { 
         "id"         : 6,
         "name"       : "銅線",
         "description": "",
+        "image"      : "res/sozai001.png",
         "genre"      : "sozai",
+    },
+    { 
+        "id"         : 7,
+        "name"       : "モジュール",
+        "description": "",
+        "image"      : "res/sozai001.png",
+        "genre"      : "item",
     }
 ];
 
@@ -261,7 +274,8 @@ CONFIG.ITEM = [
         "genre"      : "",
         "useTxt"     : "",
         "image"      : "res/sozai001.png",
-        "materials"  : [{material_id:1,amount:5},{material_id:2,amount:5},{material_id:3,amount:5}],
+        "materials"  : [{material_id:1,amount:1},{material_id:2,amount:1}],
+        "materialId" : 7,
     },
     { 
         "id"         : 2,
@@ -271,15 +285,17 @@ CONFIG.ITEM = [
         "useTxt"     : "",
         "image"      : "res/sozai001.png",
         "materials"  : [{material_id:1,amount:5},{material_id:2,amount:5},{material_id:3,amount:5}],
+        "materialId" : 7,
     },
     { 
-        "id"         : 3,
+        "id"         : 5,
         "name"       : "燃焼モジュール",
         "description": "より遠くまで飛ぶことができる",
         "genre"      : "",
         "useTxt"     : "",
         "image"      : "res/sozai001.png",
         "materials"  : [{material_id:1,amount:5},{material_id:2,amount:5},{material_id:3,amount:5}],
+        "materialId" : 7,
     },
     { 
         "id"         : 4,
@@ -289,15 +305,17 @@ CONFIG.ITEM = [
         "useTxt"     : "",
         "image"      : "res/sozai001.png",
         "materials"  : [{material_id:1,amount:5},{material_id:2,amount:5},{material_id:3,amount:5}],
+        "materialId" : 7,
     },
     { 
-        "id"         : 5,
+        "id"         : 3,
         "name"       : "アンテナモジュール",
         "description": "Sランク惑星の発見率が増加する",
         "genre"      : "",
         "useTxt"     : "",
         "image"      : "res/sozai001.png",
         "materials"  : [{material_id:1,amount:5},{material_id:2,amount:5},{material_id:3,amount:5}],
+        "materialId" : 7,
     },
 ];
 

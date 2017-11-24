@@ -70,7 +70,9 @@ var MaterialsLayer = cc.Layer.extend({
             if (this.storage.materialData.hasOwnProperty(key)) {
                 var value = this.storage.materialData[key];
                 var _hoge = JSON.parse(value);
-                this.materials.push(_hoge);
+                if(_hoge.cnt >= 1){
+                    this.materials.push(_hoge);
+                }
             }
         }
         this.createTable();
@@ -103,8 +105,7 @@ var MaterialsLayer = cc.Layer.extend({
             this.spriteCell.setAnchorPoint(0, 0);
             this.spriteCell.setPosition(0, 0);
             cell.addChild(this.spriteCell, 9999999);
-cc.log(">>>>");
-cc.log(this.materials[strValue]);
+
             var button = new cc.MenuItemImage("res/button_get_coin.png", "res/button_get_coin_on.png", function () {
                 this.infoNode.setVisible(true);
                 var _planetId = this.materials[strValue].id;
@@ -113,7 +114,7 @@ cc.log(this.materials[strValue]);
             button.setPosition(600, 50);
             var menu001 = new cc.Menu(button);
             menu001.setPosition(0, 0);
-            //cell.addChild(menu001, 999999999);
+
             var _cardId = this.materials[strValue].id;
             var _name = CONFIG.MATERIAL[_cardId].name;
             var _description = CONFIG.MATERIAL[_cardId].description;
@@ -129,11 +130,11 @@ cc.log(this.materials[strValue]);
             descriptionLabel.setAnchorPoint(0, 0);
             descriptionLabel.setTag("descriptionLabel");
             //this.spriteCell.addChild(descriptionLabel, 9999999);
-var countLabel = cc.LabelTTF.create(this.materials[strValue].cnt, "Helvetica", 28);
-countLabel.setPosition(105, 10);
-countLabel.setAnchorPoint(1, 0);
-countLabel.textAlign = cc.TEXT_ALIGNMENT_RIGHT;
-this.spriteCell.addChild(countLabel, 9999999);
+            var countLabel = cc.LabelTTF.create(this.materials[strValue].cnt, "Helvetica", 28);
+            countLabel.setPosition(105, 10);
+            countLabel.setAnchorPoint(1, 0);
+            countLabel.textAlign = cc.TEXT_ALIGNMENT_RIGHT;
+            this.spriteCell.addChild(countLabel, 9999999);
             /*
             this.planetImage = cc.Sprite.create(_image);
             this.planetImage.setAnchorPoint(0, 0);
